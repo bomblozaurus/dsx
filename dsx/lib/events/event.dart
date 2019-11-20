@@ -3,7 +3,7 @@ part 'event.g.dart';
 
 @JsonSerializable()
 
-class Event extends Object{
+class Event1 extends Object{
   final String name;
   final DateTime date;
   final String street;
@@ -16,11 +16,11 @@ class Event extends Object{
   final String studentHouse;
 
 
-  Event({this.name, this.date, this.street, this.houseNumber,
+  Event1({this.name, this.date, this.street, this.houseNumber,
       this.apartmentNumber, this.city, this.zip, this.description, this.scope,
       this.studentHouse});
 
-  factory Event.fromJson(Map<String, dynamic> json) => _$EventFromJson(json);
+  factory Event1.fromJson(Map<String, dynamic> json) => _$EventFromJson(json);
 
   Map<String, dynamic> toJson() => _$EventToJson(this);
 }
