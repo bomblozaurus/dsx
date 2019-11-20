@@ -1,21 +1,30 @@
-import 'package:dsx/views/home_page.dart';
-import 'package:dsx/views/login_page.dart';
-import 'package:dsx/views/signup_page.dart';
+import 'package:dsx/ui/login_page.dart';
 import 'package:flutter/material.dart';
+import 'package:dsx/ui/menu.dart';
+import 'package:dsx/ui/events_page.dart';
+import 'package:dsx/ui/rooms_page.dart';
+import 'package:global_configuration/global_configuration.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await GlobalConfiguration().loadFromAsset("api_urls");
+  runApp(new MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return new MaterialApp(
       title: 'DSX',
-      initialRoute: '/logIn',
-      routes: {
-        '/': (context) => HomePage(),
-        '/logIn': (context) => LoginPage(),
-        '/signUp': (context) => SignUpPage(),
-      },
+      theme: new ThemeData(
+        primarySwatch: Colors.lime,
+      ),
+      home: new LoginPage(),
+      routes:<String, WidgetBuilder>{
+        "/MenuPage":(BuildContext context) => new MenuPage(),
+        "/RoomsPage":(BuildContext context)=> new RoomsPage(),
+        "/EventsPage":(BuildContext context)=> new EventsPage()
+      }
     );
   }
 }
