@@ -1,5 +1,8 @@
 import 'package:dsx/ui/login_page.dart';
 import 'package:flutter/material.dart';
+import 'package:dsx/ui/menu.dart';
+import 'package:dsx/ui/events_page.dart';
+import 'package:dsx/ui/rooms_page.dart';
 import 'package:global_configuration/global_configuration.dart';
 
 void main() async {
@@ -17,6 +20,11 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.lime,
       ),
       home: new LoginPage(),
+      routes:<String, WidgetBuilder>{
+        "/MenuPage":(BuildContext context) => new MenuPage(),
+        "/RoomsPage":(BuildContext context)=> new RoomsPage(),
+        "/EventsPage":(BuildContext context)=> new EventsPage()
+      }
     );
   }
 }

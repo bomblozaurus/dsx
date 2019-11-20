@@ -22,4 +22,18 @@ class Request {
 
     return toReturn;
   }
+
+  Future createGet(String url, {Map body, Map headers}) async {
+    var toReturn;
+    await http
+        .get(url, headers: headers)
+        .then((http.Response response) {
+      final int statusCode = response.statusCode;
+      if (statusCode < 200 || statusCode > 400) {
+        throw new Exception("WQYWALILO SIE" + response.body);
+      }
+      toReturn = response.body;
+    });
+    return toReturn;
+  }
 }
