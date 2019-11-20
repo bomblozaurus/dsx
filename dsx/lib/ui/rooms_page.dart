@@ -1,9 +1,12 @@
 import 'package:dsx/requests/requests.dart';
 import 'package:dsx/style/theme.dart' as Theme;
 import 'package:dsx/rooms/room.dart';
+import 'package:dsx/rooms/room.l.dart';
 import 'package:dsx/utils/bubble_indication_painter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as prefix0;
 import 'package:flutter/services.dart';
+import 'package:dsx/utils/jwt_token.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:global_configuration/global_configuration.dart';
@@ -41,12 +44,13 @@ class _RoomsPageState extends State<RoomsPage>
   TextEditingController signUpPasswordController = new TextEditingController();
 
   PageController _pageController;
-
+  final List<Widget> buttonsList = [];
   Color left = Colors.black;
   Color right = Colors.white;
 
   @override
   Widget build(BuildContext context) {
+    _getUserRooms();
     return new Scaffold(
       key: _scaffoldKey,
       body: NotificationListener<OverscrollIndicatorNotification>(
@@ -70,27 +74,13 @@ class _RoomsPageState extends State<RoomsPage>
                   stops: [0.0, 1.0],
                   tileMode: TileMode.clamp),
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Padding(padding: const EdgeInsets.only(top: 60.0)),
-                Logo(size: 120.0),
-                Padding(padding:const EdgeInsets.only(top: 60.0)),
-                _buildSubmitButton("Trutututtu",20,     () => (Navigator.of(context).pushNamed("/RoomsPage"))),
-
-                Padding(padding:const EdgeInsets.only(top: 60.0)),
-
-                _buildSubmitButton("Chujumuju",20,() =>(Navigator.of(context).pushNamed("/EventsPage"))),
-                Padding(padding:const EdgeInsets.only(top: 60.0)),
-
-              ],
-            ),
+            child:
+                Column(mainAxisSize: MainAxisSize.min, children: buttonsList),
           ),
         ),
       ),
     );
   }
-
 
   @override
   void dispose() {
@@ -147,7 +137,7 @@ class _RoomsPageState extends State<RoomsPage>
           //shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
           child: Padding(
             padding:
-            const EdgeInsets.symmetric(vertical: 10.0, horizontal: 42.0),
+                const EdgeInsets.symmetric(vertical: 10.0, horizontal: 42.0),
             child: Text(
               text,
               style: TextStyle(
@@ -160,7 +150,6 @@ class _RoomsPageState extends State<RoomsPage>
     );
   }
 
-
   Container _buildSeparator() {
     return Container(
       width: 250.0,
@@ -169,7 +158,30 @@ class _RoomsPageState extends State<RoomsPage>
     );
   }
 
+  _getUserRooms() async {
+    var headers = {
+      "Authorization":("Bearer " + await JwtTokenUtils().getToken().toString())
+    };
+    print(JwtTokenUtils().getToken().toString());
 
+    headers.addAll(Request.jsonHeader);
+    String url = GlobalConfiguration().getString("baseUrl") +
+        GlobalConfiguration().getString("getAllForUser");
+    RoomList data;
+    await Request()
+        .createGet(url, body: new Map(), headers: headers)
+        .then((value) {
+      print(value);
+      _buildButtonsWithNames(RoomList.fromJson(value));
+    });
+  }
+
+  _buildButtonsWithNames(RoomList data) {
+    for (int i = 0; i < data.rooms.length; i++) {
+      buttonsList
+          .add(_buildSubmitButton((data.rooms[i]).name, i * 20.0, () => {}));
+    }
+  }
 
   void _onSignInButtonPress() {
     _pageController.animateToPage(0,

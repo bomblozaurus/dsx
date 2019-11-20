@@ -333,14 +333,15 @@ class _LoginPageState extends State<LoginPage>
         lastName: lastName,
         email: email,
         password: password);
-    var data = user.toJson();
 
+var data = user.toJson();
     String url = GlobalConfiguration().getString("baseUrl") +
         GlobalConfiguration().getString("signUpUrl");
     var headers = Request.jsonHeader;
 
     await Request().createPost(url, body: data, headers: headers).then(
-        (value) => showInSnackBar("Zarejestrowano pomyślnie!", Colors.blue));
+        (value) => (showInSnackBar("Zarejestrowano pomyślnie!", Colors.blue)));
+
   }
 
   _loginUser() async {
@@ -368,11 +369,13 @@ class _LoginPageState extends State<LoginPage>
         .createPost(url, body: body, headers: headers)
         .then((token) => _loginSuccessful(token))
         .catchError((token) => _loginFailed(token));
+
   }
 
   _loginSuccessful(token) async {
     JwtTokenUtils().saveToken(token);
-    showInSnackBar("Zalogowano poprawnie", Colors.lime);
+
+    Navigator.of(context).pushNamed("/MenuPage");
   }
 
   _loginFailed(token) {

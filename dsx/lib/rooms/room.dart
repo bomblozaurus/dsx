@@ -12,4 +12,6 @@ class Room extends Object{
   factory Room.fromJson(Map<String, dynamic> json) => _$RoomFromJson(json);
 
   Map<String, dynamic> toJson() => _$RoomToJson(this);
+
+
 }
