@@ -2,19 +2,24 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-class Request{
-  Future<dynamic> createPost(String url, {Map body}) async {
+class Request {
+  static const jsonHeader = {"Content-Type": "application/json"};
+
+  Future createPost(String url, {Map body, Map headers}) async {
     var jsonBody = json.encode(body);
-    http.post(url,
-        headers: {"Content-Type": "application/json"},
-        body: jsonBody).then((http.Response response){
+    var toReturn;
+    await http
+        .post(url, headers: headers, body: jsonBody)
+        .then((http.Response response) {
       final int statusCode = response.statusCode;
 
-      if(statusCode < 200 || statusCode > 400 ){
-          throw new Exception("WQYWALILO SIE" + response.body);
+      if (statusCode < 200 || statusCode > 400) {
+        throw new Exception("WQYWALILO SIE" + response.body);
       }
 
-      return response.body;
+      toReturn = response.body;
     });
+
+    return toReturn;
   }
 }
