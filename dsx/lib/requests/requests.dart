@@ -14,7 +14,7 @@ class Request {
       final int statusCode = response.statusCode;
 
       if (statusCode < 200 || statusCode > 400) {
-        throw new Exception("WQYWALILO SIE" + response.body);
+        throw new Exception("WQYWALILO SIE" + response.body + '\n' + response.request.toString()) ;
       }
 
       toReturn = response.body;
