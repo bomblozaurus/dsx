@@ -5,6 +5,8 @@ import 'package:dsx/ui/events_page.dart';
 import 'package:dsx/ui/rooms_page.dart';
 import 'package:global_configuration/global_configuration.dart';
 
+import 'events/create_event_page2.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GlobalConfiguration().loadFromAsset("api_urls");
@@ -19,12 +21,12 @@ class MyApp extends StatelessWidget {
       theme: new ThemeData(
         primarySwatch: Colors.lime,
       ),
-      home: new LoginPage(),
-      routes:<String, WidgetBuilder>{
+      home: new CreateEventPage(),
+/*      routes:<String, WidgetBuilder>{
         "/MenuPage":(BuildContext context) => new MenuPage(),
         "/RoomsPage":(BuildContext context)=> new RoomsPage(),
-        "/EventsPage":(BuildContext context)=> new EventsPage()
-      }
+        "/EventsPage":(BuildContext context)=> new CreateEventPage()
+      }*/
     );
   }
 }

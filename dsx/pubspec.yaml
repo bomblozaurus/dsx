@@ -24,6 +24,7 @@ dev_dependencies:
 
   build_runner: ^1.0.0
   json_serializable: ^2.0.0
+  flutter_datetime_picker: 1.2.5
 
 flutter:
 
@@ -49,4 +50,3 @@ flutter:
     - family: AdventProSemiBold
       fonts:
         - asset: assets/fonts/Advent_Pro/AdventPro-SemiBold.ttf
-
