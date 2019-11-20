@@ -3,7 +3,7 @@ part 'user.g.dart';
 
 @JsonSerializable()
 
-class User extends Object{
+class User{
   final String password, email, firstName, lastName;
 
   User({this.password, this.email, this.firstName, this.lastName});
@@ -11,4 +11,15 @@ class User extends Object{
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserToJson(this);
+}
+
+@JsonSerializable()
+class LogInCredentials{
+  final String email, password, deviceInformation;
+
+  LogInCredentials({this.email, this.password, this.deviceInformation});
+
+  factory LogInCredentials.fromJson(Map<String, dynamic> json) => _$LogInCredentialsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$LogInCredentialsToJson(this);
 }

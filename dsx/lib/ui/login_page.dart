@@ -1,7 +1,11 @@
+import 'dart:io';
+
+import 'package:device_info/device_info.dart';
 import 'package:dsx/requests/requests.dart';
 import 'package:dsx/style/theme.dart' as Theme;
 import 'package:dsx/users/user.dart';
 import 'package:dsx/utils/bubble_indication_painter.dart';
+import 'package:dsx/utils/jwt_token.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -96,7 +100,7 @@ class _LoginPageState extends State<LoginPage>
                     children: <Widget>[
                       new ConstrainedBox(
                         constraints: const BoxConstraints.expand(),
-                        child: _buildSignIn(context),
+                        child: _buildLogIn(context),
                       ),
                       new ConstrainedBox(
                         constraints: const BoxConstraints.expand(),
@@ -199,7 +203,7 @@ class _LoginPageState extends State<LoginPage>
     );
   }
 
-  Widget _buildSignIn(BuildContext context) {
+  Widget _buildLogIn(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(top: 23.0),
       child: Column(
@@ -237,11 +241,7 @@ class _LoginPageState extends State<LoginPage>
                   ),
                 ),
               ),
-              _buildSubmitButton(
-                  "ZALOGUJ",
-                  170.0,
-                  () => showInSnackBar(
-                      GlobalConfiguration().getString("baseUrl"), Colors.blue)),
+              _buildSubmitButton("ZALOGUJ", 170.0, () => _loginUser()),
             ],
           ),
           Padding(
@@ -334,10 +334,49 @@ class _LoginPageState extends State<LoginPage>
         email: email,
         password: password);
     var data = user.toJson();
+
     String url = GlobalConfiguration().getString("baseUrl") +
         GlobalConfiguration().getString("signUpUrl");
-    await Request().createPost(url, body: data).then(
+    var headers = Request.jsonHeader;
+
+    await Request().createPost(url, body: data, headers: headers).then(
         (value) => showInSnackBar("Zarejestrowano pomyślnie!", Colors.blue));
+  }
+
+  _loginUser() async {
+    String email = loginEmailController.text;
+    String password = loginPasswordController.text;
+
+    DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+    String deviceInfo;
+    if (Platform.isAndroid) {
+      deviceInfo = deviceInfoPlugin.androidInfo.toString();
+    } else if (Platform.isIOS) {
+      deviceInfo = deviceInfoPlugin.iosInfo.toString();
+    }
+
+    var body = LogInCredentials(
+            email: email, password: password, deviceInformation: deviceInfo)
+        .toJson();
+
+    String url = GlobalConfiguration().getString("baseUrl") +
+        GlobalConfiguration().getString("logInUrl");
+
+    var headers = {"Device-info": deviceInfo};
+    headers.addAll(Request.jsonHeader);
+    await Request()
+        .createPost(url, body: body, headers: headers)
+        .then((token) => _loginSuccessful(token))
+        .catchError((token) => _loginFailed(token));
+  }
+
+  _loginSuccessful(token) async {
+    JwtTokenUtils().saveToken(token);
+    showInSnackBar("Zalogowano poprawnie", Colors.lime);
+  }
+
+  _loginFailed(token) {
+    showInSnackBar("Nie udało się zalogować", Colors.red);
   }
 
   Container _buildSubmitButton(
