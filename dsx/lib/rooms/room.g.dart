@@ -8,14 +8,15 @@ part of 'room.dart';
 
 Room _$RoomFromJson(Map<String, dynamic> json) {
   return Room(
-      id:json['id'],
-      ds_number:json['ds_number'],
-      name:json['name']);
+    id: json['id'] as int,
+      ds_number: json['ds_number'] as int,
+      name: json['name'] as String);
+
 }
 
 
 Map<String, dynamic> _$RoomToJson(Room instance) => <String, dynamic>{
-  'id':instance.id,
-  'ds_number':instance.ds_number,
-  'name':instance.name
-};
+      'id': instance.id,
+      'ds_number': instance.ds_number,
+      'name': instance.name
+    };
