@@ -3,6 +3,7 @@ import 'package:dsx/requests/requests.dart';
 import 'package:dsx/style/theme.dart'as Theme;
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:global_configuration/global_configuration.dart';
 
 import 'event.dart';
@@ -14,26 +15,32 @@ class CreateEventPage extends StatefulWidget {
 
 class _CreateEventPageState extends State<CreateEventPage> {
   final GlobalKey<ScaffoldState> _formKey = new GlobalKey<ScaffoldState>();
-  String _date = "Nie wybrana";
-  String _time = "Nie wybrana";
-//  final _formKey = GlobalKey<FormState>();
-  String _name;
-  String _description;
-  int _houseNumber;
-  int _apartmentNumber;
-  String _street;
-  String _city;
-  String _zip;
+  String _date = "Data";
+  String _time = "Czas";
   String _scopeName;
   String _scope;
   String _studentHouse;
-  TextEditingController _nameEventController = new TextEditingController();
+
+  final FocusNode myFocusNodeName = FocusNode();
+  final FocusNode myFocusNodeStreet = FocusNode();
+  final FocusNode myFocusNodeCity = FocusNode();
+  final FocusNode myFocusNodeZip = FocusNode();
+  final FocusNode myFocusNodeDescription = FocusNode();
+  final FocusNode myFocusNodeHouseNumber = FocusNode();
+  final FocusNode myFocusNodeApartmentNumber = FocusNode();
+
+  TextEditingController nameEventController = new TextEditingController();
+  TextEditingController streetEventController = new TextEditingController();
+  TextEditingController cityEventController = new TextEditingController();
+  TextEditingController zipEventController = new TextEditingController();
+  TextEditingController descriptionEventController = new TextEditingController();
+  TextEditingController houseNumberEventController = new TextEditingController();
+  TextEditingController apartmentNumberEventController = new TextEditingController();
 
   int _year, _month, _day, _hour, _minute, _second;
 
   List<String> _scopeList = ['Wszyscy', 'Studenci', 'Akademik']; // Option 2
   List<String> _studentHouseList = ['DS1', 'DS2', 'DS3','DS4','DS5','DS6','DS7','DS8','DS9'];
-  String _selectedLocation; // Option 2
 
   @override
   Widget build(BuildContext context) {
@@ -49,51 +56,57 @@ class _CreateEventPageState extends State<CreateEventPage> {
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            TextFormField(
-                              decoration:
-                              InputDecoration(labelText: 'Nazwa wydarzenia:'),
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'Nazwa nie może być pusta';
-                                }
-                              },
-                              onSaved: (val) =>
-                                  setState(() => _name = val),
-                            ),
+                            _buildTextField(
+                                myFocusNodeName,
+                                nameEventController,
+                                TextInputType.text,
+                                FontAwesomeIcons.user,
+                                "Nazwa"),
+                            _buildSeparator(),
+                            _buildTextField(
+                                myFocusNodeDescription,
+                                descriptionEventController,
+                                TextInputType.text,
+                                FontAwesomeIcons.user,
+                                "Opis"),
+                            _buildSeparator(),
                             buildTimePicker(context),
-                            TextFormField(
-                                decoration:
-                                InputDecoration(labelText: 'Opis:'),
-                                onChanged: (val) =>
-                                    setState(() => _description = val)),
-                            TextFormField(
-                                decoration:
-                                InputDecoration(labelText: 'Numer domu:'),
-                                keyboardType: TextInputType.number,
-                                onChanged: (val) =>
-                                    setState(() => _houseNumber = val as int)),
-                            TextFormField(
-                                decoration:
-                                InputDecoration(labelText: 'Numer mieszkania:'),
-                                keyboardType: TextInputType.number,
-                                onChanged: (val) =>
-                                    setState(() => _apartmentNumber = val as int)),
-                            TextFormField(
-                                decoration:
-                                InputDecoration(labelText: 'Ulica:'),
-                                onChanged: (val) =>
-                                    setState(() => _street = val)),
-                            TextFormField(
-                                decoration:
-                                InputDecoration(labelText: 'Miasto:'),
-                                onChanged: (val) =>
-                                    setState(() => _city = val)),
-                            TextFormField(
-                                decoration:
-                                InputDecoration(labelText: 'Kod pocztowy:'),
-                                keyboardType: TextInputType.number,
-                                onSaved: (val) =>
-                                    setState(() => _zip = val)),
+                            _buildSeparator(),
+                            _buildTextField(
+                                myFocusNodeApartmentNumber,
+                                apartmentNumberEventController,
+                                TextInputType.number,
+                                FontAwesomeIcons.user,
+                                "Numer Mieszkania"),
+                            _buildSeparator(),
+                            _buildTextField(
+                                myFocusNodeHouseNumber,
+                                houseNumberEventController,
+                                TextInputType.number,
+                                FontAwesomeIcons.user,
+                                "Numer Domu"),
+                            _buildSeparator(),
+                            _buildTextField(
+                                myFocusNodeStreet,
+                                streetEventController,
+                                TextInputType.text,
+                                FontAwesomeIcons.user,
+                                "Ulica"),
+                            _buildSeparator(),
+                            _buildTextField(
+                                myFocusNodeCity,
+                                cityEventController,
+                                TextInputType.text,
+                                FontAwesomeIcons.user,
+                                "Miasto"),
+                            _buildSeparator(),
+                            _buildTextField(
+                                myFocusNodeZip,
+                                zipEventController,
+                                TextInputType.number,
+                                FontAwesomeIcons.user,
+                                "Kod pocztowy"),
+                            _buildSeparator(),
                             DropdownButton(
                               hint: Text('Wybierz akademik:'), // Not necessary for Option 1
                               value: _studentHouse,
@@ -121,7 +134,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                                     setState(() => _scope = "OTHER");
                                   }
                                   if(newValue=='Studenci') {
-                                    setState(() => _scope = "STUDENTS");
+                                    setState(() => _scope = "STUDENT");
                                   }
                                   if(newValue=='Akademik') {
                                     setState(() => _scope = "DORMITORY");
@@ -135,20 +148,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                                 );
                               }).toList(),
                             ),
-/*                            Container(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 16.0, horizontal: 16.0),
-                                child: RaisedButton(
-                                    onPressed: () {
-                                      final form = _formKey.currentState;
-                                      if (form.validate()) {
-                                        form.save();
-                                        _user.save();
-                                        _showDialog(context);
-                                      }
-                                    },
-                                    child: Text('Save'))),*/
-                            _buildSubmitButton("DODAJ", 340.0, () => _createEvent())
+                            _buildSubmitButton("DODAJ", 50.0, () => _createEvent())
                           ])))),
         ));
   }
@@ -158,6 +158,29 @@ class _CreateEventPageState extends State<CreateEventPage> {
         .showSnackBar(SnackBar(content: Text('Submitting form')));
   }
 
+  Widget _buildTextField(FocusNode focusNode, TextEditingController controller,
+      TextInputType textInputType, IconData iconData, String text,
+      {bool obscureText = false}) {
+    return Padding(
+        padding:
+        EdgeInsets.only(top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+        child: TextField(
+          focusNode: focusNode,
+          controller: controller,
+          keyboardType: textInputType,
+          obscureText: obscureText,
+          style: TextStyle(
+              fontFamily: Theme.Fonts.loginFontSemiBold,
+              fontSize: Theme.Fonts.loginFontSize,
+              color: Colors.black),
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            hintText: text,
+            hintStyle: TextStyle(
+                fontFamily: Theme.Fonts.loginFontSemiBold, fontSize: 17.0),
+          ),
+        ));
+  }
 
 
   Widget buildTimePicker(BuildContext context) {
@@ -176,8 +199,8 @@ class _CreateEventPageState extends State<CreateEventPage> {
                     containerHeight: 210.0,
                   ),
                   showTitleActions: true,
-                  minTime: DateTime(2019, 11, 20),
-                  maxTime: DateTime(2022, 12, 31), onConfirm: (date) {
+                  minTime: DateTime.now(),
+                  maxTime: DateTime(2030, 12, 31), onConfirm: (date) {
                     print('potwierdź $date');
                     _date = '${date.year} - ${date.month} - ${date.day}';
                     setState(() {_year=date.year;
@@ -214,7 +237,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                     ],
                   ),
                   Text(
-                    "  Zmień",
+                    "  Wybierz",
                     style: TextStyle(
                         color: Colors.teal,
                         fontWeight: FontWeight.bold,
@@ -275,7 +298,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                     ],
                   ),
                   Text(
-                    "  Zmień",
+                    "  Wybierz",
                     style: TextStyle(
                         color: Colors.teal,
                         fontWeight: FontWeight.bold,
@@ -308,18 +331,33 @@ class _CreateEventPageState extends State<CreateEventPage> {
     ));
   }
 
+  Container _buildSeparator() {
+    return Container(
+      width: 250.0,
+      height: 1.0,
+      color: Colors.grey[400],
+    );
+  }
+
   _createEvent() async {
+    String name = nameEventController.text;
+    String street =streetEventController.text;
+    int houseNumber = num.tryParse(streetEventController.text);
+    int apartmentNumber = num.tryParse(apartmentNumberEventController.text) ;
+    String city = cityEventController.text;
+    String zip = zipEventController.text;
+    String description = descriptionEventController.text;
 
     var event = Event1(
-        name: "sad",
+        name: name,
         date: new DateTime(_year,_month,_day,_hour,_minute,_second),
-        street: "dsa",
-      houseNumber: 2,
-      apartmentNumber: 3,
-      city: "dasd",
-      zip: "23-123",
-      description: "sada",
-      scope: "DORMITORY",
+        street: street,
+      houseNumber: houseNumber,
+      apartmentNumber: apartmentNumber,
+      city: city,
+      zip: zip,
+      description: description,
+      scope: _scope,
       studentHouse: _studentHouse
     );
     var data = event.toJson();
@@ -331,8 +369,55 @@ class _CreateEventPageState extends State<CreateEventPage> {
     var headers = Request.jsonHeader;
 
     await Request().createPost(url, body: data, headers: headers).then(
-            (value) => print("Utworzono wydarzenie!"));
+            (value) => print("Zarejestrowano pomyślnie!"));
   }
+
+/*  Container _buildSubmitButton(
+      String text, double topMargin, Function() onPressed) {
+    return Container(
+      margin: EdgeInsets.only(top: topMargin),
+      decoration: new BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            color: Theme.Colors.loginGradientStart,
+            offset: Offset(1.0, 6.0),
+            blurRadius: 20.0,
+          ),
+          BoxShadow(
+            color: Theme.Colors.loginGradientEnd,
+            offset: Offset(1.0, 6.0),
+            blurRadius: 20.0,
+          ),
+        ],
+        gradient: new LinearGradient(
+            colors: [
+              Theme.Colors.loginGradientEnd,
+              Theme.Colors.loginGradientStart
+            ],
+            begin: const FractionalOffset(0.2, 0.2),
+            end: const FractionalOffset(1.0, 1.0),
+            stops: [0.0, 1.0],
+            tileMode: TileMode.clamp),
+      ),
+      child: MaterialButton(
+          highlightColor: Colors.transparent,
+          splashColor: Theme.Colors.loginGradientEnd,
+          //shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
+          child: Padding(
+            padding:
+            const EdgeInsets.symmetric(vertical: 10.0, horizontal: 42.0),
+            child: Text(
+              text,
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 25.0,
+                  fontFamily: Theme.Fonts.loginFontBold),
+            ),
+          ),
+          onPressed: onPressed),
+    );
+  }*/
 
   Container _buildSubmitButton(
       String text, double topMargin, Function() onPressed) {
