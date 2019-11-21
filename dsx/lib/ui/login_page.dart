@@ -371,7 +371,6 @@ class _LoginPageState extends State<LoginPage>
         studentHouse: studentHouseNumber);
     var data = user.toJson();
 
-var data = user.toJson();
     String url = GlobalConfiguration().getString("baseUrl") +
         GlobalConfiguration().getString("signUpUrl");
     var headers = Request.jsonHeader;
