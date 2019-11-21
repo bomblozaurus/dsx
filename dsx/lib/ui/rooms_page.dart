@@ -1,14 +1,11 @@
+import 'dart:convert';
 import 'package:dsx/requests/requests.dart';
 import 'package:dsx/style/theme.dart' as Theme;
 import 'package:dsx/rooms/room.dart';
-import 'package:dsx/utils/bubble_indication_painter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:dsx/utils/jwt_token.dart';
 import 'package:global_configuration/global_configuration.dart';
-
-import 'logo.dart';
 
 class RoomsPage extends StatefulWidget {
   RoomsPage({Key key}) : super(key: key);
@@ -16,7 +13,6 @@ class RoomsPage extends StatefulWidget {
   @override
   _RoomsPageState createState() => new _RoomsPageState();
 }
-
 class _RoomsPageState extends State<RoomsPage>
     with SingleTickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -28,20 +24,7 @@ class _RoomsPageState extends State<RoomsPage>
   final FocusNode myFocusNodeEmail = FocusNode();
   final FocusNode myFocusNodeFirstName = FocusNode();
   final FocusNode myFocusNodeLastName = FocusNode();
-
-  TextEditingController loginEmailController = new TextEditingController();
-  TextEditingController loginPasswordController = new TextEditingController();
-
-  bool _obscureTextLogin = true;
-  bool _obscureTextSignUp = true;
-
-  TextEditingController signUpEmailController = new TextEditingController();
-  TextEditingController signUpFirstNameController = new TextEditingController();
-  TextEditingController signUpLastNameController = new TextEditingController();
-  TextEditingController signUpPasswordController = new TextEditingController();
-
   PageController _pageController;
-
   Color left = Colors.black;
   Color right = Colors.white;
 
@@ -70,27 +53,18 @@ class _RoomsPageState extends State<RoomsPage>
                   stops: [0.0, 1.0],
                   tileMode: TileMode.clamp),
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Padding(padding: const EdgeInsets.only(top: 60.0)),
-                Logo(size: 120.0),
-                Padding(padding:const EdgeInsets.only(top: 60.0)),
-                _buildSubmitButton("Trutututtu",20,     () => (Navigator.of(context).pushNamed("/RoomsPage"))),
-
-                Padding(padding:const EdgeInsets.only(top: 60.0)),
-
-                _buildSubmitButton("Chujumuju",20,() =>(Navigator.of(context).pushNamed("/EventsPage"))),
-                Padding(padding:const EdgeInsets.only(top: 60.0)),
-
-              ],
+            child:  FutureBuilder(
+              future: _getUserRooms(),
+            initialData: [],
+            builder: (context, snapshot) {
+              return createCountriesListView(context, snapshot);
+              }
             ),
-          ),
+          )
         ),
       ),
     );
   }
-
 
   @override
   void dispose() {
@@ -102,17 +76,21 @@ class _RoomsPageState extends State<RoomsPage>
   }
 
   @override
-  void initState() {
+  void initState()    {
     super.initState();
-
+    waitingFor();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-
     _pageController = PageController();
   }
 
+
+  void waitingFor ()async
+  {
+    await _getUserRooms();
+  }
   Container _buildSubmitButton(
       String text, double topMargin, Function() onPressed) {
     return Container(
@@ -147,7 +125,7 @@ class _RoomsPageState extends State<RoomsPage>
           //shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
           child: Padding(
             padding:
-            const EdgeInsets.symmetric(vertical: 10.0, horizontal: 42.0),
+                const EdgeInsets.symmetric(vertical: 10.0, horizontal: 42.0),
             child: Text(
               text,
               style: TextStyle(
@@ -161,35 +139,44 @@ class _RoomsPageState extends State<RoomsPage>
   }
 
 
-  Container _buildSeparator() {
-    return Container(
-      width: 250.0,
-      height: 1.0,
-      color: Colors.grey[400],
+  Future<List<Room>> _getUserRooms() async {
+    String token;
+    await JwtTokenUtils().getToken().then((e)=> token=e);
+    token = token.substring(13,token.length-2);
+    var headers = {
+      "Authorization":("Bearer " + token)
+    };
+    List<Room> roomList;
+    headers.addAll(Request.jsonHeader);
+    String url = GlobalConfiguration().getString("baseUrl") +
+        GlobalConfiguration().getString("getAllForUser");
+    await Request()
+        .createGet(url, body: new Map(), headers: headers)
+        .then((value) {
+      final jsonResponse = json.decode(value);
+      roomList= Room.roomListFromJson(jsonResponse);
+    });
+    return roomList;
+  }
+
+  Widget createCountriesListView(BuildContext context, AsyncSnapshot snapshot) {
+    var values = snapshot.data;
+    return ListView.builder(
+      itemCount: values == null ? 0 : values.length,
+      itemBuilder: (BuildContext context, int index) {
+        return Container(
+
+          child: Column(
+            children: <Widget>[
+              _buildSubmitButton(values[index].name, 40, ()=>{}),
+              Divider(
+                height: 2.0,
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
-
-
-  void _onSignInButtonPress() {
-    _pageController.animateToPage(0,
-        duration: Duration(milliseconds: 500), curve: Curves.decelerate);
-  }
-
-  void _onSignUpButtonPress() {
-    _pageController?.animateToPage(1,
-        duration: Duration(milliseconds: 500), curve: Curves.decelerate);
-  }
-
-  void _toggleLogin() {
-    setState(() {
-      _obscureTextLogin = !_obscureTextLogin;
-    });
-  }
-
-  void _toggleSignUp() {
-    setState(() {
-      _obscureTextSignUp = !_obscureTextSignUp;
-    });
-  }
 }

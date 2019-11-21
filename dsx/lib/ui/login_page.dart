@@ -371,13 +371,16 @@ class _LoginPageState extends State<LoginPage>
         studentHouse: studentHouseNumber);
     var data = user.toJson();
 
+var data = user.toJson();
     String url = GlobalConfiguration().getString("baseUrl") +
         GlobalConfiguration().getString("signUpUrl");
     var headers = Request.jsonHeader;
 
     await Request().createPost(url, body: data, headers: headers).then(
+
             (value) =>
             showInSnackBar("Zarejestrowano pomyślnie!", Colors.blue));
+
   }
 
   _loginUser() async {
@@ -387,9 +390,9 @@ class _LoginPageState extends State<LoginPage>
     DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
     String deviceInfo;
     if (Platform.isAndroid) {
-      deviceInfo = deviceInfoPlugin.androidInfo.toString();
+      await deviceInfoPlugin.androidInfo.then((e)=>deviceInfo=e.toString());
     } else if (Platform.isIOS) {
-      deviceInfo = deviceInfoPlugin.iosInfo.toString();
+      await deviceInfoPlugin.iosInfo.then((e)=>deviceInfo=e.toString());
     }
 
     var body = LogInCredentials(
@@ -405,6 +408,7 @@ class _LoginPageState extends State<LoginPage>
         .createPost(url, body: body, headers: headers)
         .then((token) => _loginSuccessful(token))
         .catchError((token) => _loginFailed(token));
+
   }
 
   _loginSuccessful(token) async {
@@ -412,6 +416,7 @@ class _LoginPageState extends State<LoginPage>
     showInSnackBar("Zalogowano poprawnie", Colors.lime);
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => MenuPage()));
+
   }
 
   _loginFailed(token) {

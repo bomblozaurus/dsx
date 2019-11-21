@@ -5,4 +5,5 @@
   "eventsUrl": "/events",
   "eventsAll": "/all",
   "eventOrderByDate": "/scopeOrderDate"
+   "getAllForUser": "/rooms/getAllForUser"
 }
