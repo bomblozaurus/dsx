@@ -1,4 +1,5 @@
 import 'package:dsx/events/create_event_page2.dart';
+import 'package:dsx/events/show_event_page.dart';
 import 'package:flutter/material.dart';
 
 import 'RoutePages.dart';
@@ -28,6 +29,15 @@ class RouteGenerator {
             return MaterialPageRoute(
               builder: (_) => ShowScopePage(),
             );
+      case '/scope':
+        if (args is String) {
+          return MaterialPageRoute(
+            builder: (_) => ShowEventsPage(
+              scope: args,
+            ),
+          );
+        }
+        return _errorRoute();
       default:
       // If there is no such named route in the switch statement, e.g. /third
         return _errorRoute();

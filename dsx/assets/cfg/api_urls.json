@@ -3,5 +3,6 @@
   "logInUrl": "/logIn",
   "signUpUrl": "/signUp",
   "eventsUrl": "/events",
-  "eventsAll": "/all"
+  "eventsAll": "/all",
+  "eventOrderByDate": "/scopeOrderDate"
 }

@@ -7,20 +7,46 @@ import 'package:global_configuration/global_configuration.dart';
 import 'package:http/http.dart' as http;
 
 class ShowEventsPage extends StatefulWidget {
+  // This is a String for the sake of an example.
+  // You can use any type you want.
+ final String scope;
+ final String dormitory = "1";
+
+ ShowEventsPage({
+    Key key,
+    @required this.scope,
+  }) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _HomePageState createState() => _HomePageState(scope,dormitory);
 }
 
 class _HomePageState extends State<ShowEventsPage> {
+  final String scope;
+  final String dormitory;
+
+  _HomePageState(this.scope, this.dormitory);
+
+
 
   List<Event1> _events = List<Event1>();
 
   Future<List<Event1>> fetchEvents() async {
+
+    var queryParameters = {
+      'scope': scope,
+      'studentHouse': dormitory,
+    };
+
     String url = GlobalConfiguration().getString("baseUrl") +
         GlobalConfiguration().getString("eventsUrl") +
+        GlobalConfiguration().getString("eventOrderByDate") +"?scope=" +
+        scope + "&studentHouse=" + dormitory;
+
 
         GlobalConfiguration().getString("eventsAll");
+
+
 //    var url = 'https://raw.githubusercontent.com/boriszv/json/master/random_example.json';
     var response = await http.get(url);
 
@@ -45,8 +71,11 @@ class _HomePageState extends State<ShowEventsPage> {
     super.initState();
   }
 
+
   @override
   Widget build(BuildContext context) {
+    print("dlugosc tablicy");
+    print(_events.length);
     return Scaffold(
         appBar: AppBar(
           title: Text('Flutter listview with json'),
@@ -78,12 +107,12 @@ class _HomePageState extends State<ShowEventsPage> {
                           color: Colors.grey.shade600
                       ),
                     ),
-                    Text(
+/*                    Text(
                       _events[index].street,
                       style: TextStyle(
                           color: Colors.grey.shade600
                       ),
-                    ),
+                    ),*/
                     Text(
                       _events[index].houseNumber.toString(),
                       style: TextStyle(
@@ -125,7 +154,7 @@ class _HomePageState extends State<ShowEventsPage> {
               ),
             );
           },
-          itemCount: _events.length,
+          itemCount: (_events.length-1),
         )
     );
   }
