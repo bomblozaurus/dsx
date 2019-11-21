@@ -17,6 +17,7 @@ class Request {
         throw new Exception("WQYWALILO SIE" + response.body + '\n' + response.request.toString()) ;
       }
 
+      print(statusCode);
       toReturn = response.body;
     });
 
