@@ -107,12 +107,12 @@ class _HomePageState extends State<ShowEventsPage> {
                           color: Colors.grey.shade600
                       ),
                     ),
-/*                    Text(
+                    Text(
                       _events[index].street,
                       style: TextStyle(
                           color: Colors.grey.shade600
                       ),
-                    ),*/
+                    ),
                     Text(
                       _events[index].houseNumber.toString(),
                       style: TextStyle(
@@ -154,7 +154,7 @@ class _HomePageState extends State<ShowEventsPage> {
               ),
             );
           },
-          itemCount: (_events.length-1),
+          itemCount: _events.length,
         )
     );
   }
