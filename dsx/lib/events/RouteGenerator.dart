@@ -1,5 +1,6 @@
 import 'package:dsx/events/create_event_page2.dart';
 import 'package:dsx/events/show_event_page.dart';
+import 'package:dsx/ui/login_page.dart';
 import 'package:flutter/material.dart';
 
 import 'RoutePages.dart';
@@ -10,7 +11,9 @@ class RouteGenerator {
     final args = settings.arguments;
 
     switch (settings.name) {
-      case '/':
+      case '/login':
+        return MaterialPageRoute(builder: (_) => LoginPage());
+      case '/menu':
         return MaterialPageRoute(builder: (_) => FirstPage());
       case '/add':
     // Validation of correct data type
