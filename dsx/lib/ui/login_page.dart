@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:device_info/device_info.dart';
+import 'package:dsx/events/RoutePages.dart';
 import 'package:dsx/requests/requests.dart';
 import 'package:dsx/style/theme.dart' as Theme;
 import 'package:dsx/users/user.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:global_configuration/global_configuration.dart';
+
 
 import 'logo.dart';
 import 'menu.dart';
@@ -370,8 +372,6 @@ class _LoginPageState extends State<LoginPage>
         indexNumber: indexNumber,
         studentHouse: studentHouseNumber);
     var data = user.toJson();
-
-var data = user.toJson();
     String url = GlobalConfiguration().getString("baseUrl") +
         GlobalConfiguration().getString("signUpUrl");
     var headers = Request.jsonHeader;
@@ -415,7 +415,7 @@ var data = user.toJson();
     JwtTokenUtils().saveToken(token);
     showInSnackBar("Zalogowano poprawnie", Colors.lime);
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => MenuPage()));
+        context, MaterialPageRoute(builder: (context) => FirstPage()));
 
   }
 
