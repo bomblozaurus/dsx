@@ -30,11 +30,10 @@ class Request {
 
     DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
     String deviceInfo;
-
       if (Platform.isAndroid) {
-       await deviceInfoPlugin.androidInfo.then((e)=>deviceInfo = e.toString());
+        await deviceInfoPlugin.androidInfo.then((e)=>deviceInfo=e.toString());
       } else if (Platform.isIOS) {
-        await deviceInfoPlugin.iosInfo.then((e)=> deviceInfo = e.toString());
+              await deviceInfoPlugin.iosInfo.then((e)=> deviceInfo = e.toString());
       }
 
 

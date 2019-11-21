@@ -351,9 +351,9 @@ var data = user.toJson();
     DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
     String deviceInfo;
     if (Platform.isAndroid) {
-      deviceInfo = deviceInfoPlugin.androidInfo.toString();
+      await deviceInfoPlugin.androidInfo.then((e)=>deviceInfo=e.toString());
     } else if (Platform.isIOS) {
-      deviceInfo = deviceInfoPlugin.iosInfo.toString();
+      await deviceInfoPlugin.iosInfo.then((e)=>deviceInfo=e.toString());
     }
 
     var body = LogInCredentials(

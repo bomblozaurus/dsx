@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:dsx/requests/requests.dart';
 import 'package:dsx/style/theme.dart' as Theme;
 import 'package:dsx/rooms/room.dart';
 import 'package:dsx/rooms/room.l.dart';
+
 import 'package:dsx/utils/bubble_indication_painter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart' as prefix0;
@@ -45,12 +48,12 @@ class _RoomsPageState extends State<RoomsPage>
 
   PageController _pageController;
   final List<Widget> buttonsList = [];
+  RoomList roomList = new RoomList();
   Color left = Colors.black;
   Color right = Colors.white;
 
   @override
   Widget build(BuildContext context) {
-    _getUserRooms();
     return new Scaffold(
       key: _scaffoldKey,
       body: NotificationListener<OverscrollIndicatorNotification>(
@@ -74,9 +77,16 @@ class _RoomsPageState extends State<RoomsPage>
                   stops: [0.0, 1.0],
                   tileMode: TileMode.clamp),
             ),
-            child:
-                Column(mainAxisSize: MainAxisSize.min, children: buttonsList),
-          ),
+            child: ListView.builder(
+                padding: const EdgeInsets.all(8),
+                itemCount: roomList.rooms.length,
+                itemBuilder: (BuildContext context, int index) {
+                   return _buildSubmitButton(roomList.rooms[index].name, 50, ()=>{});
+
+                },
+            ),
+
+          )
         ),
       ),
     );
@@ -92,9 +102,9 @@ class _RoomsPageState extends State<RoomsPage>
   }
 
   @override
-  void initState() {
+  void initState()   {
     super.initState();
-
+    _getUserRooms();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -173,20 +183,24 @@ class _RoomsPageState extends State<RoomsPage>
     String url = GlobalConfiguration().getString("baseUrl") +
         GlobalConfiguration().getString("getAllForUser");
     RoomList data;
+
     await Request()
         .createGet(url, body: new Map(), headers: headers)
         .then((value) {
-      print(value);
-      _buildButtonsWithNames(RoomList.fromJson(value));
+      final jsonResponse = json.decode(value);
+     roomList= RoomList.fromJson(jsonResponse);
+     print(roomList.rooms[0].name);
     });
   }
 
-  _buildButtonsWithNames(RoomList data) {
-    for (int i = 0; i < data.rooms.length; i++) {
-      buttonsList
-          .add(_buildSubmitButton((data.rooms[i]).name, i * 20.0, () => {}));
-    }
-  }
+//  _buildButtonsWithNames(RoomList data) {
+//    print( data.rooms);
+//    for (int i = 0; i < data.rooms.length; i++) {
+//      buttonsList.add(_buildSubmitButton((data.rooms[i]).name, i * 60.0, () => {}));
+//
+//      print(data.rooms[i].name);
+//    }
+//  }
 
   void _onSignInButtonPress() {
     _pageController.animateToPage(0,
