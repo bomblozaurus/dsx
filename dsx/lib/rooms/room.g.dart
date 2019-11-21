@@ -13,6 +13,7 @@ Room _$RoomFromJson(Map<String, dynamic> json) {
       name:json['name']);
 }
 
+
 Map<String, dynamic> _$RoomToJson(Room instance) => <String, dynamic>{
   'id':instance.id,
   'ds_number':instance.ds_number,
