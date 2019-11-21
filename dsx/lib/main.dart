@@ -1,3 +1,4 @@
+import 'package:dsx/events/show_event_page.dart';
 import 'package:dsx/ui/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:dsx/ui/menu.dart';
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
       theme: new ThemeData(
         primarySwatch: Colors.lime,
       ),
-      home: new CreateEventPage(),
+      home: new ShowEventsPage(),
 /*      routes:<String, WidgetBuilder>{
         "/MenuPage":(BuildContext context) => new MenuPage(),
         "/RoomsPage":(BuildContext context)=> new RoomsPage(),

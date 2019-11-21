@@ -2,5 +2,6 @@
   "baseUrl": "http://192.168.130.177:8080",
   "logInUrl": "/logIn",
   "signUpUrl": "/signUp",
-  "eventsUrl": "/events"
+  "eventsUrl": "/events",
+  "eventsAll": "/all"
 }
