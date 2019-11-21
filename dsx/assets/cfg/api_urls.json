@@ -4,6 +4,6 @@
   "signUpUrl": "/signUp",
   "eventsUrl": "/events",
   "eventsAll": "/all",
-  "eventOrderByDate": "/scopeOrderDate"
+  "eventOrderByDate": "/scopeOrderDate",
    "getAllForUser": "/rooms/getAllForUser"
 }
