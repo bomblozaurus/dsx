@@ -30,19 +30,14 @@ class Request {
 
     DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
     String deviceInfo;
-    try{
+
       if (Platform.isAndroid) {
-        try {
-          deviceInfo =  deviceInfoPlugin.androidInfo.toString();
-        } on Exception catch(e) {}
-
+       await deviceInfoPlugin.androidInfo.then((e)=>deviceInfo = e.toString());
       } else if (Platform.isIOS) {
-        deviceInfo =  deviceInfoPlugin.iosInfo.toString();
+        await deviceInfoPlugin.iosInfo.then((e)=> deviceInfo = e.toString());
       }
-    }on Exception catch(e)
-    {
 
-    }
+
     var h1 = {"Device-info":deviceInfo};
     headers.addAll(h1);
 

@@ -159,8 +159,13 @@ class _RoomsPageState extends State<RoomsPage>
   }
 
   _getUserRooms() async {
+    String token;
+    await JwtTokenUtils().getToken().then((e)=> token=e);
+
+    token = token.substring(13,token.length-2);
+
     var headers = {
-      "Authorization":("Bearer " + await JwtTokenUtils().getToken().toString())
+      "Authorization":("Bearer " + token)
     };
     print(JwtTokenUtils().getToken().toString());
 
