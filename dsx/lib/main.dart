@@ -1,16 +1,7 @@
-import 'package:dsx/ui/events_page.dart';
-import 'package:dsx/ui/first_screen.dart';
-import 'package:dsx/ui/login_page.dart';
-import 'package:flutter/material.dart';
-import 'package:dsx/ui/menu.dart';
-import 'package:dsx/ui/events_page.dart';
-import 'package:dsx/ui/rooms_page.dart';
 import 'package:flutter/material.dart';
 import 'package:global_configuration/global_configuration.dart';
 
 import 'events/RouteGenerator.dart';
-import 'events/create_event_page2.dart';
-import 'events/eventsRoute.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,8 +17,7 @@ class MyApp extends StatelessWidget {
       theme: new ThemeData(
         primarySwatch: Colors.lime,
       ),
-/*      home: new ShowEventsPage(),*/
-      initialRoute: '/login',
+      initialRoute: '/',
       onGenerateRoute: RouteGenerator.generateRoute,
     );
   }

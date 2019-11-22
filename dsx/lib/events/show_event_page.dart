@@ -1,24 +1,24 @@
 import 'dart:convert';
 
 import 'package:dsx/events/event.dart';
+import 'package:dsx/requests/requests.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:global_configuration/global_configuration.dart';
-import 'package:http/http.dart' as http;
 
 class ShowEventsPage extends StatefulWidget {
   // This is a String for the sake of an example.
   // You can use any type you want.
- final String scope;
- final String dormitory = "1";
+  final String scope;
+  final String dormitory = "1";
 
- ShowEventsPage({
+  ShowEventsPage({
     Key key,
     @required this.scope,
   }) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState(scope,dormitory);
+  _HomePageState createState() => _HomePageState(scope, dormitory);
 }
 
 class _HomePageState extends State<ShowEventsPage> {
@@ -27,12 +27,9 @@ class _HomePageState extends State<ShowEventsPage> {
 
   _HomePageState(this.scope, this.dormitory);
 
+  List<Event> _events = List<Event>();
 
-
-  List<Event1> _events = List<Event1>();
-
-  Future<List<Event1>> fetchEvents() async {
-
+  Future<List<Event>> fetchEvents() async {
     var queryParameters = {
       'scope': scope,
       'studentHouse': dormitory,
@@ -50,12 +47,12 @@ class _HomePageState extends State<ShowEventsPage> {
 //    var url = 'https://raw.githubusercontent.com/boriszv/json/master/random_example.json';
     var response = await http.get(url);
 
-    var events = List<Event1>();
+    var events = List<Event>();
 
     if (response.statusCode == 200) {
       var notesJson = json.decode(response.body);
       for (var noteJson in notesJson) {
-        events.add(Event1.fromJson(noteJson));
+        events.add(Event.fromJson(noteJson));
       }
     }
     return events;
@@ -71,7 +68,6 @@ class _HomePageState extends State<ShowEventsPage> {
     super.initState();
   }
 
-
   @override
   Widget build(BuildContext context) {
     print("dlugosc tablicy");
@@ -84,78 +80,58 @@ class _HomePageState extends State<ShowEventsPage> {
           itemBuilder: (context, index) {
             return Card(
               child: Padding(
-                padding: const EdgeInsets.only(top: 32.0, bottom: 32.0, left: 16.0, right: 16.0),
+                padding: const EdgeInsets.only(
+                    top: 32.0, bottom: 32.0, left: 16.0, right: 16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
                       _events[index].name,
-                      style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold
-                      ),
+                      style:
+                          TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                     ),
                     Text(
                       _events[index].date.toString(),
-                      style: TextStyle(
-                          color: Colors.grey.shade600
-                      ),
+                      style: TextStyle(color: Colors.grey.shade600),
                     ),
-                Text(
+                    Text(
                       _events[index].description,
-                      style: TextStyle(
-                          color: Colors.grey.shade600
-                      ),
+                      style: TextStyle(color: Colors.grey.shade600),
                     ),
                     Text(
                       _events[index].street,
-                      style: TextStyle(
-                          color: Colors.grey.shade600
-                      ),
+                      style: TextStyle(color: Colors.grey.shade600),
                     ),
                     Text(
                       _events[index].houseNumber.toString(),
-                      style: TextStyle(
-                          color: Colors.grey.shade600
-                      ),
+                      style: TextStyle(color: Colors.grey.shade600),
                     ),
                     Text(
                       _events[index].apartmentNumber.toString(),
-                      style: TextStyle(
-                          color: Colors.grey.shade600
-                      ),
+                      style: TextStyle(color: Colors.grey.shade600),
                     ),
                     Text(
                       _events[index].city,
-                      style: TextStyle(
-                          color: Colors.grey.shade600
-                      ),
+                      style: TextStyle(color: Colors.grey.shade600),
                     ),
                     Text(
                       _events[index].zip,
-                      style: TextStyle(
-                          color: Colors.grey.shade600
-                      ),
+                      style: TextStyle(color: Colors.grey.shade600),
                     ),
-                Text(
-                  _events[index].scope,
-                  style: TextStyle(
-                      color: Colors.grey.shade600
-                  ),
-                ),
-                Text(
-                  _events[index].studentHouse,
-                  style: TextStyle(
-                      color: Colors.grey.shade600
-                  ),
-                ),
+                    Text(
+                      _events[index].scope,
+                      style: TextStyle(color: Colors.grey.shade600),
+                    ),
+                    Text(
+                      _events[index].studentHouse,
+                      style: TextStyle(color: Colors.grey.shade600),
+                    ),
                   ],
                 ),
               ),
             );
           },
           itemCount: _events.length,
-        )
-    );
+        ));
   }
 }

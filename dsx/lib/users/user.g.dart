@@ -27,14 +27,8 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
 
 LogInCredentials _$LogInCredentialsFromJson(Map<String, dynamic> json) {
   return LogInCredentials(
-      email: json['email'] as String,
-      password: json['password'] as String,
-      deviceInformation: json['deviceInformation'] as String);
+      email: json['email'] as String, password: json['password'] as String);
 }
 
 Map<String, dynamic> _$LogInCredentialsToJson(LogInCredentials instance) =>
-    <String, dynamic>{
-      'email': instance.email,
-      'password': instance.password,
-      'deviceInformation': instance.deviceInformation
-    };
+    <String, dynamic>{'email': instance.email, 'password': instance.password};

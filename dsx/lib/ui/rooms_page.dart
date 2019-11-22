@@ -151,7 +151,7 @@ class _RoomsPageState extends State<RoomsPage>
     String url = GlobalConfiguration().getString("baseUrl") +
         GlobalConfiguration().getString("getAllForUser");
     await Request()
-        .createGet(url, body: new Map(), headers: headers)
+        .createGet(url, headers: headers)
         .then((value) {
       final jsonResponse = json.decode(value);
       roomList= Room.roomListFromJson(jsonResponse);

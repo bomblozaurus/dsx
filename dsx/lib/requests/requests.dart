@@ -1,56 +1,66 @@
 import 'dart:convert';
-import 'dart:io';
 
-import 'package:device_info/device_info.dart';
+import 'package:dsx/utils/device_info.dart';
+import 'package:dsx/utils/jwt_token.dart';
+import 'package:global_configuration/global_configuration.dart';
 import 'package:http/http.dart' as http;
 
 class Request {
   static const jsonHeader = {"Content-Type": "application/json"};
 
-
   Future createPost(String url, {Map body, Map headers}) async {
     var jsonBody = json.encode(body);
-    var toReturn;
-    await http
-        .post(url, headers: headers, body: jsonBody)
-        .then((http.Response response) {
-      final int statusCode = response.statusCode;
+    var response = await http.post(url, headers: headers, body: jsonBody);
 
-      if (statusCode < 200 || statusCode > 400) {
-        throw new Exception("WQYWALILO SIE" + response.body + '\n' + response.request.toString()) ;
-      }
+    return response;
+  }
 
-      print(statusCode);
-      toReturn = response.body;
-    });
+  Future createGet(String url, {Map headers}) async {
+    var toReturn =  http.get(url, headers: headers);
 
     return toReturn;
   }
 
-  Future createGet (String url, {Map body, Map headers}) async  {
+  Future getToMobileApi(
+      {String resourcePath, Map additionalHeaders}) async {
+    var headers = await _createGetHeaders();
+    if (additionalHeaders != null) {
+      headers.addAll(additionalHeaders);
+    }
 
-    DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
-    String deviceInfo;
-      if (Platform.isAndroid) {
-        await deviceInfoPlugin.androidInfo.then((e)=>deviceInfo=e.toString());
-      } else if (Platform.isIOS) {
-              await deviceInfoPlugin.iosInfo.then((e)=> deviceInfo = e.toString());
-      }
+    return await this.createGet(_getUrl(resourcePath), headers: headers);
+  }
 
+  Future postToMobileApi(
+      {String resourcePath, Map body, Map additionalHeaders}) async {
+    var headers = await _createGetHeaders();
+    if (additionalHeaders != null) {
+      headers.addAll(additionalHeaders);
+    }
 
-    var h1 = {"Device-info":deviceInfo};
-    headers.addAll(h1);
+    return await this
+        .createPost(_getUrl(resourcePath), body: body, headers: headers);
+  }
 
-    var toReturn;
-    await http
-        .get(url, headers: headers)
-        .then((http.Response response) {
-      final int statusCode = response.statusCode;
-      if (statusCode < 200 || statusCode > 400) {
-        throw new Exception("WQYWALILO SIE" + statusCode.toString()  + headers.toString()+ response.body);
-      }
-      toReturn = response.body;
-    });
-    return toReturn;
+  Future postToMobileApiWithoutTokenHeader(
+      {String resourcePath, Map body, Map additionalHeaders}) async {
+    Map<String, String> headers = await DeviceInfo().getInfoHeader()
+      ..addAll(jsonHeader);
+    if (additionalHeaders != null) {
+      headers.addAll(additionalHeaders);
+    }
+
+    return await this
+        .createPost(_getUrl(resourcePath), body: body, headers: headers);
+  }
+
+  Future<Map> _createGetHeaders() async {
+    return await DeviceInfo().getInfoHeader()
+      ..addAll(await JwtTokenUtils().getTokenHeader())
+      ..addAll(jsonHeader);
+  }
+
+  String _getUrl(String resourcePath) {
+    return GlobalConfiguration().getString("baseUrl") + resourcePath;
   }
 }

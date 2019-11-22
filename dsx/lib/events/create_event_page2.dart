@@ -348,7 +348,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
     String zip = zipEventController.text;
     String description = descriptionEventController.text;
 
-    var event = Event1(
+    var event = Event(
         name: name,
         date: new DateTime(_year,_month,_day,_hour,_minute,_second),
         street: street,

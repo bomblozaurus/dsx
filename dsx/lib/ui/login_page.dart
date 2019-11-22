@@ -1,9 +1,6 @@
-import 'dart:io';
-
-import 'package:device_info/device_info.dart';
-import 'package:dsx/events/RoutePages.dart';
 import 'package:dsx/requests/requests.dart';
 import 'package:dsx/style/theme.dart' as Theme;
+import 'package:dsx/ui/menu.dart';
 import 'package:dsx/users/user.dart';
 import 'package:dsx/utils/bubble_indication_painter.dart';
 import 'package:dsx/utils/jwt_token.dart';
@@ -12,9 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:global_configuration/global_configuration.dart';
 
-
 import 'logo.dart';
-import 'menu.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
@@ -30,9 +25,9 @@ class _LoginPageState extends State<LoginPage>
   final FocusNode emailLoginNode = FocusNode();
   final FocusNode passwordLoginNode = FocusNode();
   final TextEditingController emailLoginController =
-  new TextEditingController();
+      new TextEditingController();
   final TextEditingController passwordLoginController =
-  new TextEditingController();
+      new TextEditingController();
 
   final FocusNode passwordSignUpNode = FocusNode();
   final FocusNode emailSignUpNode = FocusNode();
@@ -41,17 +36,17 @@ class _LoginPageState extends State<LoginPage>
   final FocusNode studentHouseSignUpNode = FocusNode();
   final FocusNode indexNumberSignUpNode = FocusNode();
   final TextEditingController emailSignUpController =
-  new TextEditingController();
+      new TextEditingController();
   final TextEditingController firstNameSignUpController =
-  new TextEditingController();
+      new TextEditingController();
   final TextEditingController lastNameSignUpController =
-  new TextEditingController();
+      new TextEditingController();
   final TextEditingController passwordSignUpController =
-  new TextEditingController();
+      new TextEditingController();
   final TextEditingController studentHouseSignUpController =
-  new TextEditingController();
+      new TextEditingController();
   final TextEditingController indexNumberSignUpController =
-  new TextEditingController();
+      new TextEditingController();
 
   bool _obscureTextLogin = true;
   bool _obscureTextSignUp = true;
@@ -71,18 +66,9 @@ class _LoginPageState extends State<LoginPage>
         },
         child: SingleChildScrollView(
           child: Container(
-            width: MediaQuery
-                .of(context)
-                .size
-                .width,
-            height: MediaQuery
-                .of(context)
-                .size
-                .height >= 775.0
-                ? MediaQuery
-                .of(context)
-                .size
-                .height
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height >= 775.0
+                ? MediaQuery.of(context).size.height
                 : 840,
             decoration: new BoxDecoration(
               gradient: new LinearGradient(
@@ -307,12 +293,8 @@ class _LoginPageState extends State<LoginPage>
                       FontAwesomeIcons.user,
                       "Imię"),
                   _buildSeparator(),
-                  _buildTextField(
-                      lastNameSignUpNode,
-                      lastNameSignUpController,
-                      TextInputType.text,
-                      FontAwesomeIcons.user,
-                      "Nazwisko"),
+                  _buildTextField(lastNameSignUpNode, lastNameSignUpController,
+                      TextInputType.text, FontAwesomeIcons.user, "Nazwisko"),
                   _buildSeparator(),
                   _buildTextField(
                       emailSignUpNode,
@@ -321,12 +303,8 @@ class _LoginPageState extends State<LoginPage>
                       FontAwesomeIcons.envelope,
                       "Email"),
                   _buildSeparator(),
-                  _buildTextField(
-                      passwordSignUpNode,
-                      passwordSignUpController,
-                      TextInputType.text,
-                      FontAwesomeIcons.lock,
-                      "Hasło",
+                  _buildTextField(passwordSignUpNode, passwordSignUpController,
+                      TextInputType.text, FontAwesomeIcons.lock, "Hasło",
                       obscureText: _obscureTextSignUp),
                   _buildSeparator(),
                   _buildTextField(
@@ -347,8 +325,7 @@ class _LoginPageState extends State<LoginPage>
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: 10.0),
-              child:
-              _buildSubmitButton("DOŁĄCZ", 490.0, () => _registerUser()),
+              child: _buildSubmitButton("DOŁĄCZ", 490.0, () => _registerUser()),
             )
           ],
         ),
@@ -372,51 +349,32 @@ class _LoginPageState extends State<LoginPage>
         indexNumber: indexNumber,
         studentHouse: studentHouseNumber);
     var data = user.toJson();
-    String url = GlobalConfiguration().getString("baseUrl") +
-        GlobalConfiguration().getString("signUpUrl");
-    var headers = Request.jsonHeader;
-
-    await Request().createPost(url, body: data, headers: headers).then(
-
-            (value) =>
+    await Request()
+        .postToMobileApiWithoutTokenHeader(
+            resourcePath: GlobalConfiguration().getString("signUpUrl"),
+            body: data)
+        .then((value) =>
             showInSnackBar("Zarejestrowano pomyślnie!", Colors.blue));
-
   }
 
   _loginUser() async {
     String email = emailLoginController.text;
     String password = passwordLoginController.text;
+    var body = LogInCredentials(email: email, password: password).toJson();
 
-    DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
-    String deviceInfo;
-    if (Platform.isAndroid) {
-      await deviceInfoPlugin.androidInfo.then((e)=>deviceInfo=e.toString());
-    } else if (Platform.isIOS) {
-      await deviceInfoPlugin.iosInfo.then((e)=>deviceInfo=e.toString());
-    }
-
-    var body = LogInCredentials(
-        email: email, password: password, deviceInformation: deviceInfo)
-        .toJson();
-
-    String url = GlobalConfiguration().getString("baseUrl") +
-        GlobalConfiguration().getString("logInUrl");
-
-    var headers = {"Device-info": deviceInfo};
-    headers.addAll(Request.jsonHeader);
+    var resourcePath = GlobalConfiguration().getString("logInUrl");
     await Request()
-        .createPost(url, body: body, headers: headers)
-        .then((token) => _loginSuccessful(token))
+        .postToMobileApiWithoutTokenHeader(
+            resourcePath: resourcePath, body: body)
+        .then((response) => _loginSuccessful(response.body))
         .catchError((token) => _loginFailed(token));
-
   }
 
   _loginSuccessful(token) async {
     JwtTokenUtils().saveToken(token);
     showInSnackBar("Zalogowano poprawnie", Colors.lime);
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => FirstPage()));
-
+        context, MaterialPageRoute(builder: (context) => MenuPage()));
   }
 
   _loginFailed(token) {
@@ -424,8 +382,8 @@ class _LoginPageState extends State<LoginPage>
     showInSnackBar("Nie udało się zalogować", Colors.red);
   }
 
-  Container _buildSubmitButton(String text, double topMargin,
-      Function() onPressed) {
+  Container _buildSubmitButton(
+      String text, double topMargin, Function() onPressed) {
     return Container(
       margin: EdgeInsets.only(top: topMargin),
       decoration: new BoxDecoration(
@@ -458,7 +416,7 @@ class _LoginPageState extends State<LoginPage>
           //shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
           child: Padding(
             padding:
-            const EdgeInsets.symmetric(vertical: 10.0, horizontal: 42.0),
+                const EdgeInsets.symmetric(vertical: 10.0, horizontal: 42.0),
             child: Text(
               text,
               style: TextStyle(
@@ -478,7 +436,7 @@ class _LoginPageState extends State<LoginPage>
       width: 320,
       child: Padding(
           padding:
-          EdgeInsets.only(top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+              EdgeInsets.only(top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
           child: TextField(
             focusNode: focusNode,
             controller: controller,
@@ -519,17 +477,5 @@ class _LoginPageState extends State<LoginPage>
   void _onSignUpButtonPress() {
     _pageController?.animateToPage(1,
         duration: Duration(milliseconds: 500), curve: Curves.decelerate);
-  }
-
-  void _toggleLogin() {
-    setState(() {
-      _obscureTextLogin = !_obscureTextLogin;
-    });
-  }
-
-  void _toggleSignUp() {
-    setState(() {
-      _obscureTextSignUp = !_obscureTextSignUp;
-    });
   }
 }
