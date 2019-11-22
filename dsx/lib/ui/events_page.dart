@@ -1,11 +1,6 @@
-import 'package:dsx/requests/requests.dart';
 import 'package:dsx/style/theme.dart' as Theme;
-import 'package:dsx/users/user.dart';
-import 'package:dsx/utils/bubble_indication_painter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:global_configuration/global_configuration.dart';
 
 import 'logo.dart';
 
@@ -90,7 +85,6 @@ class _EventsPageState extends State<EventsPage>
     );
   }
 
-
   @override
   void dispose() {
     myFocusNodePassword.dispose();
@@ -156,7 +150,6 @@ class _EventsPageState extends State<EventsPage>
           onPressed: onPressed),
     );
   }
-
 
   Container _buildSeparator() {
     return Container(

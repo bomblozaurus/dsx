@@ -16,9 +16,9 @@ class User{
 
 @JsonSerializable()
 class LogInCredentials{
-  final String email, password, deviceInformation;
+  final String email, password;
 
-  LogInCredentials({this.email, this.password, this.deviceInformation});
+  LogInCredentials({this.email, this.password});
 
   factory LogInCredentials.fromJson(Map<String, dynamic> json) => _$LogInCredentialsFromJson(json);
 

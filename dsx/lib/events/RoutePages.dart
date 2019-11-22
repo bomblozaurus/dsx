@@ -138,7 +138,7 @@ class ShowScopePage extends StatelessWidget {
               onPressed: () {
                 // Pushing a named route
                 Navigator.of(context).pushNamed(
-                    '/scope',
+                  '/scope',
                   arguments: 'STUDENT',
                 );
               },
@@ -159,5 +159,3 @@ class ShowScopePage extends StatelessWidget {
     );
   }
 }
-
-

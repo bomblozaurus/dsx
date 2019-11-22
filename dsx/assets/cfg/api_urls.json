@@ -1,7 +1,8 @@
 {
-  "baseUrl": "http://192.168.56.1:8080",
+  "baseUrl": "http://10.5.155.106:8080",
   "logInUrl": "/logIn",
   "signUpUrl": "/signUp",
+  "verifyTokenUrl": "/verifyToken",
   "eventsUrl": "/events",
   "eventsAll": "/all",
   "eventOrderByDate": "/scopeOrderDate",

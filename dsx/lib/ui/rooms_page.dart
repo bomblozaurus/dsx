@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:dsx/requests/requests.dart';
+import 'package:dsx/utils/requests.dart';
 import 'package:dsx/style/theme.dart' as Theme;
 import 'package:dsx/rooms/room.dart';
 import 'package:flutter/material.dart';
@@ -151,7 +151,7 @@ class _RoomsPageState extends State<RoomsPage>
     String url = GlobalConfiguration().getString("baseUrl") +
         GlobalConfiguration().getString("getAllForUser");
     await Request()
-        .createGet(url, body: new Map(), headers: headers)
+        .createGet(url, headers: headers)
         .then((value) {
       final jsonResponse = json.decode(value);
       roomList= Room.roomListFromJson(jsonResponse);
