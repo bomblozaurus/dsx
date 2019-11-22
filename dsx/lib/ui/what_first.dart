@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:dsx/requests/requests.dart';
+import 'package:dsx/utils/requests.dart';
 import 'package:dsx/style/theme.dart' as Theme;
 import 'package:dsx/ui/login_page.dart';
 import 'package:dsx/ui/menu.dart';

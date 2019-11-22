@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:dsx/events/event.dart';
-import 'package:dsx/requests/requests.dart';
+import 'package:dsx/utils/requests.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:global_configuration/global_configuration.dart';
