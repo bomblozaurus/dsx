@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:dsx/events/event.dart';
-import 'package:dsx/utils/requests.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:global_configuration/global_configuration.dart';
+import 'package:http/http.dart' as http;
 
 class ShowEventsPage extends StatefulWidget {
   // This is a String for the sake of an example.
@@ -37,12 +37,13 @@ class _HomePageState extends State<ShowEventsPage> {
 
     String url = GlobalConfiguration().getString("baseUrl") +
         GlobalConfiguration().getString("eventsUrl") +
-        GlobalConfiguration().getString("eventOrderByDate") +"?scope=" +
-        scope + "&studentHouse=" + dormitory;
+        GlobalConfiguration().getString("eventOrderByDate") +
+        "?scope=" +
+        scope +
+        "&studentHouse=" +
+        dormitory;
 
-
-        GlobalConfiguration().getString("eventsAll");
-
+    GlobalConfiguration().getString("eventsAll");
 
 //    var url = 'https://raw.githubusercontent.com/boriszv/json/master/random_example.json';
     var response = await http.get(url);

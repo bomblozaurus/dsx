@@ -3,12 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'logo.dart';
+import 'navigable.dart';
 
-class EventsPage extends StatefulWidget {
-  EventsPage({Key key}) : super(key: key);
-
+class EventsPage extends StatefulWidget implements Navigable {
   @override
   _EventsPageState createState() => new _EventsPageState();
+
+  @override
+  String getDescription() {
+    return "Wydarzenia";
+  }
+
+  @override
+  IconData getIconData() {
+    return Icons.event;
+  }
 }
 
 class _EventsPageState extends State<EventsPage>
@@ -69,14 +78,13 @@ class _EventsPageState extends State<EventsPage>
               children: <Widget>[
                 Padding(padding: const EdgeInsets.only(top: 60.0)),
                 Logo(size: 120.0),
-                Padding(padding:const EdgeInsets.only(top: 60.0)),
-                _buildSubmitButton("Po raz ostatni",20,     () => (Navigator.of(context).pushNamed("/RoomsPage"))),
-
-                Padding(padding:const EdgeInsets.only(top: 60.0)),
-
-                _buildSubmitButton("Pani Paula",20,() =>(Navigator.of(context).pushNamed("/EventsPage"))),
-                Padding(padding:const EdgeInsets.only(top: 60.0)),
-
+                Padding(padding: const EdgeInsets.only(top: 60.0)),
+                _buildSubmitButton("Po raz ostatni", 20,
+                    () => (Navigator.of(context).pushNamed("/RoomsPage"))),
+                Padding(padding: const EdgeInsets.only(top: 60.0)),
+                _buildSubmitButton("Pani Paula", 20,
+                    () => (Navigator.of(context).pushNamed("/EventsPage"))),
+                Padding(padding: const EdgeInsets.only(top: 60.0)),
               ],
             ),
           ),

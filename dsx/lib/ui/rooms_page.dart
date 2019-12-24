@@ -1,17 +1,28 @@
-import 'dart:convert';
-import 'package:dsx/utils/requests.dart';
-import 'package:dsx/style/theme.dart' as Theme;
 import 'package:dsx/rooms/room.dart';
+import 'package:dsx/style/theme.dart' as Theme;
+import 'package:dsx/utils/jwt_token.dart';
+import 'package:dsx/utils/requests.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:dsx/utils/jwt_token.dart';
 import 'package:global_configuration/global_configuration.dart';
 
-class RoomsPage extends StatefulWidget {
+import 'navigable.dart';
+
+class RoomsPage extends StatefulWidget implements Navigable {
   RoomsPage({Key key}) : super(key: key);
 
   @override
   _RoomsPageState createState() => new _RoomsPageState();
+
+  @override
+  String getDescription() {
+    return "Pokoje";
+  }
+
+  @override
+  IconData getIconData() {
+    return Icons.vpn_key;
+  }
 }
 class _RoomsPageState extends State<RoomsPage>
     with SingleTickerProviderStateMixin {
@@ -153,8 +164,8 @@ class _RoomsPageState extends State<RoomsPage>
     await Request()
         .createGet(url, headers: headers)
         .then((value) {
-      final jsonResponse = json.decode(value);
-      roomList= Room.roomListFromJson(jsonResponse);
+//      final jsonResponse = json.decode(value);
+//      roomList= Room.roomListFromJson(jsonResponse);
     });
     return roomList;
   }

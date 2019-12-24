@@ -4,6 +4,7 @@ import 'package:dsx/utils/device_info.dart';
 import 'package:dsx/utils/jwt_token.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 
 class Request {
   static const jsonHeader = {"Content-Type": "application/json"};
@@ -15,13 +16,13 @@ class Request {
     return response;
   }
 
-  Future createGet(String url, {Map headers}) async {
-    var toReturn =  http.get(url, headers: headers);
+  Future<Response> createGet(String url, {Map headers}) async {
+    var toReturn = http.get(url, headers: headers);
 
     return toReturn;
   }
 
-  Future getToMobileApi(
+  Future<Response> getToMobileApi(
       {String resourcePath, Map additionalHeaders}) async {
     var headers = await _createGetHeaders();
     if (additionalHeaders != null) {
@@ -31,7 +32,7 @@ class Request {
     return await this.createGet(_getUrl(resourcePath), headers: headers);
   }
 
-  Future postToMobileApi(
+  Future<Response> postToMobileApi(
       {String resourcePath, Map body, Map additionalHeaders}) async {
     var headers = await _createGetHeaders();
     if (additionalHeaders != null) {

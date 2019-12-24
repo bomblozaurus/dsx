@@ -1,15 +1,15 @@
-import 'package:dsx/utils/requests.dart';
 import 'package:dsx/style/theme.dart' as Theme;
-import 'package:dsx/ui/menu.dart';
 import 'package:dsx/users/user.dart';
 import 'package:dsx/utils/bubble_indication_painter.dart';
 import 'package:dsx/utils/jwt_token.dart';
+import 'package:dsx/utils/requests.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:global_configuration/global_configuration.dart';
 
 import 'logo.dart';
+import 'main_page.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
@@ -67,9 +67,7 @@ class _LoginPageState extends State<LoginPage>
         child: SingleChildScrollView(
           child: Container(
             width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height >= 775.0
-                ? MediaQuery.of(context).size.height
-                : 840,
+            height: 870.0,
             decoration: new BoxDecoration(
               gradient: new LinearGradient(
                   colors: [
@@ -325,7 +323,7 @@ class _LoginPageState extends State<LoginPage>
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: 10.0),
-              child: _buildSubmitButton("DOŁĄCZ", 490.0, () => _registerUser()),
+              child: _buildSubmitButton("DOŁĄCZ", 520.0, () => _registerUser()),
             )
           ],
         ),
@@ -371,10 +369,10 @@ class _LoginPageState extends State<LoginPage>
   }
 
   _loginSuccessful(token) async {
-    JwtTokenUtils().saveToken(token);
+    JwtTokenUtils().saveToken(token.substring(13, token.length - 2));
     showInSnackBar("Zalogowano poprawnie", Colors.lime);
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => MenuPage()));
+        context, MaterialPageRoute(builder: (context) => MainPage()));
   }
 
   _loginFailed(token) {
