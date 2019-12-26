@@ -2,11 +2,12 @@ import 'package:dsx/style/theme.dart' as Theme;
 import 'package:dsx/ui/events_page.dart';
 import 'package:flutter/material.dart';
 
+import '../events/eventsPage.dart';
 import 'navigable.dart';
 
 class MainPageState extends State<MainPage> {
   int _selectedPage = 0;
-  final _pageOptions = [EventsPage(), EventsPage()];
+  final _pageOptions = [EventsPage(), BrowseEventsPage()];
 
   @override
   Widget build(BuildContext context) {
