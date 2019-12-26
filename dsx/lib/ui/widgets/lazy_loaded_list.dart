@@ -4,22 +4,24 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:global_configuration/global_configuration.dart';
 
+import '../../utils/indexable.dart';
 import '../../utils/requests.dart';
 
-typedef Widget ItemBuilderFunction(T);
+typedef I ItemCreator<T, I extends Indexable>(T item, index);
 
-class LazyLoadedList<T> extends StatefulWidget {
+class LazyLoadedList<T, I extends Indexable> extends StatefulWidget {
   final int pageSize;
   final String resourcePath;
   final Function serializer;
-  final ItemBuilderFunction itemBuilder;
+  final Function
+      creator; //FIXME powinien być typ ItemCreator, ale nie da sie przekazac Indexable Function (dynamic, dynamic)
   final List<String> keyList;
 
   const LazyLoadedList(
       {@required this.pageSize,
       @required this.resourcePath,
       @required this.serializer,
-      @required this.itemBuilder,
+      @required this.creator,
       @required this.keyList});
 
   @override
@@ -28,26 +30,25 @@ class LazyLoadedList<T> extends StatefulWidget {
       resourcePath: this.resourcePath,
       serializer: this.serializer,
       keyList: this.keyList,
-      itemBuilder: this.itemBuilder);
+      itemCreator: this.creator);
 }
 
 class _LazyLoadedListState<T> extends State<LazyLoadedList> {
-  HashSet<T> _items;
+  Set _items = LinkedHashSet<T>();
   ScrollController _scrollController = ScrollController();
   bool isFetching;
 
   final int pageSize;
   final String resourcePath;
   final Function serializer;
-  final ItemBuilderFunction itemBuilder;
+  final ItemCreator itemCreator;
   final List<String> keyList;
 
-  _LazyLoadedListState(
-      {@required this.pageSize,
-      @required this.resourcePath,
-      @required this.serializer,
-      @required this.keyList,
-      @required this.itemBuilder});
+  _LazyLoadedListState({@required this.pageSize,
+    @required this.resourcePath,
+    @required this.serializer,
+    @required this.keyList,
+    @required this.itemCreator});
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +59,7 @@ class _LazyLoadedListState<T> extends State<LazyLoadedList> {
             controller: _scrollController,
             itemCount: _items.length,
             itemBuilder: (BuildContext context, int index) {
-              return itemBuilder(_items.elementAt(index));
+              return this.itemCreator(_items.elementAt(index), index);
             })
       ],
     );

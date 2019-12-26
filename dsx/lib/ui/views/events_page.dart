@@ -1,4 +1,5 @@
 import 'package:dsx/style/theme.dart' as Theme;
+import 'package:dsx/ui/widgets/event_details.dart';
 import 'package:flutter/material.dart';
 import 'package:global_configuration/global_configuration.dart';
 
@@ -42,64 +43,9 @@ class _BrowseEventsPageState extends State<BrowseEventsPage> {
         child: LazyLoadedList(
           keyList: ['_embedded', 'events'],
           serializer: Event.staticFromJson,
-          itemBuilder: _buildItem,
+          creator: EventDetails.fromEvent,
           pageSize: 10,
           resourcePath: eventsUrl,
         ));
   }
-
-  Widget _buildItem(dynamic event) {
-    return InkWell(
-      onTap: null,
-      child: Card(
-          margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-          color: Color.fromRGBO(
-              Theme.Colors.loginGradientStart.red,
-              Theme.Colors.loginGradientStart.green,
-              Theme.Colors.loginGradientStart.blue,
-              0.1),
-          child: ListTile(
-              contentPadding:
-                  EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-              leading: Container(
-                padding: EdgeInsets.only(right: 12.0),
-                decoration: new BoxDecoration(
-                    border: new Border(
-                        right:
-                            new BorderSide(width: 1.0, color: Colors.white24))),
-                child: _fetchImage(),
-              ),
-              title: Text(
-                event.name,
-                style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-              ),
-              subtitle: Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Row(
-                  children: <Widget>[
-                    Icon(Icons.calendar_today,
-                        color: (event.date
-                                    .difference(DateTime.now())
-                                    .inMilliseconds >
-                                0)
-                            ? Theme.Colors.logoBackgroundColor
-                            : Colors.red),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8.0, top: 5.0),
-                      child: Text(event.getDateTime(),
-                          style: TextStyle(color: Colors.white)),
-                    )
-                  ],
-                ),
-              ),
-              trailing: Icon(Icons.keyboard_arrow_right,
-                  color: Colors.white, size: 30.0))),
-    );
-  }
-
-  Widget _fetchImage() => CircleAvatar(
-      backgroundColor:
-          Colors.redAccent); //TODO ZAIMPLEMENTOWAĆ ZACIĄGANIE ZDJĘĆ + API
-
 }

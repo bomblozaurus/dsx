@@ -30,6 +30,18 @@ class Event extends Object {
   static Event staticFromJson(Map<String, dynamic> json) =>
       _$EventFromJson(json);
 
+  String getAddress() {
+    return '$city, $street $houseNumber/$apartmentNumber';
+  }
+
+  String getDate() {
+    return '${date.day}.${date.month.toString().padLeft(2, '0')}.${date.year}';
+  }
+
+  String getTime() {
+    return '${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
+  }
+
   String getDateTime() {
     var date = this.date.toLocal();
     return '${date.day}.${date.month.toString().padLeft(2, '0')}.${date.year} ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
