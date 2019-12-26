@@ -1,9 +1,9 @@
 import 'package:dsx/events/create_event_page2.dart';
 import 'package:dsx/events/show_event_page.dart';
-import 'package:dsx/ui/login_page.dart';
-import 'package:dsx/ui/what_first.dart';
 import 'package:flutter/material.dart';
 
+import '../ui/views/login_page.dart';
+import '../ui/views/what_first.dart';
 import 'RoutePages.dart';
 
 class RouteGenerator {
@@ -11,7 +11,8 @@ class RouteGenerator {
     final args = settings.arguments;
 
     switch (settings.name) {
-      case '/': return MaterialPageRoute(builder: (_) => WhatFirst());
+      case '/':
+        return MaterialPageRoute(builder: (_) => WhatFirst());
       case '/login':
         return MaterialPageRoute(builder: (_) => LoginPage());
       case '/menu':
@@ -21,13 +22,13 @@ class RouteGenerator {
           builder: (_) => AddPage(),
         );
       case '/addEvent':
-          return MaterialPageRoute(
-            builder: (_) => CreateEventPage(),
-          );
-          case '/events':
-            return MaterialPageRoute(
-              builder: (_) => ShowScopePage(),
-            );
+        return MaterialPageRoute(
+          builder: (_) => CreateEventPage(),
+        );
+      case '/events':
+        return MaterialPageRoute(
+          builder: (_) => ShowScopePage(),
+        );
       case '/scope':
         if (args is String) {
           return MaterialPageRoute(

@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:global_configuration/global_configuration.dart';
 
-import 'logo.dart';
+import '../widgets/logo.dart';
 import 'main_page.dart';
 
 class LoginPage extends StatefulWidget {

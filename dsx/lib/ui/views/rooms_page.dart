@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:global_configuration/global_configuration.dart';
 
-import 'navigable.dart';
+import '../../utils/navigable.dart';
 
 class RoomsPage extends StatefulWidget implements Navigable {
   RoomsPage({Key key}) : super(key: key);

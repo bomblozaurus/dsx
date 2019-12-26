@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:dsx/style/theme.dart' as Theme;
-import 'package:dsx/ui/login_page.dart';
 import 'package:dsx/utils/requests.dart';
 import 'package:flutter/material.dart';
 import 'package:global_configuration/global_configuration.dart';
 
+import 'login_page.dart';
 import 'main_page.dart';
 
 class WhatFirst extends StatelessWidget {
