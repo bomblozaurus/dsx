@@ -6,7 +6,7 @@ import '../../style/theme.dart' as Theme;
 import '../../utils/navigable.dart';
 import '../views/event_details_page.dart';
 
-class EventDetails extends StatefulWidget implements Indexable, Navigable {
+class EventDetails extends StatelessWidget implements Indexable, Navigable {
   final Event event;
   final bool horizontal;
   final int index;
@@ -24,10 +24,6 @@ class EventDetails extends StatefulWidget implements Indexable, Navigable {
       EventDetails(event: event, horizontal: false, index: index);
 
   @override
-  _EventDetailsState createState() =>
-      _EventDetailsState(this.event, horizontal, index);
-
-  @override
   String getDescription() {
     return "SZCZEGÓŁY";
   }
@@ -36,14 +32,6 @@ class EventDetails extends StatefulWidget implements Indexable, Navigable {
   IconData getIconData() {
     return Icons.details;
   }
-}
-
-class _EventDetailsState extends State<EventDetails> {
-  final Event event;
-  final bool horizontal;
-  final int index;
-
-  _EventDetailsState(this.event, this.horizontal, this.index);
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +57,9 @@ class _EventDetailsState extends State<EventDetails> {
     }
 
     Color _determineDateTimeColor() {
-      return (event.date.difference(DateTime.now()).inMilliseconds > 0)
+      return (event.date
+          .difference(DateTime.now())
+          .inMilliseconds > 0)
           ? Theme.Colors.logoBackgroundColor
           : Colors.red;
     }
@@ -84,36 +74,44 @@ class _EventDetailsState extends State<EventDetails> {
       return Wrap(
         spacing: 0,
         children: <Widget>[
-          _alignAccordingly(
-              child: Text(
-            event.name,
-            style: headerTextStyle,
-            overflow: TextOverflow.ellipsis,
-          )),
+          Hero(
+              tag: "event-title-${this.index}",
+              child: _alignAccordingly(
+                  child: Text(
+                    event.name,
+                    style: headerTextStyle,
+                    overflow: TextOverflow.ellipsis,
+                  ))),
           new Container(height: 10.0),
-          _alignAccordingly(
-              child: Text(event.getAddress(), style: subHeaderTextStyle)),
-          _alignAccordingly(
-              child: Container(
-                  margin: new EdgeInsets.symmetric(vertical: 8.0),
-                  height: 3.0,
-                  width: horizontal ? 24.0 : 64.0,
-                  color: Theme.Colors.logoBackgroundColor)),
-          new Row(
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              new Expanded(
-                  child: _buildIconWithDescription(
-                      value: event.getDate(),
-                      icon: Icon(Icons.calendar_today,
-                          color: _determineDateTimeColor()))),
-              new Expanded(
-                  child: _buildIconWithDescription(
-                      value: event.getTime(),
-                      icon: Icon(Icons.access_time,
-                          color: _determineDateTimeColor())))
-            ],
-          ),
+          Hero(
+              tag: "event-address-${this.index}",
+              child: _alignAccordingly(
+                  child: Text(event.getAddress(), style: subHeaderTextStyle))),
+          Hero(
+              tag: "event-separator-${this.index}",
+              child: _alignAccordingly(
+                  child: Container(
+                      margin: new EdgeInsets.symmetric(vertical: 8.0),
+                      height: 3.0,
+                      width: horizontal ? 24.0 : 64.0,
+                      color: Theme.Colors.logoBackgroundColor))),
+          Hero(
+              tag: "event-icons-${this.index}",
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  new Expanded(
+                      child: _buildIconWithDescription(
+                          value: event.getDate(),
+                          icon: Icon(Icons.calendar_today,
+                              color: _determineDateTimeColor()))),
+                  new Expanded(
+                      child: _buildIconWithDescription(
+                          value: event.getTime(),
+                          icon: Icon(Icons.access_time,
+                              color: _determineDateTimeColor())))
+                ],
+              )),
         ],
       );
     }
@@ -148,57 +146,62 @@ class _EventDetailsState extends State<EventDetails> {
     Widget _buildEventDescription() {
       return Container(
         margin: new EdgeInsets.fromLTRB(
-            horizontal ? 72.0 : 12.0, horizontal ? 12.0 : 72.0, 12.0, 12.0),
+            horizontal ? 112.0 : 12.0, horizontal ? 12.0 : 112.0, 12.0, 12.0),
         constraints: new BoxConstraints.expand(),
         child: _buildDescriptionBody(),
       );
     }
 
     return InkWell(
-        onTap: horizontal
-            ? () => Navigator.of(context).push(new PageRouteBuilder(
-                pageBuilder: (_, __, ___) => EventDetailsPage(
-                      event: event,
-                      avatar: avatar,
-                      index: index,
-                    )))
-            : null,
-        child: Hero(
-          tag: "event-${this.index}",
-          child: new Container(
-              height: horizontal ? 125.0 : 240.0,
-              margin: const EdgeInsets.symmetric(
-                vertical: 16.0,
-                horizontal: 24.0,
-              ),
-              child: new Stack(
-                children: <Widget>[
-                  Container(
-                    child: _buildEventDescription(),
-                    height: horizontal ? 124.0 : 186.0,
-                    margin: horizontal
-                        ? new EdgeInsets.only(left: 46.0)
-                        : new EdgeInsets.only(top: 46.0),
-                    decoration: new BoxDecoration(
-                      color: Theme.Colors.loginGradientEnd,
-                      shape: BoxShape.rectangle,
-                      borderRadius: new BorderRadius.circular(8.0),
-                      boxShadow: <BoxShadow>[
-                        new BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 10.0,
-                          offset: new Offset(0.0, 10.0),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                      alignment: horizontal
-                          ? FractionalOffset.centerLeft
-                          : FractionalOffset.topCenter,
-                      child: avatar),
-                ],
-              )),
-        ));
+      onTap: horizontal
+          ? () =>
+          Navigator.of(context).push(new PageRouteBuilder(
+              pageBuilder: (_, __, ___) =>
+                  EventDetailsPage(
+                    event: event,
+                    avatar: avatar,
+                    index: index,
+                  )))
+          : null,
+      child: Container(
+          height: horizontal ? 125.0 : 240.0,
+          margin: const EdgeInsets.symmetric(
+            vertical: 16.0,
+            horizontal: 24.0,
+          ),
+          child: new Stack(
+            children: <Widget>[
+              Stack(children: <Widget>[
+                Hero(
+                    tag: "event-backgoround-container-${this.index}",
+                    child: Container(
+                      height: horizontal ? 124.0 : 186.0,
+                      margin: horizontal
+                          ? new EdgeInsets.only(left: 46.0)
+                          : new EdgeInsets.only(top: 46.0),
+                      decoration: new BoxDecoration(
+                        color: Theme.Colors.loginGradientEnd,
+                        shape: BoxShape.rectangle,
+                        borderRadius: new BorderRadius.circular(8.0),
+                        boxShadow: <BoxShadow>[
+                          new BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 10.0,
+                            offset: new Offset(0.0, 10.0),
+                          ),
+                        ],
+                      ),
+                    )),
+                _buildEventDescription(),
+              ]),
+              Container(
+                  alignment: horizontal
+                      ? FractionalOffset.centerLeft
+                      : FractionalOffset.topCenter,
+                  child:
+                  Hero(tag: "event-avatar-${this.index}", child: avatar)),
+            ],
+          )),
+    );
   }
 }
