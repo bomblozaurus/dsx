@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 
 import '../../utils/navigable.dart';
 import 'events_page.dart';
+import 'rooms_page.dart';
 
 class MainPageState extends State<MainPage> {
   int _selectedPage = 0;
   final _pageOptions = [
-    BrowseEventsPage(),
+    BrowseRoomsPage(),
     BrowseEventsPage(),
   ];
 

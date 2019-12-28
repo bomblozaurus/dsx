@@ -2,41 +2,44 @@ import 'package:dsx/utils/indexable.dart';
 import 'package:flutter/material.dart';
 
 import '../../style/theme.dart' as Theme;
+import '../../utils/fetchable.dart';
 
 typedef Widget RoutingWidgetBuilder(var a, var b, var c);
 
-class ItemDetails<I> extends StatelessWidget implements Indexable {
+abstract class ItemDetails<I extends Fetchable> extends StatelessWidget
+    implements Indexable {
   final I item;
   final bool horizontal;
   final int index;
-  final String imageUrl;
-  final RoutingWidgetBuilder routingWidget;
   final String heroDescription;
-  final header;
-  final description;
-  final List<TextWithIcon> footerRowItems;
 
   const ItemDetails({
     Key key,
-    @required this.item,
     @required this.horizontal,
     @required this.index,
-    @required this.imageUrl,
-    @required this.routingWidget,
     @required this.heroDescription,
-    @required this.header,
-    @required this.description,
-    this.footerRowItems,
+    @required this.item,
   }) : super(key: key);
 
   static var baseTextStyle = const TextStyle(fontFamily: 'Poppins');
   static var regularTextStyle = baseTextStyle.copyWith(
       color: const Color(0xffb6b2df),
-      fontSize: 9.0,
+      fontSize: 12.0,
       fontWeight: FontWeight.w400);
   static var subHeaderTextStyle = regularTextStyle.copyWith(fontSize: 14.0);
   static var headerTextStyle = baseTextStyle.copyWith(
       color: Colors.white, fontSize: 22.0, fontWeight: FontWeight.w600);
+
+  List<TextWithIcon> getFooterItems();
+
+  Widget buildHeader();
+
+  Widget buildDescription();
+
+  Widget buildRoutingWidget(I item, CircleAvatar avatar, int index);
+
+  getTextWithIcon(String text, Icon icon) =>
+      TextWithIcon(text: text, icon: icon);
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +56,7 @@ class ItemDetails<I> extends StatelessWidget implements Indexable {
               horizontal ? MainAxisAlignment.start : MainAxisAlignment.center,
           children: <Widget>[
             icon,
-            new Container(width: 8.0),
+            new Container(width: 4.0),
             new Text(value, style: regularTextStyle),
           ]);
     }
@@ -64,7 +67,10 @@ class ItemDetails<I> extends StatelessWidget implements Indexable {
     }
 
     Iterable<Widget> _buildFooterItems() {
-      return this.footerRowItems.map((item) => _buildFooterItem(item)).toList();
+      return this
+          .getFooterItems()
+          .map((item) => _buildFooterItem(item))
+          .toList();
     }
 
     Widget _buildItemInfo() {
@@ -73,11 +79,11 @@ class ItemDetails<I> extends StatelessWidget implements Indexable {
         children: <Widget>[
           Hero(
               tag: "$heroDescription-header-${this.index}",
-              child: alignAccordingly(child: this.header)),
+              child: alignAccordingly(child: buildHeader())),
           new Container(height: 10.0),
           Hero(
               tag: "$heroDescription-description-${this.index}",
-              child: alignAccordingly(child: this.description)),
+              child: alignAccordingly(child: buildDescription())),
           Hero(
               tag: "$heroDescription-separator-${this.index}",
               child: alignAccordingly(
@@ -100,7 +106,7 @@ class ItemDetails<I> extends StatelessWidget implements Indexable {
     CircleAvatar _fetchImage() {
       return CircleAvatar(
         child: CircleAvatar(
-          backgroundImage: NetworkImage(imageUrl),
+          backgroundImage: NetworkImage(item.urls().elementAt(0)),
           radius: 45.0,
         ),
         backgroundColor: Theme.Colors.logoBackgroundColor,
@@ -137,7 +143,7 @@ class ItemDetails<I> extends StatelessWidget implements Indexable {
         onTap: horizontal
             ? () => Navigator.of(context).push(new PageRouteBuilder(
                 pageBuilder: (_, __, ___) =>
-                    routingWidget(item, avatar, index)))
+                    buildRoutingWidget(item, avatar, index)))
             : null,
         child: Container(
           height: horizontal ? 125.0 : 240.0,

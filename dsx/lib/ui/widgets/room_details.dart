@@ -1,20 +1,27 @@
+import 'package:dsx/style/theme.dart' as Theme;
 import 'package:flutter/material.dart';
 
 import '../../rooms/room.dart';
 import '../../utils/indexable.dart';
+import '../../utils/time.dart';
 import '../views/rooms_details_page.dart';
 import 'item_details.dart';
 
-class RoomDetails extends StatelessWidget implements Indexable {
+class RoomDetails extends ItemDetails<Room> implements Indexable {
   final Room room;
   final bool horizontal;
   final int index;
-  static const String eventImage = "https://picsum.photos/300";
 
   const RoomDetails({Key key, this.room, this.horizontal, this.index})
-      : super(key: key);
+      : super(
+            key: key,
+            item: room,
+            horizontal: horizontal,
+            index: index,
+            heroDescription: "room");
 
-  static RoomDetails fromRoom(var event, var index) => RoomDetails(
+  static RoomDetails fromRoom(var event, var index) =>
+      RoomDetails(
         room: event,
         index: index,
         horizontal: true,
@@ -23,25 +30,40 @@ class RoomDetails extends StatelessWidget implements Indexable {
   static RoomDetails vertical(Room room, int index) =>
       RoomDetails(room: room, horizontal: false, index: index);
 
-  _buildHeader() {}
+  @override
+  Widget buildHeader() =>
+      Text(
+        room.name,
+        style: ItemDetails.headerTextStyle,
+        overflow: TextOverflow.ellipsis,
+      );
 
-  _buildDescription() {}
+  @override
+  Widget buildDescription() =>
+      Text('DS ${room.dsNumber}', style: ItemDetails.subHeaderTextStyle);
 
-  List<TextWithIcon> _footer() {
-    return List.of([]);
+  @override
+  Widget buildRoutingWidget(Room item, CircleAvatar avatar, int index) =>
+      RoomDetailsPage.fromRouting(item, avatar, index);
+
+  _determineOpenHourColor() {
+    var now = Time(TimeOfDay.now());
+    return (now >= room.openFrom && now <= room.openFrom)
+        ? Theme.Colors.logoBackgroundColor
+        : Colors.red;
+  }
+
+  _determineDurationColor() {
+    return Colors.white;
   }
 
   @override
-  Widget build(BuildContext context) {
-    return ItemDetails(
-        item: room,
-        horizontal: horizontal,
-        index: index,
-        imageUrl: RoomDetails.eventImage,
-        routingWidget: RoomDetailsPage.fromRouting,
-        heroDescription: "room",
-        header: _buildHeader(),
-        description: _buildDescription(),
-        footerRowItems: _footer());
+  List<TextWithIcon> getFooterItems() {
+    return List.of([
+      getTextWithIcon("${room.openFrom.toString()}-${room.openTo.toString()} ",
+          Icon(Icons.access_time, color: _determineOpenHourColor())),
+      getTextWithIcon(room.rentInterval.toString(),
+          Icon(Icons.timelapse, color: _determineDurationColor()))
+    ]);
   }
 }

@@ -9,20 +9,6 @@ import '../widgets/room_details.dart';
 
 class BrowseRoomsPage extends StatelessWidget implements Navigable, Indexable {
   @override
-  Widget build(BuildContext context) {
-    return Container(
-        width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(gradient: Theme.Colors.primaryGradient),
-        child: LazyLoadedList(
-          keyList: [],
-          serializer: Room.fromJson,
-          creator: RoomDetails.fromRoom,
-          resourcePath: "/rooms",
-          pageSize: 10,
-        ));
-  }
-
-  @override
   String getDescription() {
     return "pokoje";
   }
@@ -30,5 +16,19 @@ class BrowseRoomsPage extends StatelessWidget implements Navigable, Indexable {
   @override
   IconData getIconData() {
     return Icons.vpn_key;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(gradient: Theme.Colors.primaryGradient),
+        child: LazyLoadedList(
+          keyList: ['content'],
+          serializer: Room.fromJson,
+          creator: RoomDetails.fromRoom,
+          resourcePath: "/rooms/available",
+          pageSize: 10,
+        ));
   }
 }

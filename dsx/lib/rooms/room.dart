@@ -1,6 +1,7 @@
+import '../utils/fetchable.dart';
 import '../utils/time.dart';
 
-class Room extends Object {
+class Room implements Fetchable {
   final int id;
   final String name;
   final String description;
@@ -18,9 +19,9 @@ class Room extends Object {
       json['dsNumber'] as int,
       json['name'] as String,
       json['description'] as String,
-      json['openFrom'] as Time,
-      json['openTo'] as Time,
-      json['rentInterval'] as Time,
+      Time.fromString(json['openFrom']),
+      Time.fromString(json['openTo']),
+      Time.fromString(json['rentInterval']),
       (json['pricePerInterval'] as num)?.toDouble());
 
   Map<String, dynamic> toJson() => {
@@ -33,4 +34,7 @@ class Room extends Object {
         'rentInterval': rentInterval.toJson(),
         'pricePerInterval': pricePerInterval
       };
+
+  @override
+  List<String> urls() => ['https://picsum.photos/300'];
 }

@@ -1,8 +1,8 @@
 import 'dart:collection';
 import 'dart:convert';
 
+import 'package:dsx/style/theme.dart' as Theme;
 import 'package:flutter/material.dart';
-import 'package:global_configuration/global_configuration.dart';
 
 import '../../utils/indexable.dart';
 import '../../utils/requests.dart';
@@ -44,11 +44,12 @@ class _LazyLoadedListState<T> extends State<LazyLoadedList> {
   final ItemCreator itemCreator;
   final List<String> keyList;
 
-  _LazyLoadedListState({@required this.pageSize,
-    @required this.resourcePath,
-    @required this.serializer,
-    @required this.keyList,
-    @required this.itemCreator});
+  _LazyLoadedListState(
+      {@required this.pageSize,
+      @required this.resourcePath,
+      @required this.serializer,
+      @required this.keyList,
+      @required this.itemCreator});
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +88,8 @@ class _LazyLoadedListState<T> extends State<LazyLoadedList> {
   _determineIfFetching() {
     if (this.isFetching) {
       return CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation(Colors.blue), strokeWidth: 5.0);
+          valueColor: AlwaysStoppedAnimation(Theme.Colors.logoBackgroundColor),
+          strokeWidth: 5.0);
     }
   }
 
@@ -95,9 +97,8 @@ class _LazyLoadedListState<T> extends State<LazyLoadedList> {
     setState(() {
       this.isFetching = true;
     });
-    String events = GlobalConfiguration().getString("eventsUrl");
     int pageNo = (_items.length / this.pageSize).ceil();
-    String pageOfEventsUrl = '$events?size=$pageSize&page=$pageNo';
+    String pageOfEventsUrl = '$resourcePath?size=$pageSize&page=$pageNo';
 
     List<T> newEvents = List();
     await Request()

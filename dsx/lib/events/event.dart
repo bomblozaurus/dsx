@@ -1,9 +1,11 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import '../utils/fetchable.dart';
+
 part 'event.g.dart';
 
 @JsonSerializable()
-class Event extends Object {
+class Event extends Object implements Fetchable {
   final String name;
   final DateTime date;
   final String street;
@@ -47,4 +49,7 @@ class Event extends Object {
   }
 
   Map<String, dynamic> toJson() => _$EventToJson(this);
+
+  @override
+  List<String> urls() => ['https://picsum.photos/300'];
 }
