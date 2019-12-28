@@ -7,9 +7,8 @@ import '../../events/event.dart';
 import '../../utils/navigable.dart';
 import '../widgets/lazy_loaded_list.dart';
 
-class BrowseEventsPage extends StatefulWidget implements Navigable {
-  @override
-  _BrowseEventsPageState createState() => _BrowseEventsPageState();
+class BrowseEventsPage extends StatelessWidget implements Navigable {
+  static final String eventsUrl = GlobalConfiguration().getString("eventsUrl");
 
   @override
   String getDescription() {
@@ -20,29 +19,17 @@ class BrowseEventsPage extends StatefulWidget implements Navigable {
   IconData getIconData() {
     return Icons.event;
   }
-}
-
-class _BrowseEventsPageState extends State<BrowseEventsPage> {
-  static final String eventsUrl = GlobalConfiguration().getString("eventsUrl");
 
   @override
   Widget build(BuildContext context) {
     return Container(
         width: MediaQuery.of(context).size.width,
         decoration: new BoxDecoration(
-          gradient: new LinearGradient(
-              colors: [
-                Theme.Colors.loginGradientStart,
-                Theme.Colors.loginGradientEnd
-              ],
-              begin: const FractionalOffset(0.0, 0.0),
-              end: const FractionalOffset(1.0, 1.0),
-              stops: [0.0, 1.0],
-              tileMode: TileMode.clamp),
+          gradient: Theme.Colors.primaryGradient,
         ),
         child: LazyLoadedList(
-          keyList: ['_embedded', 'events'],
-          serializer: Event.staticFromJson,
+          keyList: [],
+          serializer: Event.fromJson,
           creator: EventDetails.fromEvent,
           pageSize: 10,
           resourcePath: eventsUrl,

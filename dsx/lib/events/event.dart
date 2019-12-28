@@ -27,8 +27,7 @@ class Event extends Object {
       this.scope,
       this.studentHouse});
 
-  static Event staticFromJson(Map<String, dynamic> json) =>
-      _$EventFromJson(json);
+  static Event fromJson(Map<String, dynamic> json) => _$EventFromJson(json);
 
   String getAddress() {
     return '$city, $street $houseNumber/$apartmentNumber';
@@ -46,8 +45,6 @@ class Event extends Object {
     var date = this.date.toLocal();
     return '${date.day}.${date.month.toString().padLeft(2, '0')}.${date.year} ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
   }
-
-  factory Event.fromJson(Map<String, dynamic> json) => _$EventFromJson(json);
 
   Map<String, dynamic> toJson() => _$EventToJson(this);
 }

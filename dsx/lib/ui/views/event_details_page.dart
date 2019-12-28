@@ -13,6 +13,12 @@ class EventDetailsPage extends StatefulWidget implements Indexable {
   const EventDetailsPage({Key key, this.event, this.avatar, this.index})
       : super(key: key);
 
+  static EventDetailsPage fromRouting(event, avatar, index) => EventDetailsPage(
+        event: event,
+        avatar: avatar,
+        index: index,
+      );
+
   @override
   _EventDetailsPageState createState() =>
       _EventDetailsPageState(this.event, this.avatar, this.index);
@@ -97,7 +103,6 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
               padding: EdgeInsets.only(top: 78.0),
               child: EventDetails.vertical(event, index)),
           Expanded(
-            flex: 1,
             child: SingleChildScrollView(
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 24.0),

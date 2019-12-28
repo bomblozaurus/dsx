@@ -1,24 +1,14 @@
 import 'package:dsx/style/theme.dart' as Theme;
 import 'package:flutter/material.dart';
 
-import '../../events/event.dart';
 import '../../utils/navigable.dart';
-import '../widgets/event_details.dart';
 import 'events_page.dart';
 
 class MainPageState extends State<MainPage> {
   int _selectedPage = 0;
   final _pageOptions = [
     BrowseEventsPage(),
-    EventDetails(
-      event: Event(
-          name: "Profesjonalne wydarzenie",
-          date: DateTime.now(),
-          houseNumber: 1,
-          studentHouse: "DS 8",
-          description: "Wspaniały opis równie wspaniałego"),
-      horizontal: false,
-    )
+    BrowseEventsPage(),
   ];
 
   @override
