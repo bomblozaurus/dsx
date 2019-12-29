@@ -26,9 +26,6 @@ class _MenuPageState extends State<MenuPage>
   TextEditingController loginEmailController = new TextEditingController();
   TextEditingController loginPasswordController = new TextEditingController();
 
-  bool _obscureTextLogin = true;
-  bool _obscureTextSignUp = true;
-
   TextEditingController signUpEmailController = new TextEditingController();
   TextEditingController signUpFirstNameController = new TextEditingController();
   TextEditingController signUpLastNameController = new TextEditingController();
@@ -69,14 +66,13 @@ class _MenuPageState extends State<MenuPage>
               children: <Widget>[
                 Padding(padding: const EdgeInsets.only(top: 60.0)),
                 Logo(size: 120.0),
-                Padding(padding:const EdgeInsets.only(top: 60.0)),
-                      _buildSubmitButton("Sale",20,     () => (Navigator.of(context).pushNamed("/RoomsPage"))),
-
-                         Padding(padding:const EdgeInsets.only(top: 60.0)),
-
-                         _buildSubmitButton("Wydarzenia",20,() =>(Navigator.of(context).pushNamed("/EventsPage"))),
-                Padding(padding:const EdgeInsets.only(top: 60.0)),
-
+                Padding(padding: const EdgeInsets.only(top: 60.0)),
+                _buildSubmitButton("Sale", 20,
+                    () => (Navigator.of(context).pushNamed("/RoomsPage"))),
+                Padding(padding: const EdgeInsets.only(top: 60.0)),
+                _buildSubmitButton("Wydarzenia", 20,
+                    () => (Navigator.of(context).pushNamed("/EventsPage"))),
+                Padding(padding: const EdgeInsets.only(top: 60.0)),
               ],
             ),
           ),
@@ -151,35 +147,5 @@ class _MenuPageState extends State<MenuPage>
           ),
           onPressed: onPressed),
     );
-  }
-
-  Container _buildSeparator() {
-    return Container(
-      width: 250.0,
-      height: 1.0,
-      color: Colors.grey[400],
-    );
-  }
-
-  void _onSignInButtonPress() {
-    _pageController.animateToPage(0,
-        duration: Duration(milliseconds: 500), curve: Curves.decelerate);
-  }
-
-  void _onSignUpButtonPress() {
-    _pageController?.animateToPage(1,
-        duration: Duration(milliseconds: 500), curve: Curves.decelerate);
-  }
-
-  void _toggleLogin() {
-    setState(() {
-      _obscureTextLogin = !_obscureTextLogin;
-    });
-  }
-
-  void _toggleSignUp() {
-    setState(() {
-      _obscureTextSignUp = !_obscureTextSignUp;
-    });
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../style/theme.dart' as Theme;
 import '../../utils/fetchable.dart';
+import 'better_hero.dart';
 
 typedef Widget RoutingWidgetBuilder(var a, var b, var c);
 
@@ -57,7 +58,7 @@ abstract class ItemDetails<I extends Fetchable> extends StatelessWidget
           children: <Widget>[
             icon,
             new Container(width: 4.0),
-            new Text(value, style: regularTextStyle),
+            new Text(value),
           ]);
     }
 
@@ -77,14 +78,18 @@ abstract class ItemDetails<I extends Fetchable> extends StatelessWidget
       return Wrap(
         spacing: 0,
         children: <Widget>[
-          Hero(
+          MaterialHero(
               tag: "$heroDescription-header-${this.index}",
-              child: alignAccordingly(child: buildHeader())),
+              child: DefaultTextStyle(
+                  style: headerTextStyle,
+                  child: alignAccordingly(child: buildHeader()))),
           new Container(height: 10.0),
-          Hero(
+          MaterialHero(
               tag: "$heroDescription-description-${this.index}",
-              child: alignAccordingly(child: buildDescription())),
-          Hero(
+              child: DefaultTextStyle(
+                  style: subHeaderTextStyle,
+                  child: alignAccordingly(child: buildDescription()))),
+          MaterialHero(
               tag: "$heroDescription-separator-${this.index}",
               child: alignAccordingly(
                   child: Container(
@@ -92,13 +97,16 @@ abstract class ItemDetails<I extends Fetchable> extends StatelessWidget
                       height: 3.0,
                       width: horizontal ? 24.0 : 64.0,
                       color: Theme.Colors.logoBackgroundColor))),
-          Hero(
+          MaterialHero(
               tag: "$heroDescription-row-${this.index}",
-              child: alignAccordingly(
-                  child: Row(
-                mainAxisSize: MainAxisSize.max,
-                children: _buildFooterItems(),
-              ))),
+              child: DefaultTextStyle(
+                style: regularTextStyle,
+                child: alignAccordingly(
+                    child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: _buildFooterItems(),
+                )),
+              )),
         ],
       );
     }
@@ -142,8 +150,23 @@ abstract class ItemDetails<I extends Fetchable> extends StatelessWidget
     return InkWell(
         onTap: horizontal
             ? () => Navigator.of(context).push(new PageRouteBuilder(
-                pageBuilder: (_, __, ___) =>
-                    buildRoutingWidget(item, avatar, index)))
+            pageBuilder: (_, __, ___) =>
+                buildRoutingWidget(item, avatar, index),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              var begin = Offset(0.0, 1.0);
+              var end = Offset.zero;
+
+              var curve = Curves.easeInQuad;
+              var curveTween = CurveTween(curve: curve);
+
+              var tween = Tween(begin: begin, end: end).chain(curveTween);
+
+              return SlideTransition(
+                position: animation.drive(tween),
+                child: child,
+              );
+            }))
             : null,
         child: Container(
           height: horizontal ? 125.0 : 240.0,

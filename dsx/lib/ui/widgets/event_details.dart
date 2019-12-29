@@ -11,7 +11,6 @@ class EventDetails extends ItemDetails<Event> implements Indexable {
   final Event event;
   final int index;
   final bool horizontal;
-  static const String eventImage = "https://picsum.photos/300";
 
   const EventDetails({
     Key key,
@@ -35,22 +34,19 @@ class EventDetails extends ItemDetails<Event> implements Indexable {
       EventDetails(event: event, horizontal: false, index: index);
 
   Color _determineDateTimeColor() {
-    return (event.date
-        .difference(DateTime.now())
-        .inMilliseconds > 0)
+    return (event.date.difference(DateTime.now()).inMilliseconds > 0)
         ? Theme.Colors.logoBackgroundColor
         : Colors.red;
   }
 
   @override
   Widget buildDescription() =>
-      Text(event.getAddress(), style: ItemDetails.subHeaderTextStyle);
+      Text(event.getAddress(),);
 
   @override
   Widget buildHeader() =>
       Text(
         event.name,
-        style: ItemDetails.headerTextStyle,
         overflow: TextOverflow.ellipsis,
       );
 

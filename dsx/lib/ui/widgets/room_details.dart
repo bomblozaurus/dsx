@@ -20,8 +20,7 @@ class RoomDetails extends ItemDetails<Room> implements Indexable {
             index: index,
             heroDescription: "room");
 
-  static RoomDetails fromRoom(var event, var index) =>
-      RoomDetails(
+  static RoomDetails fromRoom(var event, var index) => RoomDetails(
         room: event,
         index: index,
         horizontal: true,
@@ -46,7 +45,7 @@ class RoomDetails extends ItemDetails<Room> implements Indexable {
   Widget buildRoutingWidget(Room item, CircleAvatar avatar, int index) =>
       RoomDetailsPage.fromRouting(item, avatar, index);
 
-  _determineOpenHourColor() {
+  _determineIfOpen() {
     var now = Time(TimeOfDay.now());
     return (now >= room.openFrom && now <= room.openFrom)
         ? Theme.Colors.logoBackgroundColor
@@ -61,7 +60,7 @@ class RoomDetails extends ItemDetails<Room> implements Indexable {
   List<TextWithIcon> getFooterItems() {
     return List.of([
       getTextWithIcon("${room.openFrom.toString()}-${room.openTo.toString()} ",
-          Icon(Icons.access_time, color: _determineOpenHourColor())),
+          Icon(Icons.access_time, color: _determineIfOpen())),
       getTextWithIcon(room.rentInterval.toString(),
           Icon(Icons.timelapse, color: _determineDurationColor()))
     ]);

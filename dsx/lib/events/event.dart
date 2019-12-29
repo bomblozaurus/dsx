@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:json_annotation/json_annotation.dart';
 
 import '../utils/fetchable.dart';
@@ -17,17 +19,16 @@ class Event extends Object implements Fetchable {
   final String scope;
   final String studentHouse;
 
-  Event(
-      {this.name,
-      this.date,
-      this.street,
-      this.houseNumber,
-      this.apartmentNumber,
-      this.city,
-      this.zip,
-      this.description,
-      this.scope,
-      this.studentHouse});
+  Event({this.name,
+    this.date,
+    this.street,
+    this.houseNumber,
+    this.apartmentNumber,
+    this.city,
+    this.zip,
+    this.description,
+    this.scope,
+    this.studentHouse});
 
   static Event fromJson(Map<String, dynamic> json) => _$EventFromJson(json);
 
@@ -51,5 +52,6 @@ class Event extends Object implements Fetchable {
   Map<String, dynamic> toJson() => _$EventToJson(this);
 
   @override
-  List<String> urls() => ['https://picsum.photos/300'];
+  List<String> urls() =>
+      ['https://picsum.photos/${300 + Random.secure().nextInt(10)}'];
 }

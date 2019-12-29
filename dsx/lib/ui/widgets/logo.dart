@@ -1,7 +1,7 @@
 import 'package:dsx/style/theme.dart' as Theme;
 import 'package:flutter/material.dart';
 
-class Logo extends StatelessWidget{
+class Logo extends StatelessWidget {
   final double size;
 
   const Logo({Key key, this.size}) : super(key: key);
@@ -32,5 +32,4 @@ class Logo extends StatelessWidget{
       ),
     );
   }
-
 }
