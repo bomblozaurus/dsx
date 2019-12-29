@@ -1,9 +1,13 @@
+import 'dart:math';
+
 import 'package:json_annotation/json_annotation.dart';
+
+import '../utils/fetchable.dart';
 
 part 'event.g.dart';
 
 @JsonSerializable()
-class Event extends Object {
+class Event extends Object implements Fetchable {
   final String name;
   final DateTime date;
   final String street;
@@ -15,19 +19,39 @@ class Event extends Object {
   final String scope;
   final String studentHouse;
 
-  Event(
-      {this.name,
-      this.date,
-      this.street,
-      this.houseNumber,
-      this.apartmentNumber,
-      this.city,
-      this.zip,
-      this.description,
-      this.scope,
-      this.studentHouse});
+  Event({this.name,
+    this.date,
+    this.street,
+    this.houseNumber,
+    this.apartmentNumber,
+    this.city,
+    this.zip,
+    this.description,
+    this.scope,
+    this.studentHouse});
 
-  factory Event.fromJson(Map<String, dynamic> json) => _$EventFromJson(json);
+  static Event fromJson(Map<String, dynamic> json) => _$EventFromJson(json);
+
+  String getAddress() {
+    return '$city, $street $houseNumber/$apartmentNumber';
+  }
+
+  String getDate() {
+    return '${date.day}.${date.month.toString().padLeft(2, '0')}.${date.year}';
+  }
+
+  String getTime() {
+    return '${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
+  }
+
+  String getDateTime() {
+    var date = this.date.toLocal();
+    return '${date.day}.${date.month.toString().padLeft(2, '0')}.${date.year} ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
+  }
 
   Map<String, dynamic> toJson() => _$EventToJson(this);
+
+  @override
+  List<String> urls() =>
+      ['https://picsum.photos/${300 + Random.secure().nextInt(10)}'];
 }

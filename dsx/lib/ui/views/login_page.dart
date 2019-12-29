@@ -1,15 +1,15 @@
-import 'package:dsx/utils/requests.dart';
 import 'package:dsx/style/theme.dart' as Theme;
-import 'package:dsx/ui/menu.dart';
 import 'package:dsx/users/user.dart';
 import 'package:dsx/utils/bubble_indication_painter.dart';
 import 'package:dsx/utils/jwt_token.dart';
+import 'package:dsx/utils/requests.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:global_configuration/global_configuration.dart';
 
-import 'logo.dart';
+import '../widgets/logo.dart';
+import 'main_page.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
@@ -57,61 +57,64 @@ class _LoginPageState extends State<LoginPage>
   Color right = Colors.white;
 
   @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-      key: _scaffoldKey,
-      body: NotificationListener<OverscrollIndicatorNotification>(
+  Widget build(BuildContext contlext) {
+    return Material(
+      color: Colors.black,
+      child: NotificationListener<OverscrollIndicatorNotification>(
         onNotification: (overscroll) {
           overscroll.disallowGlow();
         },
-        child: SingleChildScrollView(
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height >= 775.0
-                ? MediaQuery.of(context).size.height
-                : 840,
-            decoration: new BoxDecoration(
-              gradient: new LinearGradient(
-                  colors: [
-                    Theme.Colors.loginGradientStart,
-                    Theme.Colors.loginGradientEnd
-                  ],
-                  begin: const FractionalOffset(0.0, 0.0),
-                  end: const FractionalOffset(1.0, 1.0),
-                  stops: [0.0, 1.0],
-                  tileMode: TileMode.clamp),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Padding(padding: const EdgeInsets.only(top: 60.0)),
-                Logo(size: 120.0),
-                Padding(padding: const EdgeInsets.only(top: 40.0)),
-                _buildMenuBar(context),
-                Expanded(
-                  flex: 2,
-                  child: PageView(
-                    controller: _pageController,
-                    onPageChanged: (i) {
-                      if (i == 0) {
-                        setState(() {
-                          right = Colors.white;
-                          left = Colors.black;
-                        });
-                      } else if (i == 1) {
-                        setState(() {
-                          right = Colors.black;
-                          left = Colors.white;
-                        });
-                      }
-                    },
-                    children: <Widget>[
-                      _buildLogIn(context),
-                      _buildSignUp(context),
-                    ],
-                  ),
+        child: SafeArea(
+          child: Scaffold(
+            key: _scaffoldKey,
+            body: SingleChildScrollView(
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                decoration: new BoxDecoration(
+                  gradient: new LinearGradient(
+                      colors: [
+                        Theme.Colors.loginGradientStart,
+                        Theme.Colors.loginGradientEnd
+                      ],
+                      begin: const FractionalOffset(0.0, 0.0),
+                      end: const FractionalOffset(1.0, 1.0),
+                      stops: [0.0, 1.0],
+                      tileMode: TileMode.clamp),
                 ),
-              ],
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Padding(padding: const EdgeInsets.only(top: 60.0)),
+                    Logo(size: 120.0),
+                    Padding(padding: const EdgeInsets.only(top: 40.0)),
+                    _buildMenuBar(context),
+                    Expanded(
+                      flex: 2,
+                      child: PageView(
+                        controller: _pageController,
+                        onPageChanged: (i) {
+                          if (i == 0) {
+                            setState(() {
+                              right = Colors.white;
+                              left = Colors.black;
+                            });
+                          } else if (i == 1) {
+                            setState(() {
+                              right = Colors.black;
+                              left = Colors.white;
+                            });
+                          }
+                        },
+                        children: <Widget>[
+                          _buildLogIn(context),
+                          _buildSignUp(context),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         ),
@@ -325,7 +328,7 @@ class _LoginPageState extends State<LoginPage>
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: 10.0),
-              child: _buildSubmitButton("DOŁĄCZ", 490.0, () => _registerUser()),
+              child: _buildSubmitButton("DOŁĄCZ", 520.0, () => _registerUser()),
             )
           ],
         ),
@@ -371,10 +374,10 @@ class _LoginPageState extends State<LoginPage>
   }
 
   _loginSuccessful(token) async {
-    JwtTokenUtils().saveToken(token);
+    JwtTokenUtils().saveToken(token.substring(13, token.length - 2));
     showInSnackBar("Zalogowano poprawnie", Colors.lime);
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => MenuPage()));
+        context, MaterialPageRoute(builder: (context) => MainPage()));
   }
 
   _loginFailed(token) {

@@ -1,11 +1,12 @@
 import 'dart:io';
 
-import 'package:dsx/utils/requests.dart';
 import 'package:dsx/style/theme.dart' as Theme;
-import 'package:dsx/ui/login_page.dart';
-import 'package:dsx/ui/menu.dart';
+import 'package:dsx/utils/requests.dart';
 import 'package:flutter/material.dart';
 import 'package:global_configuration/global_configuration.dart';
+
+import 'login_page.dart';
+import 'main_page.dart';
 
 class WhatFirst extends StatelessWidget {
   @override
@@ -16,7 +17,7 @@ class WhatFirst extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting)
             return _splashScreen();
           if (snapshot.hasData && snapshot.data == HttpStatus.ok) {
-            return MenuPage();
+            return MainPage();
           }
           return LoginPage();
         });
@@ -25,8 +26,11 @@ class WhatFirst extends StatelessWidget {
   Future<int> verifyToken() async {
     String resourcePath = GlobalConfiguration().getString("verifyTokenUrl");
     try {
-      await Request().getToMobileApi(resourcePath: resourcePath);
-      return 200;
+      int responseCode;
+      await Request()
+          .getToMobileApi(resourcePath: resourcePath)
+          .then((response) => responseCode = response.statusCode);
+      return responseCode;
     } catch (statusCodeException) {
       return -1;
     }

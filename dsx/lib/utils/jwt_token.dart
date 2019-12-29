@@ -15,6 +15,6 @@ class JwtTokenUtils {
 
    Future<Map<String, String>> getTokenHeader() async{
     var token = await this.getToken();
-    return {"Authorization": token};
+    return {"Authorization": "Bearer " + token};
   }
 }

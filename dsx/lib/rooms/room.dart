@@ -1,22 +1,40 @@
-import 'package:json_annotation/json_annotation.dart';
-part 'room.g.dart';
+import '../utils/fetchable.dart';
+import '../utils/time.dart';
 
-@JsonSerializable()
-
-class Room extends Object{
-  final int id, ds_number;
+class Room implements Fetchable {
+  final int id;
   final String name;
+  final String description;
+  final int dsNumber;
+  final Time openFrom;
+  final Time openTo;
+  final Time rentInterval;
+  final double pricePerInterval;
 
-  Room({this.id, this.ds_number, this.name});
+  Room(this.id, this.dsNumber, this.name, this.description, this.openFrom,
+      this.openTo, this.rentInterval, this.pricePerInterval);
 
-  factory Room.fromJson(Map<String, dynamic> json) => _$RoomFromJson(json);
-  static List<Room> roomListFromJson(List<dynamic> parsedJson) {
+  static Room fromJson(Map<String, dynamic> json) => Room(
+      json['id'] as int,
+      json['dsNumber'] as int,
+      json['name'] as String,
+      json['description'] as String,
+      Time.fromString(json['openFrom']),
+      Time.fromString(json['openTo']),
+      Time.fromString(json['rentInterval']),
+      (json['pricePerInterval'] as num)?.toDouble());
 
-    List<Room> rooms = new List<Room>();
-    rooms = parsedJson.map((i)=>Room.fromJson(i)).toList();
-    return rooms;
-  }
-  Map<String, dynamic> toJson() => _$RoomToJson(this);
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'name': name,
+        'description': description,
+        'dsNumber': dsNumber,
+        'openFrom': openFrom.toJson(),
+        'openTo': openTo.toJson(),
+        'rentInterval': rentInterval.toJson(),
+        'pricePerInterval': pricePerInterval
+      };
 
-
+  @override
+  List<String> urls() => ['https://picsum.photos/${300 + id}'];
 }
