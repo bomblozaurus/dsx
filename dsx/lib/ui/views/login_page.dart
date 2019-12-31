@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dsx/style/theme.dart' as Theme;
 import 'package:dsx/users/user.dart';
 import 'package:dsx/utils/bubble_indication_painter.dart';
@@ -52,68 +54,66 @@ class _LoginPageState extends State<LoginPage>
   bool _obscureTextSignUp = true;
 
   PageController _pageController;
+  ScrollPhysics _physics;
 
   Color left = Colors.black;
   Color right = Colors.white;
 
   @override
-  Widget build(BuildContext contlext) {
-    return Material(
-      color: Colors.black,
-      child: NotificationListener<OverscrollIndicatorNotification>(
-        onNotification: (overscroll) {
-          overscroll.disallowGlow();
-        },
-        child: SafeArea(
-          child: Scaffold(
-            key: _scaffoldKey,
-            body: SingleChildScrollView(
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                decoration: new BoxDecoration(
-                  gradient: new LinearGradient(
-                      colors: [
-                        Theme.Colors.loginGradientStart,
-                        Theme.Colors.loginGradientEnd
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: new Scaffold(
+        key: _scaffoldKey,
+        body: NotificationListener<OverscrollIndicatorNotification>(
+          onNotification: (overscroll) {
+            overscroll.disallowGlow();
+          },
+          child: SingleChildScrollView(
+            physics: _physics,
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: 870.0,
+              decoration: new BoxDecoration(
+                gradient: new LinearGradient(
+                    colors: [
+                      Theme.Colors.loginGradientStart,
+                      Theme.Colors.loginGradientEnd
+                    ],
+                    begin: const FractionalOffset(0.0, 0.0),
+                    end: const FractionalOffset(1.0, 1.0),
+                    stops: [0.0, 1.0],
+                    tileMode: TileMode.clamp),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Padding(padding: const EdgeInsets.only(top: 60.0)),
+                  Logo(size: 120.0),
+                  Padding(padding: const EdgeInsets.only(top: 40.0)),
+                  _buildMenuBar(context),
+                  Flexible(
+                    child: PageView(
+                      controller: _pageController,
+                      onPageChanged: (i) {
+                        if (i == 0) {
+                          setState(() {
+                            right = Colors.white;
+                            left = Colors.black;
+                          });
+                        } else if (i == 1) {
+                          setState(() {
+                            right = Colors.black;
+                            left = Colors.white;
+                          });
+                        }
+                      },
+                      children: <Widget>[
+                        _buildLogIn(context),
+                        _buildSignUp(context),
                       ],
-                      begin: const FractionalOffset(0.0, 0.0),
-                      end: const FractionalOffset(1.0, 1.0),
-                      stops: [0.0, 1.0],
-                      tileMode: TileMode.clamp),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Padding(padding: const EdgeInsets.only(top: 60.0)),
-                    Logo(size: 120.0),
-                    Padding(padding: const EdgeInsets.only(top: 40.0)),
-                    _buildMenuBar(context),
-                    Expanded(
-                      flex: 2,
-                      child: PageView(
-                        controller: _pageController,
-                        onPageChanged: (i) {
-                          if (i == 0) {
-                            setState(() {
-                              right = Colors.white;
-                              left = Colors.black;
-                            });
-                          } else if (i == 1) {
-                            setState(() {
-                              right = Colors.black;
-                              left = Colors.white;
-                            });
-                          }
-                        },
-                        children: <Widget>[
-                          _buildLogIn(context),
-                          _buildSignUp(context),
-                        ],
-                      ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -140,7 +140,15 @@ class _LoginPageState extends State<LoginPage>
       DeviceOrientation.portraitDown,
     ]);
 
-    _pageController = PageController();
+    _physics = AlwaysScrollableScrollPhysics();
+    _pageController = PageController()
+      ..addListener(() {
+        print("PAGE: ${_pageController.page}");
+        _physics = (_pageController.page == 0.0)
+            ? NeverScrollableScrollPhysics()
+            : AlwaysScrollableScrollPhysics();
+        print(_physics);
+      });
   }
 
   void showInSnackBar(String value, Color color) {
@@ -350,14 +358,19 @@ class _LoginPageState extends State<LoginPage>
         email: email,
         password: password,
         indexNumber: indexNumber,
-        studentHouse: studentHouseNumber);
+        studentHouse: studentHouseNumber-1);
     var data = user.toJson();
     await Request()
         .postToMobileApiWithoutTokenHeader(
             resourcePath: GlobalConfiguration().getString("signUpUrl"),
             body: data)
-        .then((value) =>
-            showInSnackBar("Zarejestrowano pomyślnie!", Colors.blue));
+        .then(_processSignupResponse);
+  }
+
+  _processSignupResponse(response) {
+    response.statusCode == HttpStatus.ok
+        ? showInSnackBar("Zarejestrowano pomyślnie!", Colors.blue)
+        : showInSnackBar("Rejestracja nieudana!", Colors.red);
   }
 
   _loginUser() async {
@@ -369,11 +382,16 @@ class _LoginPageState extends State<LoginPage>
     await Request()
         .postToMobileApiWithoutTokenHeader(
             resourcePath: resourcePath, body: body)
-        .then((response) => _loginSuccessful(response.body))
-        .catchError((token) => _loginFailed(token));
+        .then((response) => _processLoginResponse(response));
   }
 
-  _loginSuccessful(token) async {
+  _processLoginResponse(var response) async {
+    response.statusCode == HttpStatus.ok
+        ? _loginSuccessful(response.body)
+        : _loginFailed(response.body);
+  }
+
+  void _loginSuccessful(token) {
     JwtTokenUtils().saveToken(token.substring(13, token.length - 2));
     showInSnackBar("Zalogowano poprawnie", Colors.lime);
     Navigator.pushReplacement(

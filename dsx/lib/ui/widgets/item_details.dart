@@ -150,23 +150,23 @@ abstract class ItemDetails<I extends Fetchable> extends StatelessWidget
     return InkWell(
         onTap: horizontal
             ? () => Navigator.of(context).push(new PageRouteBuilder(
-            pageBuilder: (_, __, ___) =>
-                buildRoutingWidget(item, avatar, index),
-            transitionsBuilder:
-                (context, animation, secondaryAnimation, child) {
-              var begin = Offset(0.0, 1.0);
-              var end = Offset.zero;
+                pageBuilder: (_, __, ___) =>
+                    buildRoutingWidget(item, avatar, index),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                  var begin = Offset(0.0, 1.0);
+                  var end = Offset.zero;
 
-              var curve = Curves.easeInQuad;
-              var curveTween = CurveTween(curve: curve);
+                  var curve = Curves.easeInQuad;
+                  var curveTween = CurveTween(curve: curve);
 
-              var tween = Tween(begin: begin, end: end).chain(curveTween);
+                  var tween = Tween(begin: begin, end: end).chain(curveTween);
 
-              return SlideTransition(
-                position: animation.drive(tween),
-                child: child,
-              );
-            }))
+                  return SlideTransition(
+                    position: animation.drive(tween),
+                    child: child,
+                  );
+                }))
             : null,
         child: Container(
           height: horizontal ? 125.0 : 240.0,

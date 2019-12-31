@@ -28,7 +28,7 @@ class BrowseEventsPage extends StatelessWidget implements Navigable {
           gradient: Theme.Colors.primaryGradient,
         ),
         child: LazyLoadedList(
-          keyList: [],
+          keyList: ["content"],
           serializer: Event.fromJson,
           creator: EventDetails.fromEvent,
           pageSize: 10,

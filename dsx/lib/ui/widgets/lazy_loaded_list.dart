@@ -16,13 +16,15 @@ class LazyLoadedList<T, I extends Indexable> extends StatefulWidget {
   final Function
       creator; //FIXME powinien być typ ItemCreator, ale nie da sie przekazac Indexable Function (dynamic, dynamic)
   final List<String> keyList;
+  final String query;
 
   const LazyLoadedList(
       {@required this.pageSize,
       @required this.resourcePath,
       @required this.serializer,
       @required this.creator,
-      @required this.keyList});
+      @required this.keyList,
+      this.query});
 
   @override
   _LazyLoadedListState createState() => _LazyLoadedListState<T>(
@@ -30,13 +32,15 @@ class LazyLoadedList<T, I extends Indexable> extends StatefulWidget {
       resourcePath: this.resourcePath,
       serializer: this.serializer,
       keyList: this.keyList,
-      itemCreator: this.creator);
+      itemCreator: this.creator,
+      query: this.query);
 }
 
 class _LazyLoadedListState<T> extends State<LazyLoadedList> {
   Set _items = LinkedHashSet<T>();
   ScrollController _scrollController = ScrollController();
   bool isFetching;
+  final String query;
 
   final int pageSize;
   final String resourcePath;
@@ -44,12 +48,14 @@ class _LazyLoadedListState<T> extends State<LazyLoadedList> {
   final ItemCreator itemCreator;
   final List<String> keyList;
 
-  _LazyLoadedListState(
-      {@required this.pageSize,
-      @required this.resourcePath,
-      @required this.serializer,
-      @required this.keyList,
-      @required this.itemCreator});
+  _LazyLoadedListState({
+    @required this.pageSize,
+    @required this.resourcePath,
+    @required this.serializer,
+    @required this.keyList,
+    @required this.itemCreator,
+    this.query,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +63,7 @@ class _LazyLoadedListState<T> extends State<LazyLoadedList> {
       children: <Widget>[
         Center(child: _determineIfFetching()),
         ListView.builder(
+            shrinkWrap: true,
             controller: _scrollController,
             itemCount: _items.length,
             itemBuilder: (BuildContext context, int index) {
@@ -69,12 +76,12 @@ class _LazyLoadedListState<T> extends State<LazyLoadedList> {
   @override
   void initState() {
     super.initState();
-    _fetchEvents();
+    _fetchItems();
 
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
-        _fetchEvents();
+        _fetchItems();
       }
     });
   }
@@ -93,24 +100,24 @@ class _LazyLoadedListState<T> extends State<LazyLoadedList> {
     }
   }
 
-  _fetchEvents() async {
+  _fetchItems() async {
     setState(() {
       this.isFetching = true;
     });
     int pageNo = (_items.length / this.pageSize).ceil();
-    String pageOfEventsUrl = '$resourcePath?size=$pageSize&page=$pageNo';
+    String pageOfItemsUrl = '$resourcePath?size=$pageSize&page=$pageNo';
 
-    List<T> newEvents = List();
+    List<T> newItems = List();
     await Request()
-        .getToMobileApi(resourcePath: pageOfEventsUrl)
+        .getToMobileApi(resourcePath: pageOfItemsUrl)
         .then((response) {
-      newEvents = _getList(json.decode(response.body))
-          .map((event) => this.serializer(event))
+      newItems = _getList(json.decode(utf8.decode(response.bodyBytes)))
+          .map((item) => this.serializer(item))
           .toList();
     });
 
     setState(() {
-      this._items.addAll(newEvents);
+      this._items.addAll(newItems);
       this.isFetching = false;
     });
   }
