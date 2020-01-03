@@ -1,4 +1,4 @@
-import 'package:dsx/rooms/room.dart';
+import 'package:dsx/models/room.dart';
 import 'package:dsx/style/theme.dart' as Theme;
 import 'package:dsx/utils/jwt_token.dart';
 import 'package:dsx/utils/requests.dart';

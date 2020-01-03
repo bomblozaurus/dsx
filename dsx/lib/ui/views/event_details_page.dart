@@ -1,7 +1,7 @@
 import 'package:dsx/utils/indexable.dart';
 import 'package:flutter/material.dart';
 
-import '../../events/event.dart';
+import '../../models/event.dart';
 import '../widgets/event_details.dart';
 import '../widgets/sliver_content.dart';
 import 'details_page.dart';

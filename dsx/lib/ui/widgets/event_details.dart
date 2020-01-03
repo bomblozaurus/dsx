@@ -1,6 +1,7 @@
+import 'package:dsx/utils/text_with_icon.dart';
 import 'package:flutter/material.dart';
 
-import '../../events/event.dart';
+import '../../models/event.dart';
 import '../../style/theme.dart' as Theme;
 import '../../utils/fetchable.dart';
 import '../../utils/indexable.dart';
@@ -24,7 +25,8 @@ class EventDetails extends ItemDetails<Event> implements Indexable {
             horizontal: horizontal,
             heroDescription: "item");
 
-  static EventDetails fromEvent(var event, var index) => EventDetails(
+  static EventDetails fromEvent(var event, var index) =>
+      EventDetails(
         event: event,
         index: index,
         horizontal: true,

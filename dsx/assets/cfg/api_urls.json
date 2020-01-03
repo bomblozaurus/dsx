@@ -3,8 +3,11 @@
   "logInUrl": "/logIn",
   "signUpUrl": "/signUp",
   "verifyTokenUrl": "/verifyToken",
-  "eventsUrl": "/events",
+  "eventsUrl": "/search/events",
   "eventsAll": "/all",
+  "roomsUrl": "/search/rooms",
   "eventOrderByDate": "/scopeOrderDate",
-  "getAllForUser": "/rooms/getAllForUser"
+  "getAllForUser": "/rooms/getAllForUser",
+  "reservationsUrl": "/reservations",
+  "keyHolderReservationsUrl": "/reservations/keyholder"
 }

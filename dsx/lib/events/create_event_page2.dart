@@ -1,12 +1,11 @@
-
+import 'package:dsx/style/theme.dart' as Theme;
 import 'package:dsx/utils/requests.dart';
-import 'package:dsx/style/theme.dart'as Theme;
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:global_configuration/global_configuration.dart';
 
-import 'event.dart';
+import '../models/event.dart';
 
 class CreateEventPage extends StatefulWidget {
   @override

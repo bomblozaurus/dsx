@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:dsx/events/event.dart';
+import 'package:dsx/models/event.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:global_configuration/global_configuration.dart';

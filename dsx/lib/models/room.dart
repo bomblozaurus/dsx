@@ -21,8 +21,8 @@ class Room implements Fetchable {
       json['description'] as String,
       Time.fromString(json['openFrom']),
       Time.fromString(json['openTo']),
-      Time.fromString(json['rentInterval']),
-      (json['pricePerInterval'] as num)?.toDouble());
+      Time.fromDuration(json['rentInterval']),
+      (json['pricePerInterval'] as num));
 
   Map<String, dynamic> toJson() => {
         'id': id,
