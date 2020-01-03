@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
 
@@ -16,7 +17,7 @@ class LazyLoadedList<T, I extends Indexable> extends StatefulWidget {
   final Function
       creator; //FIXME powinien być typ ItemCreator, ale nie da sie przekazac Indexable Function (dynamic, dynamic)
   final List<String> keyList;
-  final String query;
+  final Stream queryStream;
 
   const LazyLoadedList(
       {@required this.pageSize,
@@ -24,7 +25,7 @@ class LazyLoadedList<T, I extends Indexable> extends StatefulWidget {
       @required this.serializer,
       @required this.creator,
       @required this.keyList,
-      this.query});
+      this.queryStream});
 
   @override
   _LazyLoadedListState createState() => _LazyLoadedListState<T>(
@@ -33,14 +34,15 @@ class LazyLoadedList<T, I extends Indexable> extends StatefulWidget {
       serializer: this.serializer,
       keyList: this.keyList,
       itemCreator: this.creator,
-      query: this.query);
+      queryStream: this.queryStream);
 }
 
 class _LazyLoadedListState<T> extends State<LazyLoadedList> {
+  ScrollController _scrollController;
   Set _items = LinkedHashSet<T>();
-  ScrollController _scrollController = ScrollController();
-  bool isFetching;
-  final String query;
+  bool _isFetching;
+  final Stream queryStream;
+  String _query = "";
 
   final int pageSize;
   final String resourcePath;
@@ -54,7 +56,7 @@ class _LazyLoadedListState<T> extends State<LazyLoadedList> {
     @required this.serializer,
     @required this.keyList,
     @required this.itemCreator,
-    this.query,
+    this.queryStream,
   });
 
   @override
@@ -78,12 +80,26 @@ class _LazyLoadedListState<T> extends State<LazyLoadedList> {
     super.initState();
     _fetchItems();
 
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
-        _fetchItems();
-      }
-    });
+    try {
+      queryStream?.listen((data) {
+        setState(() {
+          this._query = data;
+          this._items.clear();
+          if (!_isFetching) {
+            _fetchItems();
+          }
+        });
+      });
+    } catch (e) {}
+    ;
+
+    _scrollController = ScrollController()
+      ..addListener(() {
+        if (_scrollController.position.pixels ==
+            _scrollController.position.maxScrollExtent) {
+          _fetchItems();
+        }
+      });
   }
 
   @override
@@ -93,19 +109,24 @@ class _LazyLoadedListState<T> extends State<LazyLoadedList> {
   }
 
   _determineIfFetching() {
-    if (this.isFetching) {
-      return CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation(Theme.Colors.logoBackgroundColor),
-          strokeWidth: 5.0);
+    if (this._isFetching) {
+      return Align(
+        alignment: Alignment.center,
+        child: CircularProgressIndicator(
+            valueColor:
+            AlwaysStoppedAnimation(Theme.Colors.logoBackgroundColor),
+            strokeWidth: 5.0),
+      );
     }
   }
 
   _fetchItems() async {
     setState(() {
-      this.isFetching = true;
+      this._isFetching = true;
     });
     int pageNo = (_items.length / this.pageSize).ceil();
-    String pageOfItemsUrl = '$resourcePath?size=$pageSize&page=$pageNo';
+    String pageOfItemsUrl =
+        '$resourcePath?query=$_query&size=$pageSize&page=$pageNo';
 
     List<T> newItems = List();
     await Request()
@@ -118,7 +139,7 @@ class _LazyLoadedListState<T> extends State<LazyLoadedList> {
 
     setState(() {
       this._items.addAll(newItems);
-      this.isFetching = false;
+      this._isFetching = false;
     });
   }
 

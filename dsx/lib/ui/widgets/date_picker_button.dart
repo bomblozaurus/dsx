@@ -1,11 +1,16 @@
+import 'package:dsx/style/theme.dart' as DsxTheme;
 import 'package:flutter/material.dart';
 
-class DatePickerButton extends StatefulWidget {
-  @override
-  _DatePickerButtonState createState() => _DatePickerButtonState();
-}
+typedef void PickedDateCallback(DateTime dateTime);
 
-class _DatePickerButtonState extends State<DatePickerButton> {
+class DatePickerButton extends StatelessWidget {
+  final String buttonDescription;
+  final PickedDateCallback callback;
+
+  const DatePickerButton(
+      {Key key, @required this.buttonDescription, @required this.callback})
+      : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     Future<Null> _showDatePicker(BuildContext context) async {
@@ -15,30 +20,23 @@ class _DatePickerButtonState extends State<DatePickerButton> {
           initialDate: now,
           firstDate: now.subtract(Duration(days: 1)),
           lastDate: now.add(Duration(days: 7)));
-      print(picked);
+      callback(picked);
     }
 
-    Color hexToColor(int rgb) => new Color(0xFF000000 + rgb);
-
-    Color blueDark = hexToColor(0x335C81);
-    Color blueLight = hexToColor(0x74B3CE);
-    Color yellow = hexToColor(0xFCA311);
-    Color red = hexToColor(0xE15554);
-    Color green = hexToColor(0x3BB273);
-
-    return Theme(
-        data: new ThemeData(
-          primaryColor: blueDark,
-          accentColor: yellow,
-          cardColor: blueLight,
-          backgroundColor: blueDark,
-          highlightColor: red,
-          splashColor: green,
-        ),
-        child: FlatButton(
-          color: Colors.black,
-          child: Text("Wybierz"),
-          onPressed: () => _showDatePicker(context),
-        ));
+    return InkWell(
+      onTap: () => _showDatePicker(context),
+      child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Icon(
+              Icons.calendar_today,
+              color: DsxTheme.Colors.loginGradientEnd,
+            ),
+            new Container(width: 4.0),
+            new Text(this.buttonDescription ?? "",
+                style: DsxTheme.TextStyles.descriptionTextStyleDark),
+          ]),
+    );
   }
 }

@@ -1,7 +1,8 @@
 import 'package:dsx/style/theme.dart' as Theme;
+import 'package:dsx/utils/text_with_icon.dart';
 import 'package:flutter/material.dart';
 
-import '../../rooms/room.dart';
+import '../../models/room.dart';
 import '../../utils/indexable.dart';
 import '../../utils/time.dart';
 import '../views/rooms_details_page.dart';
@@ -33,13 +34,13 @@ class RoomDetails extends ItemDetails<Room> implements Indexable {
   Widget buildHeader() =>
       Text(
         room.name,
-        style: ItemDetails.headerTextStyle,
+        style: Theme.TextStyles.headerTextStyle,
         overflow: TextOverflow.ellipsis,
       );
 
   @override
   Widget buildDescription() =>
-      Text('DS ${room.dsNumber}', style: ItemDetails.subHeaderTextStyle);
+      Text('DS ${room.dsNumber}', style: Theme.TextStyles.subHeaderTextStyle);
 
   @override
   Widget buildRoutingWidget(Room item, CircleAvatar avatar, int index) =>
@@ -47,7 +48,7 @@ class RoomDetails extends ItemDetails<Room> implements Indexable {
 
   _determineIfOpen() {
     var now = Time(TimeOfDay.now());
-    return (now >= room.openFrom && now <= room.openFrom)
+    return (now >= room.openFrom && now <= room.openTo)
         ? Theme.Colors.logoBackgroundColor
         : Colors.red;
   }

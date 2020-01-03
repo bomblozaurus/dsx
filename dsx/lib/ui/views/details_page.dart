@@ -69,14 +69,7 @@ abstract class DetailsPage<I extends Fetchable> extends StatelessWidget
       child: SafeArea(
           child: new Container(
         decoration: new BoxDecoration(
-          gradient: new LinearGradient(
-            colors: [
-              Theme.Colors.loginGradientStart,
-              Theme.Colors.loginGradientEnd
-            ],
-            begin: const FractionalOffset(0.0, 0.0),
-            end: const FractionalOffset(0.0, 1.0),
-          ),
+          gradient: Theme.Colors.primaryGradient,
         ),
         constraints: new BoxConstraints.expand(),
         child: new Stack(

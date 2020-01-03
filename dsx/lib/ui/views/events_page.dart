@@ -3,7 +3,7 @@ import 'package:dsx/ui/widgets/event_details.dart';
 import 'package:flutter/material.dart';
 import 'package:global_configuration/global_configuration.dart';
 
-import '../../events/event.dart';
+import '../../models/event.dart';
 import '../../utils/navigable.dart';
 import '../widgets/lazy_loaded_list.dart';
 

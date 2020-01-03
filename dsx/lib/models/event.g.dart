@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'event.dart';
+part of '../models/event.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator

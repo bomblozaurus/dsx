@@ -1,9 +1,10 @@
 import 'package:dsx/utils/indexable.dart';
+import 'package:dsx/utils/text_with_icon.dart';
 import 'package:flutter/material.dart';
 
 import '../../style/theme.dart' as Theme;
 import '../../utils/fetchable.dart';
-import 'better_hero.dart';
+import 'material_hero.dart';
 
 typedef Widget RoutingWidgetBuilder(var a, var b, var c);
 
@@ -21,15 +22,6 @@ abstract class ItemDetails<I extends Fetchable> extends StatelessWidget
     @required this.heroDescription,
     @required this.item,
   }) : super(key: key);
-
-  static var baseTextStyle = const TextStyle(fontFamily: 'Poppins');
-  static var regularTextStyle = baseTextStyle.copyWith(
-      color: const Color(0xffb6b2df),
-      fontSize: 12.0,
-      fontWeight: FontWeight.w400);
-  static var subHeaderTextStyle = regularTextStyle.copyWith(fontSize: 14.0);
-  static var headerTextStyle = baseTextStyle.copyWith(
-      color: Colors.white, fontSize: 22.0, fontWeight: FontWeight.w600);
 
   List<TextWithIcon> getFooterItems();
 
@@ -81,13 +73,13 @@ abstract class ItemDetails<I extends Fetchable> extends StatelessWidget
           MaterialHero(
               tag: "$heroDescription-header-${this.index}",
               child: DefaultTextStyle(
-                  style: headerTextStyle,
+                  style: Theme.TextStyles.headerTextStyle,
                   child: alignAccordingly(child: buildHeader()))),
           new Container(height: 10.0),
           MaterialHero(
               tag: "$heroDescription-description-${this.index}",
               child: DefaultTextStyle(
-                  style: subHeaderTextStyle,
+                  style: Theme.TextStyles.subHeaderTextStyle,
                   child: alignAccordingly(child: buildDescription()))),
           MaterialHero(
               tag: "$heroDescription-separator-${this.index}",
@@ -100,7 +92,7 @@ abstract class ItemDetails<I extends Fetchable> extends StatelessWidget
           MaterialHero(
               tag: "$heroDescription-row-${this.index}",
               child: DefaultTextStyle(
-                style: regularTextStyle,
+                style: Theme.TextStyles.regularTextStyle,
                 child: alignAccordingly(
                     child: Row(
                   mainAxisSize: MainAxisSize.max,
@@ -122,7 +114,7 @@ abstract class ItemDetails<I extends Fetchable> extends StatelessWidget
       );
     }
 
-    Widget _buildEventInfoWithArrow() {
+    Widget _buildItemInfoWithArrow() {
       return Row(
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
@@ -133,12 +125,12 @@ abstract class ItemDetails<I extends Fetchable> extends StatelessWidget
     }
 
     _buildDescriptionBody() {
-      return horizontal ? _buildEventInfoWithArrow() : _buildItemInfo();
+      return horizontal ? _buildItemInfoWithArrow() : _buildItemInfo();
     }
 
     final CircleAvatar avatar = _fetchImage();
 
-    Widget buildEventDescription() {
+    Widget buildItemDescription() {
       return Container(
         margin: new EdgeInsets.fromLTRB(
             horizontal ? 112.0 : 12.0, horizontal ? 12.0 : 112.0, 12.0, 12.0),
@@ -197,7 +189,7 @@ abstract class ItemDetails<I extends Fetchable> extends StatelessWidget
                         ],
                       ),
                     )),
-                buildEventDescription(),
+                buildItemDescription(),
               ]),
               Container(
                   alignment: horizontal
@@ -210,11 +202,4 @@ abstract class ItemDetails<I extends Fetchable> extends StatelessWidget
           ),
         ));
   }
-}
-
-class TextWithIcon {
-  final String text;
-  final Icon icon;
-
-  TextWithIcon({this.text, this.icon});
 }
