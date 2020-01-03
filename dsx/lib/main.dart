@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:global_configuration/global_configuration.dart';
 
+import 'style/theme.dart' as Theme;
 import 'events/RouteGenerator.dart';
 
 void main() async {
@@ -15,7 +16,9 @@ class MyApp extends StatelessWidget {
     return new MaterialApp(
       title: 'DSX',
       theme: new ThemeData(
-        primarySwatch: Colors.lime,
+        colorScheme: ColorScheme.dark(),
+        primaryColor: Theme.Colors.loginGradientEnd,
+
       ),
       initialRoute: '/',
       onGenerateRoute: RouteGenerator.generateRoute,

@@ -15,10 +15,10 @@ class RoomDetailsPage extends DetailsPage {
 
   RoomDetailsPage(this.room, this.avatar, this.index, this.withToolbar)
       : super(
-          item: room,
-          avatar: avatar,
-          index: index,
-        );
+    item: room,
+    avatar: avatar,
+    index: index,
+  );
 
   static RoomDetailsPage fromRouting(room, avatar, index) =>
       RoomDetailsPage(room, avatar, index, false);
@@ -36,18 +36,10 @@ class RoomDetailsPage extends DetailsPage {
                   child: RoomDetails.vertical(room, index)),
             ]),
             sliverBuilders: <SliverBuilder>[
-              (context) => (SliverAppBar(
-                    title: Text("Wybierz termin",
-                        style:
-                            TextStyle(color: DsxTheme.Colors.loginGradientEnd)),
-                    backgroundColor: DsxTheme.Colors.logoBackgroundColor,
-                    automaticallyImplyLeading: false,
-                    centerTitle: true,
-                    pinned: true,
-                  )),
-              (context) => (SliverToBoxAdapter(
-                    child: SingleChildScrollView(
-                        child: Column(
+                  (context) =>
+              (SliverToBoxAdapter(
+                child: SingleChildScrollView(
+                    child: Column(
                       children: <Widget>[
                         Container(
                             height: 120,
@@ -62,9 +54,9 @@ class RoomDetailsPage extends DetailsPage {
                                 Theme(
                                     data: new ThemeData(
                                         accentColor:
-                                            DsxTheme.Colors.logoBackgroundColor,
+                                        DsxTheme.Colors.logoBackgroundColor,
                                         backgroundColor:
-                                            DsxTheme.Colors.loginGradientEnd,
+                                        DsxTheme.Colors.loginGradientEnd,
                                         brightness: Brightness.dark),
                                     child: DatePickerButton()),
                               ],
@@ -73,15 +65,16 @@ class RoomDetailsPage extends DetailsPage {
                         Container(height: 120, color: Colors.green),
                       ],
                     )),
-                  )),
-              (context) => (SliverToBoxAdapter(
-                    child: Container(
-                      child: SingleChildScrollView(
-                          child: Text(
-                              "asdasdjha asdkjkjasd asdkjhkjashd askdjhaksjd asdkjahsdkjasd kjasndkjasdkjasd askdjnaskjdn asdkjnaksjdn askdjnakjsdn askdjnaksjdn askjdnkajsnd askdjnaksjdn asdasdjha asdkjkjasd asdkjhkjashd askdjhaksjd asdkjahsdkjasd kjasndkjas asdasdjha asdkjkjasd asdkjhkjashd askdjhaksjd asdkjahsdkjasd kjasndkjasdkjasd askdjnaskjdn asdkjnaksjdn askdjnakjsdn askdjnaksjdn askjdnkajsnd askdjnaksjdn dkjasd askdjnaskjdn asdkjnaksjdn askdjnakjsdn askdjnaksjdn askjdnkajsnd askdjnaksjdn ",
-                              style: TextStyle(fontSize: 28.0))),
-                    ),
-                  )),
+              )),
+                  (context) =>
+              (SliverToBoxAdapter(
+                child: Container(
+                  child: SingleChildScrollView(
+                      child: Text(
+                          "asdasdjha asdkjkjasd asdkjhkjashd askdjhaksjd asdkjahsdkjasd kjasndkjasdkjasd askdjnaskjdn asdkjnaksjdn askdjnakjsdn askdjnaksjdn askjdnkajsnd askdjnaksjdn asdasdjha asdkjkjasd asdkjhkjashd askdjhaksjd asdkjahsdkjasd kjasndkjas asdasdjha asdkjkjasd asdkjhkjashd askdjhaksjd asdkjahsdkjasd kjasndkjasdkjasd askdjnaskjdn asdkjnaksjdn askdjnakjsdn askdjnaksjdn askjdnkajsnd askdjnaksjdn dkjasd askdjnaskjdn asdkjnaksjdn askdjnakjsdn askdjnaksjdn askjdnkajsnd askdjnaksjdn ",
+                          style: TextStyle(fontSize: 28.0))),
+                ),
+              )),
             ]), //
       )
     ]);
