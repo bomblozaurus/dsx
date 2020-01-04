@@ -30,4 +30,14 @@ class Reservation {
         numberOfPeople: json['numberOfPeople'] as int,
         accepted: json['accepted'] as bool);
   }
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'roomId': roomId,
+        'roomName': roomName,
+        'dateTime': dateTime?.toString()?.substring(0, 19),
+        'duration': duration.toDurationJson(),
+        'price': price,
+        'numberOfPeople': numberOfPeople,
+        'accepted': accepted,
+      };
 }

@@ -37,7 +37,9 @@ class RoomDetailsPage extends DetailsPage {
                   child: RoomDetails.vertical(room, index)),
             ]),
             sliverBuilders: <SliverBuilder>[
-              _buildSliverBoxWithWidget(ReservationForm()),
+              _buildSliverBoxWithWidget(ReservationForm(
+                roomId: room.id,
+              )),
               _buildSliverBox(_buildRoomDescription),
             ]), //
       )
@@ -54,10 +56,10 @@ class RoomDetailsPage extends DetailsPage {
     return Container(
       child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child:
+        padding: const EdgeInsets.all(16.0),
+        child:
             Text(room.description, style: DsxTheme.TextStyles.headerTextStyle),
-          )),
+      )),
     );
   }
 }
