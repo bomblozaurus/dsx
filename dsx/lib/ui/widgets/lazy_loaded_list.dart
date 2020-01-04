@@ -18,6 +18,7 @@ class LazyLoadedList<T, I extends Indexable> extends StatefulWidget {
       creator; //FIXME powinien być typ ItemCreator, ale nie da sie przekazac Indexable Function (dynamic, dynamic)
   final List<String> keyList;
   final Stream queryStream;
+  final Stream fetchingStream;
 
   const LazyLoadedList(
       {@required this.pageSize,
@@ -25,7 +26,8 @@ class LazyLoadedList<T, I extends Indexable> extends StatefulWidget {
       @required this.serializer,
       @required this.creator,
       @required this.keyList,
-      this.queryStream});
+      this.queryStream,
+      this.fetchingStream});
 
   @override
   _LazyLoadedListState createState() => _LazyLoadedListState<T>(
@@ -90,6 +92,12 @@ class _LazyLoadedListState<T> extends State<LazyLoadedList> {
           }
         });
       });
+
+      widget.fetchingStream?.listen((data) {
+        if (data == true) {
+          _fetchItems();
+        }
+      });
     } catch (e) {}
     ;
 
@@ -124,6 +132,7 @@ class _LazyLoadedListState<T> extends State<LazyLoadedList> {
     setState(() {
       this._isFetching = true;
     });
+
     int pageNo = (_items.length / this.pageSize).ceil();
     String pageOfItemsUrl =
         '$resourcePath?query=$_query&size=$pageSize&page=$pageNo';

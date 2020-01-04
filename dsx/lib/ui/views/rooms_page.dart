@@ -28,9 +28,24 @@ class BrowseRoomsPage extends StatefulWidget implements Navigable, Indexable {
 
 class _BrowseRoomsPageState extends State<BrowseRoomsPage> {
   StreamController<String> _queryStreamController = StreamController<String>();
+  StreamController<bool> _endOfScrollStreamController =
+      StreamController<bool>();
+  ScrollController _scrollController;
 
   _search(String query) {
     this._queryStreamController.sink.add(query);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController()
+      ..addListener(() {
+        if (_scrollController.position.pixels ==
+            _scrollController.position.maxScrollExtent) {
+          _emitEndOfScroll();
+        }
+      });
   }
 
   @override
@@ -45,6 +60,7 @@ class _BrowseRoomsPageState extends State<BrowseRoomsPage> {
           child: TabBarView(
             children: <Widget>[
               CustomScrollView(
+                controller: _scrollController,
                 slivers: <Widget>[
                   SearchAppBar(
                     search: _search,
@@ -53,6 +69,7 @@ class _BrowseRoomsPageState extends State<BrowseRoomsPage> {
                     child: Container(
                         width: MediaQuery.of(context).size.width,
                         child: LazyLoadedList(
+                          fetchingStream: _endOfScrollStreamController.stream,
                           queryStream: _queryStreamController.stream,
                           keyList: ['content'],
                           serializer: Room.fromJson,
@@ -75,6 +92,12 @@ class _BrowseRoomsPageState extends State<BrowseRoomsPage> {
   @override
   void dispose() {
     super.dispose();
+    _scrollController.dispose();
     _queryStreamController.close();
+    _endOfScrollStreamController.close();
+  }
+
+  void _emitEndOfScroll() {
+    _endOfScrollStreamController.sink.add(true);
   }
 }
