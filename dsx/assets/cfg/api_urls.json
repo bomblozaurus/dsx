@@ -9,5 +9,6 @@
   "eventOrderByDate": "/scopeOrderDate",
   "getAllForUser": "/rooms/getAllForUser",
   "reservationsUrl": "/reservations",
-  "keyHolderReservationsUrl": "/reservations/keyholder"
+  "keyHolderReservationsUrl": "/reservations/keyholder",
+  "freeReservationHoursUrl": "/reservations/freeForRoom"
 }

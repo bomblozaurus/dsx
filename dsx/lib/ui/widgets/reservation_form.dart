@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:dsx/models/reservation.dart';
 import 'package:dsx/style/theme.dart' as DsxTheme;
 import 'package:dsx/utils/requests.dart';
 import 'package:dsx/utils/time.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:global_configuration/global_configuration.dart';
 
 import 'date_picker_button.dart';
 
@@ -19,6 +23,8 @@ class ReservationForm extends StatefulWidget {
 class _ReservationFormState extends State<ReservationForm> {
   String _date, _hour, _duration;
   int _numberOfPeople, _currentStep = 0, _stepsNumber = 0;
+  Map<String, List<String>> _availableReservationHours =
+      Map<String, List<String>>();
 
   static const _darkGrey = DsxTheme.Colors.loginGradientEnd;
   static const _lime = DsxTheme.Colors.logoBackgroundColor;
@@ -66,8 +72,8 @@ class _ReservationFormState extends State<ReservationForm> {
             ),
             child: Stepper(
               physics: NeverScrollableScrollPhysics(),
-              onStepContinue: _onStepContinue,
-              onStepCancel: _onStepCancel,
+              onStepContinue: () => _onStepContinue(context),
+              onStepCancel: () => _onStepCancel(context),
               onStepTapped: _onStepTapped,
               currentStep: _currentStep,
               steps: _steps(),
@@ -78,7 +84,7 @@ class _ReservationFormState extends State<ReservationForm> {
     );
   }
 
-  _submitReservation() async {
+  _submitReservation(BuildContext context) async {
     _substringToInt(String string, int from, int to) =>
         int.parse(string.substring(from, to));
     _stringsToDateTime(String date, String time) {
@@ -97,20 +103,54 @@ class _ReservationFormState extends State<ReservationForm> {
         numberOfPeople: _numberOfPeople);
 
     var body = reservation.toJson();
-    print(reservation);
-    print(body);
     Request()
         .postToMobileApi(
-        resourcePath: "/reservations", body: body, additionalHeaders: null)
+        resourcePath: GlobalConfiguration().getString("reservationsUrl"),
+        body: body,
+        additionalHeaders: null)
         .then((response) {
       if (response.statusCode >= 200 && response.statusCode < 400) {
+        _showReservationSuccessful(context);
         setState(() {
           String empty;
           _date = empty;
-          _hour = empty;
-          _duration = empty;
           _numberOfPeople = null;
           _currentStep = 0;
+        });
+      } else {
+        _showReservationFailed(context);
+      }
+    });
+  }
+
+  void _handleDateChange(String date) async {
+    _setDate(date);
+
+    String getDateWithYearFirst(String date) {
+      return '${date.substring(6, 10)}-${date.substring(3, 5)}-${date.substring(
+          0, 2)}';
+    }
+
+    String resourcePath =
+    GlobalConfiguration().getString("freeReservationHoursUrl");
+    await Request()
+        .getToMobileApi(
+        resourcePath:
+        "$resourcePath?roomId=${widget.roomId}&date=${getDateWithYearFirst(
+            date)}",
+        additionalHeaders: null)
+        .then((response) {
+      if (response.statusCode == 200) {
+        Map body = json.decode(response.body);
+        setState(() {
+          _availableReservationHours = body.map((key, value) =>
+              MapEntry(
+                  key as String,
+                  List<String>.from(value
+                      .map(
+                          (duration) =>
+                          Time.fromDuration(duration / 60).toString())
+                      .toList())));
         });
       }
     });
@@ -137,7 +177,7 @@ class _ReservationFormState extends State<ReservationForm> {
         child: Padding(
           padding: const EdgeInsets.all(2.0),
           child: DatePickerField(
-            callback: _setDate,
+            callback: _handleDateChange,
             decoration:
             _inputDecoration("Data wydarzenia", Icons.calendar_today),
           ),
@@ -236,13 +276,15 @@ class _ReservationFormState extends State<ReservationForm> {
   }
 
   List<DropdownMenuItem> _getDropdownItems(List items) {
-    return items
+    return (items != null && items.isNotEmpty)
+        ? items
         .map((hour) =>
         DropdownMenuItem(
           child: Text(hour, style: TextStyle(color: Colors.white)),
           value: hour,
         ))
-        .toList();
+        .toList()
+        : List<DropdownMenuItem>();
   }
 
   void _setHourFrom(dynamic hour) {
@@ -269,18 +311,70 @@ class _ReservationFormState extends State<ReservationForm> {
     });
   }
 
-  _onStepCancel() => (_currentStep != 0) ? _setStep(--_currentStep) : null;
+  _onStepCancel(BuildContext context) =>
+      (_currentStep != 0) ? _setStep(--_currentStep) : null;
 
-  _onStepContinue() =>
+  _onStepContinue(BuildContext context) =>
       (_currentStep != _stepsNumber - 1)
           ? _setStep(++_currentStep)
-          : _submitReservation();
+          : _submitReservation(context);
 
   _onStepTapped(int index) => _setStep(index);
 
-  List<String> _getHours() => ["11:00", "12:00", "14:14", "13:00", "12:12"];
+  List<String> _getHours() {
+    if (_availableReservationHours != null &&
+        _availableReservationHours.isNotEmpty) {
+      return this
+          ._availableReservationHours
+          .entries
+          .map((entry) => entry.key)
+          .toList();
+    }
+    return List<String>();
+  }
 
-  List<String> _getDurations() => ["0:30", "1:00", "1:30", "2:00"];
+  List<String> _getDurations() {
+    if (_availableReservationHours != null &&
+        _availableReservationHours.isNotEmpty) {
+      return List<String>.from(_availableReservationHours[_hour] ?? List());
+    }
+    return List<String>();
+  }
+
+  _showReservationSuccessful(context) =>
+      _showFlushbar(
+          context: context,
+          title: "Rezerwacja została złożona",
+          message: "Oczekuje na zatwierdzenie prez klucznika.",
+          color: _darkGrey,
+          icon: Icon(Icons.done, color: _lime),
+          duration: Duration(seconds: 3));
+
+  void _showFlushbar({BuildContext context,
+    String title,
+    String message,
+    Color color,
+    Icon icon,
+    Duration duration = const Duration(seconds: 5)}) {
+    Flushbar(
+      title: title,
+      message: message,
+      backgroundColor: color,
+      icon: icon,
+      dismissDirection: FlushbarDismissDirection.HORIZONTAL,
+      duration: duration,
+    )
+      ..show(context);
+  }
+
+  void _showReservationFailed(BuildContext context) =>
+      _showFlushbar(
+        context: context,
+        title: "Rezerwacja nie została złożona",
+        message: "Spróbuj wybrać inny termin rezerwacji",
+        color: _darkGrey,
+        icon: Icon(Icons.close, color: Colors.red),
+      );
 }
 
 class SimpleStep {
@@ -304,6 +398,5 @@ class ReservationRequest {
   final String date, hour, duration;
   final int numberOfPeople, roomId;
 
-  ReservationRequest(
-      {this.date, this.hour, this.duration, this.numberOfPeople, this.roomId});
+  ReservationRequest({this.date, this.hour, this.duration, this.numberOfPeople, this.roomId});
 }

@@ -23,7 +23,7 @@ class Time {
 
   static Time fromDuration(double duration) {
     int minute = duration.toInt();
-    int hour = minute > 60 ? (minute / 60).floor() : 0;
+    int hour = minute >= 60 ? (minute / 60).floor() : 0;
     minute -= 60 * hour;
     return Time(TimeOfDay(hour: hour, minute: minute));
   }
