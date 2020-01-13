@@ -344,11 +344,11 @@ class _ReservationFormState extends State<ReservationForm> {
   _showReservationSuccessful(context) =>
       _showFlushbar(
           context: context,
-          title: "Rezerwacja została złożona",
-          message: "Oczekuje na zatwierdzenie prez klucznika.",
-          color: _darkGrey,
-          icon: Icon(Icons.done, color: _lime),
-          duration: Duration(seconds: 3));
+      title: "Rezerwacja została złożona",
+      message: "Oczekuje na zatwierdzenie przez klucznika.",
+      color: _darkGrey,
+      icon: Icon(Icons.done, color: _lime),
+      duration: Duration(seconds: 3));
 
   void _showFlushbar({BuildContext context,
     String title,

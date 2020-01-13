@@ -263,7 +263,7 @@ class _LoginPageState extends State<LoginPage>
             padding: EdgeInsets.only(top: 10.0),
             child: FlatButton(
                 onPressed: () async {
-                  showInSnackBar("To sobie przypomnij :)", Colors.red);
+                  showInSnackBar("Funkcjonalność nieobsługiwana", Colors.red);
                   await JwtTokenUtils()
                       .getToken()
                       .then((value) => print(value));
@@ -398,7 +398,7 @@ class _LoginPageState extends State<LoginPage>
 
   void _loginSuccessful(token) async {
     JwtTokenUtils().saveToken(token.substring(13, token.length - 2));
-//    UserDetails userDetails = await JwtTokenUtils().getUserDetails();
+    UserDetails userDetails = await JwtTokenUtils().getUserDetails();
     showInSnackBar("Zalogowano poprawnie", Colors.lime);
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => MainPage()));
