@@ -1,15 +1,38 @@
 import 'package:dsx/style/theme.dart' as DsxTheme;
 import 'package:flutter/material.dart';
 
-typedef void PickedDateCallback(DateTime dateTime);
+typedef void PickedDateCallback(String date);
 
-class DatePickerButton extends StatelessWidget {
-  final String buttonDescription;
+class DatePickerField extends StatefulWidget {
   final PickedDateCallback callback;
+  final InputDecoration decoration;
 
-  const DatePickerButton(
-      {Key key, @required this.buttonDescription, @required this.callback})
+  const DatePickerField(
+      {Key key, @required this.decoration, @required this.callback})
       : super(key: key);
+
+  @override
+  _DatePickerFieldState createState() => _DatePickerFieldState();
+}
+
+class _DatePickerFieldState extends State<DatePickerField> {
+  TextEditingController _dateInputController;
+
+  @override
+  void initState() {
+    super.initState();
+    _dateInputController = TextEditingController();
+    _dateInputController.text = _processDateTime(DateTime.now());
+
+    WidgetsBinding.instance.addPostFrameCallback(
+        (_) => widget.callback(_dateInputController.text));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _dateInputController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,23 +43,29 @@ class DatePickerButton extends StatelessWidget {
           initialDate: now,
           firstDate: now.subtract(Duration(days: 1)),
           lastDate: now.add(Duration(days: 7)));
-      callback(picked);
+
+      var readableDate = _processDateTime(picked);
+
+      setState(() {
+        _dateInputController.text = readableDate;
+      });
+
+      widget.callback(readableDate);
     }
 
-    return InkWell(
-      onTap: () => _showDatePicker(context),
-      child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Icon(
-              Icons.calendar_today,
-              color: DsxTheme.Colors.loginGradientEnd,
-            ),
-            new Container(width: 4.0),
-            new Text(this.buttonDescription ?? "",
-                style: DsxTheme.TextStyles.descriptionTextStyleDark),
-          ]),
-    );
+    return TextField(
+        onTap: () => _showDatePicker(context),
+        decoration: this.widget.decoration,
+        readOnly: true,
+        style: DsxTheme.TextStyles.descriptionTextStyleDark,
+        controller: _dateInputController);
+  }
+
+  _processDateTime(DateTime dateTime) {
+    return dateTime != null ? _dateTimeToDate(dateTime) : "";
+  }
+
+  String _dateTimeToDate(DateTime dateTime) {
+    return '${dateTime.day.toString().padLeft(2, '0')}.${dateTime.month.toString().padLeft(2, '0')}.${dateTime.year}';
   }
 }

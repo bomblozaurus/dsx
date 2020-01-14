@@ -20,11 +20,27 @@ class _ReservationPageState extends State<ReservationPage> {
   }
 
   StreamController<String> _queryStreamController = StreamController<String>();
+  StreamController<bool> _endOfScrollStreamController =
+      StreamController<bool>();
+  ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController()
+      ..addListener(() {
+        if (_scrollController.position.pixels ==
+            _scrollController.position.maxScrollExtent) {
+          _emitEndOfScroll();
+        }
+      });
+  }
 
   @override
   void dispose() {
     super.dispose();
     _queryStreamController.close();
+    _endOfScrollStreamController.close();
   }
 
   @override
@@ -35,22 +51,28 @@ class _ReservationPageState extends State<ReservationPage> {
           gradient: Theme.Colors.primaryGradient,
         ),
         child: CustomScrollView(
+          controller: _scrollController,
           slivers: <Widget>[
             SearchAppBar(
               search: _search,
             ),
             SliverToBoxAdapter(
               child: LazyLoadedList(
+                fetchingStream: _endOfScrollStreamController.stream,
                 queryStream: _queryStreamController.stream,
                 keyList: ["content"],
                 serializer: Reservation.fromJson,
                 creator: ReservationDetails.fromReservation,
                 pageSize: 10,
                 resourcePath:
-                    GlobalConfiguration().getString("reservationsUrl"),
+                GlobalConfiguration().getString("reservationsUrl"),
               ),
             ),
           ],
         ));
+  }
+
+  void _emitEndOfScroll() {
+    _endOfScrollStreamController.sink.add(true);
   }
 }

@@ -21,7 +21,7 @@ class DeviceInfo {
   }
 
   String _readAndroidInfo(AndroidDeviceInfo info) {
-    return '$info.androidId, $info.model, $info.manufacturer, $info.isPhysicalDevice, $info.product';
+    return '${info.androidId}, ${info.model}, ${info.manufacturer}, ${info.isPhysicalDevice}, ${info.product}';
   }
 
   String _readIosInfo(IosDeviceInfo info) {

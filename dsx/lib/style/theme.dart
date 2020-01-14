@@ -21,7 +21,7 @@ class TextStyles {
       subHeaderTextStyle.copyWith(color: Colors.loginGradientEnd);
   static var descriptionTextStyleDark = regularTextStyle.copyWith(
       color: Colors.loginGradientEnd,
-      fontSize: 18.0,
+      fontSize: 16.0,
       fontWeight: Material.FontWeight.bold);
 
   static var descriptionTextStyle = descriptionTextStyleDark.copyWith(

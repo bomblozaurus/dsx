@@ -143,11 +143,9 @@ class _LoginPageState extends State<LoginPage>
     _physics = AlwaysScrollableScrollPhysics();
     _pageController = PageController()
       ..addListener(() {
-        print("PAGE: ${_pageController.page}");
         _physics = (_pageController.page == 0.0)
             ? NeverScrollableScrollPhysics()
             : AlwaysScrollableScrollPhysics();
-        print(_physics);
       });
   }
 
@@ -244,7 +242,8 @@ class _LoginPageState extends State<LoginPage>
                           emailLoginController,
                           TextInputType.emailAddress,
                           FontAwesomeIcons.envelope,
-                          "Email"),
+                          "Email",
+                          onSubmitFocusNode: passwordLoginNode),
                       _buildSeparator(),
                       _buildTextField(
                           passwordLoginNode,
@@ -264,6 +263,7 @@ class _LoginPageState extends State<LoginPage>
             padding: EdgeInsets.only(top: 10.0),
             child: FlatButton(
                 onPressed: () async {
+                  showInSnackBar("Funkcjonalność nieobsługiwana", Colors.red);
                   await JwtTokenUtils()
                       .getToken()
                       .then((value) => print(value));
@@ -302,28 +302,33 @@ class _LoginPageState extends State<LoginPage>
                       firstNameSignUpController,
                       TextInputType.text,
                       FontAwesomeIcons.user,
-                      "Imię"),
+                      "Imię",
+                      onSubmitFocusNode: lastNameSignUpNode),
                   _buildSeparator(),
                   _buildTextField(lastNameSignUpNode, lastNameSignUpController,
-                      TextInputType.text, FontAwesomeIcons.user, "Nazwisko"),
+                      TextInputType.text, FontAwesomeIcons.user, "Nazwisko",
+                      onSubmitFocusNode: emailSignUpNode),
                   _buildSeparator(),
                   _buildTextField(
                       emailSignUpNode,
                       emailSignUpController,
                       TextInputType.emailAddress,
                       FontAwesomeIcons.envelope,
-                      "Email"),
+                      "Email",
+                      onSubmitFocusNode: passwordSignUpNode),
                   _buildSeparator(),
                   _buildTextField(passwordSignUpNode, passwordSignUpController,
                       TextInputType.text, FontAwesomeIcons.lock, "Hasło",
-                      obscureText: _obscureTextSignUp),
+                      obscureText: _obscureTextSignUp,
+                      onSubmitFocusNode: indexNumberSignUpNode),
                   _buildSeparator(),
                   _buildTextField(
                       indexNumberSignUpNode,
                       indexNumberSignUpController,
                       TextInputType.number,
                       FontAwesomeIcons.graduationCap,
-                      "Numer indeksu"),
+                      "Numer indeksu",
+                      onSubmitFocusNode: studentHouseSignUpNode),
                   _buildSeparator(),
                   _buildTextField(
                       studentHouseSignUpNode,
@@ -358,7 +363,7 @@ class _LoginPageState extends State<LoginPage>
         email: email,
         password: password,
         indexNumber: indexNumber,
-        studentHouse: studentHouseNumber-1);
+        studentHouse: studentHouseNumber - 1);
     var data = user.toJson();
     await Request()
         .postToMobileApiWithoutTokenHeader(
@@ -368,7 +373,7 @@ class _LoginPageState extends State<LoginPage>
   }
 
   _processSignupResponse(response) {
-    response.statusCode == HttpStatus.ok
+    response.statusCode == HttpStatus.created
         ? showInSnackBar("Zarejestrowano pomyślnie!", Colors.blue)
         : showInSnackBar("Rejestracja nieudana!", Colors.red);
   }
@@ -391,15 +396,15 @@ class _LoginPageState extends State<LoginPage>
         : _loginFailed(response.body);
   }
 
-  void _loginSuccessful(token) {
+  void _loginSuccessful(token) async {
     JwtTokenUtils().saveToken(token.substring(13, token.length - 2));
+    UserDetails userDetails = await JwtTokenUtils().getUserDetails();
     showInSnackBar("Zalogowano poprawnie", Colors.lime);
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => MainPage()));
   }
 
   _loginFailed(token) {
-    print(token);
     showInSnackBar("Nie udało się zalogować", Colors.red);
   }
 
@@ -452,17 +457,19 @@ class _LoginPageState extends State<LoginPage>
 
   Widget _buildTextField(FocusNode focusNode, TextEditingController controller,
       TextInputType textInputType, IconData iconData, String text,
-      {bool obscureText = false}) {
+      {bool obscureText = false, FocusNode onSubmitFocusNode}) {
     return Container(
       width: 320,
       child: Padding(
           padding:
-              EdgeInsets.only(top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+          EdgeInsets.only(top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
           child: TextField(
             focusNode: focusNode,
             controller: controller,
             keyboardType: textInputType,
             obscureText: obscureText,
+            onSubmitted: (_) =>
+                FocusScope.of(context).requestFocus(onSubmitFocusNode ?? null),
             style: TextStyle(
                 fontFamily: Theme.Fonts.loginFontSemiBold,
                 fontSize: Theme.Fonts.loginFontSize,

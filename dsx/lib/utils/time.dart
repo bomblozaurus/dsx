@@ -17,14 +17,20 @@ class Time {
         minute: int.parse(string.substring(3, 5))));
   }
 
+  static Time fromDurationString(String string) {
+    return fromString(string.length == 5 ? string : '0$string');
+  }
+
   static Time fromDuration(double duration) {
     int minute = duration.toInt();
-    int hour = minute > 60 ? (minute / 60).floor() : 0;
+    int hour = minute >= 60 ? (minute / 60).floor() : 0;
     minute -= 60 * hour;
     return Time(TimeOfDay(hour: hour, minute: minute));
   }
 
   Map<String, dynamic> toJson() => {'time': '${toString()}:00'};
+
+  int toDurationJson() => (time.hour * 60 + time.minute) * 60;
 
   bool operator >=(Time time) {
     return (this == time ||
