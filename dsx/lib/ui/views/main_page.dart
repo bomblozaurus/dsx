@@ -60,8 +60,8 @@ class MainPageState extends State<MainPage> {
     return _pageOptions
         .map((widget) => widget as Navigable)
         .map((navigable) => BottomNavigationBarItem(
-        icon: Icon(navigable.getIconData()),
-        title: Text(navigable.getDescription().toUpperCase())))
+            icon: Icon(navigable.getIconData()),
+            title: Text(navigable.getDescription().toUpperCase())))
         .toList();
   }
 }

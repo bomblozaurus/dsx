@@ -6,7 +6,7 @@ import '../../style/theme.dart' as Theme;
 import '../../utils/fetchable.dart';
 import 'material_hero.dart';
 
-typedef Widget RoutingWidgetBuilder(var a, var b, var c);
+typedef Widget RoutingWidgetBuilder(var item, var avatar, var index);
 
 abstract class ItemDetails<I extends Fetchable> extends StatelessWidget
     implements Indexable {
