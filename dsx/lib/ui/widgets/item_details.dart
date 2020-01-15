@@ -1,3 +1,4 @@
+import 'package:dsx/utils/api_image.dart';
 import 'package:dsx/utils/indexable.dart';
 import 'package:dsx/utils/text_with_icon.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +47,7 @@ abstract class ItemDetails<I extends Fetchable> extends StatelessWidget
       return Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment:
-              horizontal ? MainAxisAlignment.start : MainAxisAlignment.center,
+          horizontal ? MainAxisAlignment.start : MainAxisAlignment.center,
           children: <Widget>[
             icon,
             Container(width: 4.0),
@@ -95,9 +96,9 @@ abstract class ItemDetails<I extends Fetchable> extends StatelessWidget
                 style: Theme.TextStyles.regularTextStyle,
                 child: alignAccordingly(
                     child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: _buildFooterItems(),
-                )),
+                      mainAxisSize: MainAxisSize.max,
+                      children: _buildFooterItems(),
+                    )),
               )),
         ],
       );
@@ -105,10 +106,8 @@ abstract class ItemDetails<I extends Fetchable> extends StatelessWidget
 
     CircleAvatar _fetchImage() {
       return CircleAvatar(
-        child: CircleAvatar(
-          backgroundImage: NetworkImage(item.urls().elementAt(0)),
-          radius: 45.0,
-        ),
+        child: ApiImage.getCircleAvatar(
+            url: item.urls().elementAt(0), radius: 45.0),
         backgroundColor: Theme.Colors.logoBackgroundColor,
         radius: 50.0,
       );
@@ -141,8 +140,7 @@ abstract class ItemDetails<I extends Fetchable> extends StatelessWidget
 
     return InkWell(
         onTap: horizontal
-            ? () =>
-            Navigator.of(context).push(PageRouteBuilder(
+            ? () => Navigator.of(context).push(PageRouteBuilder(
                 pageBuilder: (_, __, ___) =>
                     buildRoutingWidget(item, avatar, index),
                 transitionsBuilder:

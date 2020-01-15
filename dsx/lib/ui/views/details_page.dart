@@ -1,3 +1,4 @@
+import 'package:dsx/utils/api_image.dart';
 import 'package:dsx/utils/indexable.dart';
 import 'package:flutter/material.dart';
 
@@ -27,11 +28,8 @@ abstract class DetailsPage<I extends Fetchable> extends StatelessWidget
 
   Container _getBackground() {
     return Container(
-      child: new Image.network(
-        item.urls().elementAt(0),
-        fit: BoxFit.cover,
-        height: 270.0,
-      ),
+      child:
+          ApiImage.getImage(url: item.urls().elementAt(0), fit: BoxFit.cover),
       constraints: new BoxConstraints.expand(height: 265.0),
     );
   }
@@ -68,16 +66,16 @@ abstract class DetailsPage<I extends Fetchable> extends StatelessWidget
       color: Colors.black,
       child: SafeArea(
           child: Container(
-        decoration: BoxDecoration(
-          gradient: Theme.Colors.primaryGradient,
-        ),
-        constraints: BoxConstraints.expand(),
-        child: Stack(
-          children: <Widget>[
-            getContent(),
-          ],
-        ),
-      )),
+            decoration: BoxDecoration(
+              gradient: Theme.Colors.primaryGradient,
+            ),
+            constraints: BoxConstraints.expand(),
+            child: Stack(
+              children: <Widget>[
+                getContent(),
+              ],
+            ),
+          )),
     );
   }
 }
