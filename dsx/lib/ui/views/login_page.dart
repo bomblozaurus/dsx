@@ -17,19 +17,17 @@ class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
 
   @override
-  _LoginPageState createState() => new _LoginPageState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage>
     with SingleTickerProviderStateMixin {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final FocusNode emailLoginNode = FocusNode();
   final FocusNode passwordLoginNode = FocusNode();
-  final TextEditingController emailLoginController =
-      new TextEditingController();
-  final TextEditingController passwordLoginController =
-      new TextEditingController();
+  final TextEditingController emailLoginController = TextEditingController();
+  final TextEditingController passwordLoginController = TextEditingController();
 
   final FocusNode passwordSignUpNode = FocusNode();
   final FocusNode emailSignUpNode = FocusNode();
@@ -37,18 +35,17 @@ class _LoginPageState extends State<LoginPage>
   final FocusNode lastNameSignUpNode = FocusNode();
   final FocusNode studentHouseSignUpNode = FocusNode();
   final FocusNode indexNumberSignUpNode = FocusNode();
-  final TextEditingController emailSignUpController =
-      new TextEditingController();
+  final TextEditingController emailSignUpController = TextEditingController();
   final TextEditingController firstNameSignUpController =
-      new TextEditingController();
+      TextEditingController();
   final TextEditingController lastNameSignUpController =
-      new TextEditingController();
+      TextEditingController();
   final TextEditingController passwordSignUpController =
-      new TextEditingController();
+      TextEditingController();
   final TextEditingController studentHouseSignUpController =
-      new TextEditingController();
+      TextEditingController();
   final TextEditingController indexNumberSignUpController =
-      new TextEditingController();
+      TextEditingController();
 
   bool _obscureTextLogin = true;
   bool _obscureTextSignUp = true;
@@ -62,7 +59,7 @@ class _LoginPageState extends State<LoginPage>
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: new Scaffold(
+      child: Scaffold(
         key: _scaffoldKey,
         body: NotificationListener<OverscrollIndicatorNotification>(
           onNotification: (overscroll) {
@@ -71,10 +68,13 @@ class _LoginPageState extends State<LoginPage>
           child: SingleChildScrollView(
             physics: _physics,
             child: Container(
-              width: MediaQuery.of(context).size.width,
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width,
               height: 870.0,
-              decoration: new BoxDecoration(
-                gradient: new LinearGradient(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
                     colors: [
                       Theme.Colors.loginGradientStart,
                       Theme.Colors.loginGradientEnd
@@ -150,10 +150,10 @@ class _LoginPageState extends State<LoginPage>
   }
 
   void showInSnackBar(String value, Color color) {
-    FocusScope.of(context).requestFocus(new FocusNode());
+    FocusScope.of(context).requestFocus(FocusNode());
     _scaffoldKey.currentState?.removeCurrentSnackBar();
-    _scaffoldKey.currentState.showSnackBar(new SnackBar(
-      content: new Text(
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
+      content: Text(
         value,
         textAlign: TextAlign.center,
         style: TextStyle(
@@ -398,7 +398,6 @@ class _LoginPageState extends State<LoginPage>
 
   void _loginSuccessful(token) async {
     JwtTokenUtils().saveToken(token.substring(13, token.length - 2));
-    UserDetails userDetails = await JwtTokenUtils().getUserDetails();
     showInSnackBar("Zalogowano poprawnie", Colors.lime);
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => MainPage()));
@@ -412,7 +411,7 @@ class _LoginPageState extends State<LoginPage>
       String text, double topMargin, Function() onPressed) {
     return Container(
       margin: EdgeInsets.only(top: topMargin),
-      decoration: new BoxDecoration(
+      decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(5.0)),
         boxShadow: <BoxShadow>[
           BoxShadow(
@@ -426,7 +425,7 @@ class _LoginPageState extends State<LoginPage>
             blurRadius: 20.0,
           ),
         ],
-        gradient: new LinearGradient(
+        gradient: LinearGradient(
             colors: [
               Theme.Colors.loginGradientEnd,
               Theme.Colors.loginGradientStart

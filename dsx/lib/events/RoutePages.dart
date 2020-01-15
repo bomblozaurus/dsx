@@ -26,9 +26,7 @@ class FirstPage extends StatelessWidget {
               child: Text('Aktualności'),
               onPressed: () {
                 // Pushing a named route
-                Navigator.of(context).pushNamed(
-                  '/news'
-                );
+                Navigator.of(context).pushNamed('/s');
               },
             ),
             RaisedButton(

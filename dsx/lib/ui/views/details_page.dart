@@ -26,7 +26,7 @@ abstract class DetailsPage<I extends Fetchable> extends StatelessWidget
   }
 
   Container _getBackground() {
-    return new Container(
+    return Container(
       child: new Image.network(
         item.urls().elementAt(0),
         fit: BoxFit.cover,
@@ -37,18 +37,18 @@ abstract class DetailsPage<I extends Fetchable> extends StatelessWidget
   }
 
   Container _getGradient() {
-    return new Container(
-      margin: new EdgeInsets.only(top: 105.0),
+    return Container(
+      margin: EdgeInsets.only(top: 105.0),
       height: 160.0,
-      decoration: new BoxDecoration(
-        gradient: new LinearGradient(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
           colors: <Color>[
-            new Color.fromRGBO(
+            Color.fromRGBO(
                 Theme.Colors.loginGradientStart.red,
                 Theme.Colors.loginGradientStart.green,
                 Theme.Colors.loginGradientStart.blue,
                 0.0),
-            new Color.fromRGBO(
+            Color.fromRGBO(
                 Theme.Colors.loginGradientStart.red,
                 Theme.Colors.loginGradientStart.green,
                 Theme.Colors.loginGradientStart.blue,
@@ -67,12 +67,12 @@ abstract class DetailsPage<I extends Fetchable> extends StatelessWidget
     return Material(
       color: Colors.black,
       child: SafeArea(
-          child: new Container(
-        decoration: new BoxDecoration(
+          child: Container(
+        decoration: BoxDecoration(
           gradient: Theme.Colors.primaryGradient,
         ),
-        constraints: new BoxConstraints.expand(),
-        child: new Stack(
+        constraints: BoxConstraints.expand(),
+        child: Stack(
           children: <Widget>[
             getContent(),
           ],

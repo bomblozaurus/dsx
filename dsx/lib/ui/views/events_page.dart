@@ -24,7 +24,7 @@ class BrowseEventsPage extends StatelessWidget implements Navigable {
   Widget build(BuildContext context) {
     return Container(
         width: MediaQuery.of(context).size.width,
-        decoration: new BoxDecoration(
+        decoration: BoxDecoration(
           gradient: Theme.Colors.primaryGradient,
         ),
         child: LazyLoadedList(

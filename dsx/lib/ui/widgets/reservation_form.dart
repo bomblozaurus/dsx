@@ -58,10 +58,7 @@ class _ReservationFormState extends State<ReservationForm> {
           height: 15,
         ),
         Container(
-          width: MediaQuery
-              .of(context)
-              .size
-              .width * 0.9,
+          width: MediaQuery.of(context).size.width * 0.9,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(20.0)),
             color: _lime,
@@ -170,7 +167,7 @@ class _ReservationFormState extends State<ReservationForm> {
 
   Widget _buildDatePicker() {
     return Theme(
-        data: new ThemeData(
+        data: ThemeData(
             accentColor: _lime,
             backgroundColor: _darkGrey,
             brightness: Brightness.dark),
@@ -344,11 +341,11 @@ class _ReservationFormState extends State<ReservationForm> {
   _showReservationSuccessful(context) =>
       _showFlushbar(
           context: context,
-      title: "Rezerwacja została złożona",
-      message: "Oczekuje na zatwierdzenie przez klucznika.",
-      color: _darkGrey,
-      icon: Icon(Icons.done, color: _lime),
-      duration: Duration(seconds: 3));
+          title: "Rezerwacja została złożona",
+          message: "Oczekuje na zatwierdzenie przez klucznika.",
+          color: _darkGrey,
+          icon: Icon(Icons.done, color: _lime),
+          duration: Duration(seconds: 3));
 
   void _showFlushbar({BuildContext context,
     String title,
@@ -398,5 +395,6 @@ class ReservationRequest {
   final String date, hour, duration;
   final int numberOfPeople, roomId;
 
-  ReservationRequest({this.date, this.hour, this.duration, this.numberOfPeople, this.roomId});
+  ReservationRequest(
+      {this.date, this.hour, this.duration, this.numberOfPeople, this.roomId});
 }

@@ -8,12 +8,12 @@ class MenuPage extends StatefulWidget {
   MenuPage({Key key}) : super(key: key);
 
   @override
-  _MenuPageState createState() => new _MenuPageState();
+  _MenuPageState createState() => _MenuPageState();
 }
 
 class _MenuPageState extends State<MenuPage>
     with SingleTickerProviderStateMixin {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final FocusNode myFocusNodeEmailLogin = FocusNode();
   final FocusNode myFocusNodePasswordLogin = FocusNode();
@@ -23,13 +23,13 @@ class _MenuPageState extends State<MenuPage>
   final FocusNode myFocusNodeFirstName = FocusNode();
   final FocusNode myFocusNodeLastName = FocusNode();
 
-  TextEditingController loginEmailController = new TextEditingController();
-  TextEditingController loginPasswordController = new TextEditingController();
+  TextEditingController loginEmailController = TextEditingController();
+  TextEditingController loginPasswordController = TextEditingController();
 
-  TextEditingController signUpEmailController = new TextEditingController();
-  TextEditingController signUpFirstNameController = new TextEditingController();
-  TextEditingController signUpLastNameController = new TextEditingController();
-  TextEditingController signUpPasswordController = new TextEditingController();
+  TextEditingController signUpEmailController = TextEditingController();
+  TextEditingController signUpFirstNameController = TextEditingController();
+  TextEditingController signUpLastNameController = TextEditingController();
+  TextEditingController signUpPasswordController = TextEditingController();
 
   PageController _pageController;
 
@@ -38,7 +38,7 @@ class _MenuPageState extends State<MenuPage>
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return Scaffold(
       key: _scaffoldKey,
       body: NotificationListener<OverscrollIndicatorNotification>(
         onNotification: (overscroll) {
@@ -50,8 +50,8 @@ class _MenuPageState extends State<MenuPage>
             height: MediaQuery.of(context).size.height >= 775.0
                 ? MediaQuery.of(context).size.height
                 : 775.0,
-            decoration: new BoxDecoration(
-              gradient: new LinearGradient(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
                   colors: [
                     Theme.Colors.loginGradientStart,
                     Theme.Colors.loginGradientEnd
@@ -106,7 +106,7 @@ class _MenuPageState extends State<MenuPage>
       String text, double topMargin, Function() onPressed) {
     return Container(
       margin: EdgeInsets.only(top: topMargin),
-      decoration: new BoxDecoration(
+      decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(5.0)),
         boxShadow: <BoxShadow>[
           BoxShadow(
@@ -120,7 +120,7 @@ class _MenuPageState extends State<MenuPage>
             blurRadius: 20.0,
           ),
         ],
-        gradient: new LinearGradient(
+        gradient: LinearGradient(
             colors: [
               Theme.Colors.loginGradientEnd,
               Theme.Colors.loginGradientStart

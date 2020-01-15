@@ -1,6 +1,7 @@
 import 'package:dsx/utils/time.dart';
 
 class Reservation {
+  final int id;
   final int roomId;
   final String roomName;
   final DateTime dateTime;
@@ -10,7 +11,8 @@ class Reservation {
   final bool accepted;
 
   Reservation(
-      {this.roomId,
+      {this.id,
+      this.roomId,
       this.roomName,
       this.dateTime,
       this.duration,
@@ -20,6 +22,7 @@ class Reservation {
 
   static Reservation fromJson(Map<String, dynamic> json) {
     return Reservation(
+        id: json['id'] as int,
         roomId: json['roomId'] as int,
         roomName: json['roomName'] as String,
         dateTime: DateTime.parse(json['dateTime']) == null
@@ -31,7 +34,9 @@ class Reservation {
         accepted: json['accepted'] as bool);
   }
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
+  Map<String, dynamic> toJson() =>
+      <String, dynamic>{
+        'id': id,
         'roomId': roomId,
         'roomName': roomName,
         'dateTime': dateTime?.toString()?.substring(0, 19),

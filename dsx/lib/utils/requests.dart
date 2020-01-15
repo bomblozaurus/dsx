@@ -11,15 +11,17 @@ class Request {
 
   Future createPost(String url, {Map body, Map headers}) async {
     var jsonBody = json.encode(body);
-    var response = await http.post(url, headers: headers, body: jsonBody);
+    var response = await http
+        .post(url, headers: headers, body: jsonBody)
+        .timeout(Duration(seconds: 5));
 
     return response;
   }
 
   Future<Response> createGet(String url, {Map headers}) async {
-    var toReturn = http.get(url, headers: headers);
-
-    return toReturn;
+    var response =
+        http.get(url, headers: headers).timeout(Duration(seconds: 5));
+    return response;
   }
 
   Future<Response> getToMobileApi(

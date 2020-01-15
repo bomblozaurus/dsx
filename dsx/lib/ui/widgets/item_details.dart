@@ -43,14 +43,14 @@ abstract class ItemDetails<I extends Fetchable> extends StatelessWidget
     }
 
     Widget _buildIconWithDescription({String value, Icon icon}) {
-      return new Row(
+      return Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment:
               horizontal ? MainAxisAlignment.start : MainAxisAlignment.center,
           children: <Widget>[
             icon,
-            new Container(width: 4.0),
-            new Text(value),
+            Container(width: 4.0),
+            Text(value),
           ]);
     }
 
@@ -75,7 +75,7 @@ abstract class ItemDetails<I extends Fetchable> extends StatelessWidget
               child: DefaultTextStyle(
                   style: Theme.TextStyles.headerTextStyle,
                   child: alignAccordingly(child: buildHeader()))),
-          new Container(height: 10.0),
+          Container(height: 10.0),
           MaterialHero(
               tag: "$heroDescription-description-${this.index}",
               child: DefaultTextStyle(
@@ -85,7 +85,7 @@ abstract class ItemDetails<I extends Fetchable> extends StatelessWidget
               tag: "$heroDescription-separator-${this.index}",
               child: alignAccordingly(
                   child: Container(
-                      margin: new EdgeInsets.symmetric(vertical: 8.0),
+                      margin: EdgeInsets.symmetric(vertical: 8.0),
                       height: 3.0,
                       width: horizontal ? 24.0 : 64.0,
                       color: Theme.Colors.logoBackgroundColor))),
@@ -132,16 +132,17 @@ abstract class ItemDetails<I extends Fetchable> extends StatelessWidget
 
     Widget buildItemDescription() {
       return Container(
-        margin: new EdgeInsets.fromLTRB(
+        margin: EdgeInsets.fromLTRB(
             horizontal ? 112.0 : 12.0, horizontal ? 12.0 : 112.0, 12.0, 12.0),
-        constraints: new BoxConstraints.expand(),
+        constraints: BoxConstraints.expand(),
         child: _buildDescriptionBody(),
       );
     }
 
     return InkWell(
         onTap: horizontal
-            ? () => Navigator.of(context).push(new PageRouteBuilder(
+            ? () =>
+            Navigator.of(context).push(PageRouteBuilder(
                 pageBuilder: (_, __, ___) =>
                     buildRoutingWidget(item, avatar, index),
                 transitionsBuilder:
@@ -166,7 +167,7 @@ abstract class ItemDetails<I extends Fetchable> extends StatelessWidget
             vertical: 16.0,
             horizontal: 24.0,
           ),
-          child: new Stack(
+          child: Stack(
             children: <Widget>[
               Stack(children: <Widget>[
                 Hero(
@@ -174,17 +175,17 @@ abstract class ItemDetails<I extends Fetchable> extends StatelessWidget
                     child: Container(
                       height: horizontal ? 124.0 : 186.0,
                       margin: horizontal
-                          ? new EdgeInsets.only(left: 46.0)
-                          : new EdgeInsets.only(top: 46.0),
-                      decoration: new BoxDecoration(
+                          ? EdgeInsets.only(left: 46.0)
+                          : EdgeInsets.only(top: 46.0),
+                      decoration: BoxDecoration(
                         color: Theme.Colors.loginGradientEnd,
                         shape: BoxShape.rectangle,
-                        borderRadius: new BorderRadius.circular(8.0),
+                        borderRadius: BorderRadius.circular(8.0),
                         boxShadow: <BoxShadow>[
-                          new BoxShadow(
+                          BoxShadow(
                             color: Colors.black12,
                             blurRadius: 10.0,
-                            offset: new Offset(0.0, 10.0),
+                            offset: Offset(0.0, 10.0),
                           ),
                         ],
                       ),

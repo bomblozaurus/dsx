@@ -12,7 +12,7 @@ class RoomsPage extends StatefulWidget implements Navigable {
   RoomsPage({Key key}) : super(key: key);
 
   @override
-  _RoomsPageState createState() => new _RoomsPageState();
+  _RoomsPageState createState() => _RoomsPageState();
 
   @override
   String getDescription() {
@@ -27,7 +27,7 @@ class RoomsPage extends StatefulWidget implements Navigable {
 
 class _RoomsPageState extends State<RoomsPage>
     with SingleTickerProviderStateMixin {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final FocusNode myFocusNodeEmailLogin = FocusNode();
   final FocusNode myFocusNodePasswordLogin = FocusNode();
@@ -42,7 +42,7 @@ class _RoomsPageState extends State<RoomsPage>
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return Scaffold(
       key: _scaffoldKey,
       body: NotificationListener<OverscrollIndicatorNotification>(
         onNotification: (overscroll) {
@@ -54,8 +54,8 @@ class _RoomsPageState extends State<RoomsPage>
           height: MediaQuery.of(context).size.height >= 775.0
               ? MediaQuery.of(context).size.height
               : 775.0,
-          decoration: new BoxDecoration(
-            gradient: new LinearGradient(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
                 colors: [
                   Theme.Colors.loginGradientStart,
                   Theme.Colors.loginGradientEnd
@@ -104,7 +104,7 @@ class _RoomsPageState extends State<RoomsPage>
       String text, double topMargin, Function() onPressed) {
     return Container(
       margin: EdgeInsets.only(top: topMargin),
-      decoration: new BoxDecoration(
+      decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(5.0)),
         boxShadow: <BoxShadow>[
           BoxShadow(
@@ -118,7 +118,7 @@ class _RoomsPageState extends State<RoomsPage>
             blurRadius: 20.0,
           ),
         ],
-        gradient: new LinearGradient(
+        gradient: LinearGradient(
             colors: [
               Theme.Colors.loginGradientEnd,
               Theme.Colors.loginGradientStart
