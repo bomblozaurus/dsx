@@ -38,7 +38,7 @@ class WhatFirst extends StatelessWidget {
 }
 
 Widget _splashScreen() {
-  return new Container(
+  return Container(
     decoration: BoxDecoration(gradient: Theme.Colors.primaryGradient),
   );
 }

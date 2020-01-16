@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:global_configuration/global_configuration.dart';
 
-import 'style/theme.dart' as Theme;
 import 'events/RouteGenerator.dart';
+import 'style/theme.dart' as Theme;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GlobalConfiguration().loadFromAsset("api_urls");
-  runApp(new MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
+    return MaterialApp(
       title: 'DSX',
-      theme: new ThemeData(
+      theme: ThemeData(
         colorScheme: ColorScheme.dark(),
         primaryColor: Theme.Colors.loginGradientEnd,
-
       ),
       initialRoute: '/',
       onGenerateRoute: RouteGenerator.generateRoute,

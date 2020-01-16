@@ -4,109 +4,120 @@ import 'package:dsx/utils/indexable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-class ReservationDetails extends StatelessWidget implements Indexable {
+abstract class ReservationDetails extends StatelessWidget implements Indexable {
   final Reservation reservation;
   final int index;
 
-  const ReservationDetails({Key key, this.reservation, this.index})
-      : super(key: key);
+  const ReservationDetails({
+    Key key,
+    this.reservation,
+    this.index,
+  }) : super(key: key);
 
-  static ReservationDetails fromReservation(
-      dynamic reservation, dynamic index) {
-    return ReservationDetails(reservation: reservation, index: index);
-  }
+  List<Widget> getDetailsColumnWidgets();
+
+  Widget buildTitle();
 
   @override
   Widget build(BuildContext context) {
-    Widget _buildIconWithDescription({String value, Icon icon}) {
-      return new Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
+    Widget _buildConfirmedInfo() {
+      return DefaultTextStyle(
+          style: Theme.TextStyles.subHeaderTextStyle,
+          child: buildIconWithDescription(
+              value: acceptedText(),
+              icon: Icon(acceptedIcon(), color: acceptedColor())));
+    }
+
+    Widget _buildDate() {
+      return DefaultTextStyle(
+          style: Theme.TextStyles.subHeaderTextStyle,
+          child: buildIconWithDescription(
+              value: _dateTimeToReadable(reservation.dateTime),
+              icon: Icon(Icons.calendar_today, color: Colors.white)));
+    }
+
+    Widget _buildBottomRow() {
+      return Row(
+        children: <Widget>[
+          SizedBox(width: 16.0),
+          _buildConfirmedInfo(),
+          SizedBox(
+            width: 16.0,
+          ),
+          _buildDate(),
+        ],
+      );
+    }
+
+    Widget _buildMainContent() {
+      return SizedBox(
+        width: MediaQuery.of(context).size.width * 0.7,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            icon,
-            new Container(width: 4.0),
-            new Text(value),
-          ]);
+            buildTitle(),
+            _buildBottomRow(),
+          ],
+        ),
+      );
+    }
+
+    Widget _buildDetailsColumn() {
+      return Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: DefaultTextStyle(
+            style: Theme.TextStyles.regularTextStyle,
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: getDetailsColumnWidgets())),
+      );
     }
 
     Widget _buildContent() {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.7,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 16.0),
-                  child: Text(
-                    reservation.roomName,
-                    style: Theme.TextStyles.headerTextStyle,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                Row(
-                  children: <Widget>[
-                    SizedBox(width: 16.0),
-                    DefaultTextStyle(
-                        style: Theme.TextStyles.subHeaderTextStyle,
-                        child: _buildIconWithDescription(
-                            value: acceptedText(),
-                            icon:
-                                Icon(acceptedIcon(), color: acceptedColor()))),
-                    SizedBox(
-                      width: 16.0,
-                    ),
-                    DefaultTextStyle(
-                        style: Theme.TextStyles.subHeaderTextStyle,
-                        child: _buildIconWithDescription(
-                            value: _dateTimeToReadable(reservation.dateTime),
-                            icon: Icon(Icons.calendar_today,
-                                color: Colors.white))),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          Container(
-              width: 1.0,
-              height: 80.0,
-              color: Color.fromRGBO(acceptedColor().red, acceptedColor().green,
-                  acceptedColor().blue, 0.5)),
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: DefaultTextStyle(
-              style: Theme.TextStyles.regularTextStyle,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  _buildIconWithDescription(
-                      value: reservation.duration.toString(),
-                      icon: Icon(Icons.timelapse, color: Colors.white)),
-                  _buildIconWithDescription(
-                      value: "${reservation.price} PLN",
-                      icon: Icon(Icons.monetization_on, color: Colors.white)),
-                  _buildIconWithDescription(
-                      value: reservation.numberOfPeople.toString(),
-                      icon: Icon(Icons.people, color: Colors.white))
-                ],
-              ),
-            ),
-          ),
+          _buildMainContent(),
+          _buildSeparator(),
+          _buildDetailsColumn(),
         ],
       );
     }
 
-    return Card(
-      color: Theme.Colors.loginGradientEnd,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-      elevation: 8.0,
-      margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-      child: Container(height: 100, child: _buildContent()),
+    return InkWell(
+      child: Card(
+        color: Theme.Colors.loginGradientEnd,
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+        elevation: 8.0,
+        margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+        child: Container(height: 100, child: _buildContent()),
+      ),
     );
+  }
+
+  Widget buildIconWithDescription({String value, Icon icon}) {
+    return Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          icon,
+          Container(width: 4.0),
+          Text(
+            value,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ]);
+  }
+
+  Container _buildSeparator() {
+    return Container(
+        width: 1.0,
+        height: 80.0,
+        color: Color.fromRGBO(acceptedColor().red, acceptedColor().green,
+            acceptedColor().blue, 0.5));
   }
 
   Color acceptedColor() =>

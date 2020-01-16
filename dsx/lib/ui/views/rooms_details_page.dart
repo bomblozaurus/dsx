@@ -11,9 +11,8 @@ class RoomDetailsPage extends DetailsPage {
   final Room room;
   final CircleAvatar avatar;
   final int index;
-  final bool withToolbar;
 
-  RoomDetailsPage(this.room, this.avatar, this.index, this.withToolbar)
+  RoomDetailsPage(this.room, this.avatar, this.index)
       : super(
           item: room,
           avatar: avatar,
@@ -21,7 +20,7 @@ class RoomDetailsPage extends DetailsPage {
         );
 
   static RoomDetailsPage fromRouting(room, avatar, index) =>
-      RoomDetailsPage(room, avatar, index, false);
+      RoomDetailsPage(room, avatar, index);
 
   @override
   Widget getContent() {

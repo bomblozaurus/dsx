@@ -1,12 +1,7 @@
-import 'dart:math';
-
-import 'package:json_annotation/json_annotation.dart';
+import 'package:dsx/utils/link.dart';
 
 import '../utils/fetchable.dart';
 
-part 'event.g.dart';
-
-@JsonSerializable()
 class Event extends Object implements Fetchable {
   final String name;
   final DateTime date;
@@ -18,8 +13,10 @@ class Event extends Object implements Fetchable {
   final String description;
   final String scope;
   final String studentHouse;
+  final String imageUrl;
 
-  Event({this.name,
+  Event({
+    this.name,
     this.date,
     this.street,
     this.houseNumber,
@@ -28,9 +25,9 @@ class Event extends Object implements Fetchable {
     this.zip,
     this.description,
     this.scope,
-    this.studentHouse});
-
-  static Event fromJson(Map<String, dynamic> json) => _$EventFromJson(json);
+    this.studentHouse,
+    this.imageUrl,
+  });
 
   String getAddress() {
     return '$city, $street $houseNumber/$apartmentNumber';
@@ -49,9 +46,37 @@ class Event extends Object implements Fetchable {
     return '${date.day}.${date.month.toString().padLeft(2, '0')}.${date.year} ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
   }
 
-  Map<String, dynamic> toJson() => _$EventToJson(this);
+  static Event fromJson(Map<String, dynamic> json) {
+    List links = json['links'].map((link) => Link.fromJson(link)).toList();
+    return Event(
+      name: json['name'] as String,
+      date:
+          json['date'] == null ? null : DateTime.parse(json['date'] as String),
+      street: json['street'] as String,
+      houseNumber: json['houseNumber'] as int,
+      apartmentNumber: json['apartmentNumber'] as int,
+      city: json['city'] as String,
+      zip: json['zip'] as String,
+      description: json['description'] as String,
+      scope: json['scope'] as String,
+      studentHouse: json['studentHouse'] as String,
+      imageUrl: links.firstWhere((link) => link.rel == 'mainImage').href,
+    );
+  }
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'name': this.name,
+        'date': this.date?.toIso8601String(),
+        'street': this.street,
+        'houseNumber': this.houseNumber,
+        'apartmentNumber': this.apartmentNumber,
+        'city': this.city,
+        'zip': this.zip,
+        'description': this.description,
+        'scope': this.scope,
+        'studentHouse': this.studentHouse
+      };
 
   @override
-  List<String> urls() =>
-      ['https://picsum.photos/${300 + Random.secure().nextInt(10)}'];
+  List<String> urls() => List<String>.of([this.imageUrl]);
 }

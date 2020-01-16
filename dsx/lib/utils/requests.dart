@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dsx/utils/device_info.dart';
 import 'package:dsx/utils/jwt_token.dart';
@@ -11,20 +12,22 @@ class Request {
 
   Future createPost(String url, {Map body, Map headers}) async {
     var jsonBody = json.encode(body);
-    var response = await http.post(url, headers: headers, body: jsonBody);
+    var response = await http
+        .post(url, headers: headers, body: jsonBody)
+        .timeout(Duration(seconds: 5));
 
     return response;
   }
 
   Future<Response> createGet(String url, {Map headers}) async {
-    var toReturn = http.get(url, headers: headers);
-
-    return toReturn;
+    var response =
+        http.get(url, headers: headers).timeout(Duration(seconds: 5));
+    return response;
   }
 
   Future<Response> getToMobileApi(
       {String resourcePath, Map additionalHeaders}) async {
-    var headers = await _createGetHeaders();
+    var headers = await _createHeaders();
     if (additionalHeaders != null) {
       headers.addAll(additionalHeaders);
     }
@@ -34,13 +37,28 @@ class Request {
 
   Future<Response> postToMobileApi(
       {String resourcePath, Map body, Map additionalHeaders}) async {
-    var headers = await _createGetHeaders();
+    var headers = await _createHeaders();
     if (additionalHeaders != null) {
       headers.addAll(additionalHeaders);
     }
 
     return await this
         .createPost(_getUrl(resourcePath), body: body, headers: headers);
+  }
+
+  Future<Response> multiPartPostToMobileApi(
+      {String resourcePath, File file, Map additionalHeaders}) async {
+    var headers = await _createHeaders()
+      ..addAll(additionalHeaders ?? Map<String, String>());
+
+    var uri = Uri.parse(_getUrl(resourcePath));
+    var request = http.MultipartRequest('POST', uri)
+      ..headers.addAll(headers)
+      ..files.add(MultipartFile.fromBytes("file", file.readAsBytesSync(),
+          filename: "file"));
+
+    var streamedResponse = await request.send();
+    return http.Response.fromStream(streamedResponse);
   }
 
   Future postToMobileApiWithoutTokenHeader(
@@ -55,13 +73,13 @@ class Request {
         .createPost(_getUrl(resourcePath), body: body, headers: headers);
   }
 
-  Future<Map> _createGetHeaders() async {
+  Future<Map> _createHeaders() async {
     return await DeviceInfo().getInfoHeader()
       ..addAll(await JwtTokenUtils().getTokenHeader())
       ..addAll(jsonHeader);
   }
 
   String _getUrl(String resourcePath) {
-    return GlobalConfiguration().getString("baseUrl") + resourcePath;
+    return '${GlobalConfiguration().getString("baseUrl")}$resourcePath';
   }
 }

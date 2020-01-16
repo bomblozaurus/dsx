@@ -34,6 +34,7 @@ class _BrowseRoomsPageState extends State<BrowseRoomsPage> {
   StreamController<bool> _endOfScrollStreamController =
       StreamController<bool>();
   ScrollController _scrollController;
+  int tabsCount, initialIndex;
 
   _search(String query) {
     this._queryStreamController.sink.add(query);
@@ -60,11 +61,11 @@ class _BrowseRoomsPageState extends State<BrowseRoomsPage> {
           decoration: BoxDecoration(gradient: Theme.Colors.primaryGradient),
         ),
         DefaultTabController(
-          length: _userDetails.isKeyholder() ? 3 : 2,
-          initialIndex: _userDetails.isKeyholder() ? 1 : 0,
           child: TabBarView(
             children: _getTabViewChildren(context, _userDetails),
           ),
+          length: tabsCount,
+          initialIndex: initialIndex,
         ),
       ],
     );
@@ -73,11 +74,16 @@ class _BrowseRoomsPageState extends State<BrowseRoomsPage> {
   List<Widget> _getTabViewChildren(
       BuildContext context, UserDetails _userDetails) {
     List<Widget> children = List<Widget>();
-    if (_userDetails.isKeyholder()) {
+    if (_userDetails?.isKeyholder() ?? false) {
       children.add(KeyholderPage());
     }
 
     children..add(_buildRoomsList(context))..add(ReservationPage());
+
+    setState(() {
+      tabsCount = children.length;
+      initialIndex = children.length == 3 ? 1 : 0;
+    });
 
     return children;
   }
@@ -104,14 +110,6 @@ class _BrowseRoomsPageState extends State<BrowseRoomsPage> {
         ),
       ],
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _scrollController.dispose();
-    _queryStreamController.close();
-    _endOfScrollStreamController.close();
   }
 
   void _emitEndOfScroll() {

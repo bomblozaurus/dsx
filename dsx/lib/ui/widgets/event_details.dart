@@ -25,8 +25,7 @@ class EventDetails extends ItemDetails<Event> implements Indexable {
             horizontal: horizontal,
             heroDescription: "item");
 
-  static EventDetails fromEvent(var event, var index) =>
-      EventDetails(
+  static EventDetails fromEvent(var event, var index) => EventDetails(
         event: event,
         index: index,
         horizontal: true,
@@ -43,7 +42,9 @@ class EventDetails extends ItemDetails<Event> implements Indexable {
 
   @override
   Widget buildDescription() =>
-      Text(event.getAddress(),);
+      Text(
+        event.getAddress(),
+      );
 
   @override
   Widget buildHeader() =>

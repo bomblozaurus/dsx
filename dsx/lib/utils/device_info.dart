@@ -16,7 +16,7 @@ class DeviceInfo {
     return deviceInfo;
   }
 
-  Future<Map<String,String>> getInfoHeader() async {
+  Future<Map<String, String>> getInfoHeader() async {
     return {"Device-info": await this.getInfo()};
   }
 

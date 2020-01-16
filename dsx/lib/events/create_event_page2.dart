@@ -13,7 +13,7 @@ class CreateEventPage extends StatefulWidget {
 }
 
 class _CreateEventPageState extends State<CreateEventPage> {
-  final GlobalKey<ScaffoldState> _formKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _formKey = GlobalKey<ScaffoldState>();
   String _date = "Data";
   String _time = "Czas";
   String _scopeName;
@@ -28,18 +28,29 @@ class _CreateEventPageState extends State<CreateEventPage> {
   final FocusNode myFocusNodeHouseNumber = FocusNode();
   final FocusNode myFocusNodeApartmentNumber = FocusNode();
 
-  TextEditingController nameEventController = new TextEditingController();
-  TextEditingController streetEventController = new TextEditingController();
-  TextEditingController cityEventController = new TextEditingController();
-  TextEditingController zipEventController = new TextEditingController();
-  TextEditingController descriptionEventController = new TextEditingController();
-  TextEditingController houseNumberEventController = new TextEditingController();
-  TextEditingController apartmentNumberEventController = new TextEditingController();
+  TextEditingController nameEventController = TextEditingController();
+  TextEditingController streetEventController = TextEditingController();
+  TextEditingController cityEventController = TextEditingController();
+  TextEditingController zipEventController = TextEditingController();
+  TextEditingController descriptionEventController = TextEditingController();
+  TextEditingController houseNumberEventController = TextEditingController();
+  TextEditingController apartmentNumberEventController =
+      TextEditingController();
 
   int _year, _month, _day, _hour, _minute, _second;
 
   List<String> _scopeList = ['Wszyscy', 'Studenci', 'Akademik']; // Option 2
-  List<String> _studentHouseList = ['DS1', 'DS2', 'DS3','DS4','DS5','DS6','DS7','DS8','DS9'];
+  List<String> _studentHouseList = [
+    'DS1',
+    'DS2',
+    'DS3',
+    'DS4',
+    'DS5',
+    'DS6',
+    'DS7',
+    'DS8',
+    'DS9'
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +59,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
         body: SingleChildScrollView(
           child: Container(
               padding:
-              const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+                  const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
               child: Builder(
                   builder: (context) => Form(
                       key: _formKey,
@@ -107,47 +118,50 @@ class _CreateEventPageState extends State<CreateEventPage> {
                                 "Kod pocztowy"),
                             _buildSeparator(),
                             DropdownButton(
-                              hint: Text('Wybierz akademik:'), // Not necessary for Option 1
+                              hint: Text('Wybierz akademik:'),
+                              // Not necessary for Option 1
                               value: _studentHouse,
-                              onChanged: (newValue) {
+                              onChanged: (Value) {
                                 setState(() {
-                                  _studentHouse = newValue;
+                                  _studentHouse = Value;
                                 });
                               },
                               items: _studentHouseList.map((location) {
                                 return DropdownMenuItem(
-                                  child: new Text(location),
+                                  child: Text(location),
                                   value: location,
                                 );
                               }).toList(),
                             ),
-                             DropdownButton(
-                              hint: Text('Wybierz zasięg ogłoszenia'), // Not necessary for Option 1
+                            DropdownButton(
+                              hint: Text('Wybierz zasięg ogłoszenia'),
+                              // Not necessary for Option 1
                               value: _scopeName,
-                              onChanged: (newValue) {
+                              onChanged: (Value) {
                                 setState(() {
                                   setState(() {
-                                    _scopeName = newValue;
+                                    _scopeName = Value;
                                   });
-                                  if(newValue=='Wszyscy') {
+                                  if (Value == 'Wszyscy') {
                                     setState(() => _scope = "OTHER");
                                   }
-                                  if(newValue=='Studenci') {
+                                  if (Value == 'Studenci') {
                                     setState(() => _scope = "STUDENT");
                                   }
-                                  if(newValue=='Akademik') {
+                                  if (Value == 'Akademik') {
                                     setState(() => _scope = "DORMITORY");
                                   }
                                 });
                               },
                               items: _scopeList.map((location) {
                                 return DropdownMenuItem(
-                                  child: new Text(location),
+                                  child: Text(location),
                                   value: location,
                                 );
                               }).toList(),
                             ),
-                            _buildSubmitButton("DODAJ", 50.0, () => _createEvent())
+                            _buildSubmitButton(
+                                "DODAJ", 50.0, () => _createEvent())
                           ])))),
         ));
   }
@@ -162,7 +176,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
       {bool obscureText = false}) {
     return Padding(
         padding:
-        EdgeInsets.only(top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+            EdgeInsets.only(top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
         child: TextField(
           focusNode: focusNode,
           controller: controller,
@@ -181,7 +195,6 @@ class _CreateEventPageState extends State<CreateEventPage> {
         ));
   }
 
-
   Widget buildTimePicker(BuildContext context) {
     return Container(
       child: Column(
@@ -199,13 +212,18 @@ class _CreateEventPageState extends State<CreateEventPage> {
                   ),
                   showTitleActions: true,
                   minTime: DateTime.now(),
-                  maxTime: DateTime(2030, 12, 31), onConfirm: (date) {
+                  maxTime: DateTime(2030, 12, 31),
+                  onConfirm: (date) {
                     print('potwierdź $date');
                     _date = '${date.year} - ${date.month} - ${date.day}';
-                    setState(() {_year=date.year;
-                    _month=date.month;
-                    _day=date.day;});
-                  }, currentTime: DateTime.now(), locale: LocaleType.en);
+                    setState(() {
+                      _year = date.year;
+                      _month = date.month;
+                      _day = date.day;
+                    });
+                  },
+                  currentTime: DateTime.now(),
+                  locale: LocaleType.en);
             },
             child: Container(
               alignment: Alignment.center,
@@ -259,13 +277,18 @@ class _CreateEventPageState extends State<CreateEventPage> {
                   theme: DatePickerTheme(
                     containerHeight: 210.0,
                   ),
-                  showTitleActions: true, onConfirm: (time) {
+                  showTitleActions: true,
+                  onConfirm: (time) {
                     print('potwierdź $time');
                     _time = '${time.hour} : ${time.minute} : ${time.second}';
-                    setState(() {_hour=time.hour;
-                    _minute = time.minute;
-                    _second = time.second;});
-                  }, currentTime: DateTime.now(), locale: LocaleType.en);
+                    setState(() {
+                      _hour = time.hour;
+                      _minute = time.minute;
+                      _second = time.second;
+                    });
+                  },
+                  currentTime: DateTime.now(),
+                  locale: LocaleType.en);
               setState(() {});
             },
             child: Container(
@@ -314,10 +337,10 @@ class _CreateEventPageState extends State<CreateEventPage> {
   }
 
   void showInSnackBar(String value, Color color) {
-    FocusScope.of(context).requestFocus(new FocusNode());
+    FocusScope.of(context).requestFocus(FocusNode());
     _formKey.currentState?.removeCurrentSnackBar();
-    _formKey.currentState.showSnackBar(new SnackBar(
-      content: new Text(
+    _formKey.currentState.showSnackBar(SnackBar(
+      content: Text(
         value,
         textAlign: TextAlign.center,
         style: TextStyle(
@@ -340,25 +363,24 @@ class _CreateEventPageState extends State<CreateEventPage> {
 
   _createEvent() async {
     String name = nameEventController.text;
-    String street =streetEventController.text;
+    String street = streetEventController.text;
     int houseNumber = num.tryParse(streetEventController.text);
-    int apartmentNumber = num.tryParse(apartmentNumberEventController.text) ;
+    int apartmentNumber = num.tryParse(apartmentNumberEventController.text);
     String city = cityEventController.text;
     String zip = zipEventController.text;
     String description = descriptionEventController.text;
 
     var event = Event(
         name: name,
-        date: new DateTime(_year,_month,_day,_hour,_minute,_second),
+        date: DateTime(_year, _month, _day, _hour, _minute, _second),
         street: street,
-      houseNumber: houseNumber,
-      apartmentNumber: apartmentNumber,
-      city: city,
-      zip: zip,
-      description: description,
-      scope: _scope,
-      studentHouse: _studentHouse
-    );
+        houseNumber: houseNumber,
+        apartmentNumber: apartmentNumber,
+        city: city,
+        zip: zip,
+        description: description,
+        scope: _scope,
+        studentHouse: _studentHouse);
     var data = event.toJson();
 
     print(data);
@@ -367,15 +389,16 @@ class _CreateEventPageState extends State<CreateEventPage> {
         GlobalConfiguration().getString("eventsUrl");
     var headers = Request.jsonHeader;
 
-    await Request().createPost(url, body: data, headers: headers).then(
-            (value) => print("Zarejestrowano pomyślnie!"));
+    await Request()
+        .createPost(url, body: data, headers: headers)
+        .then((value) => print("Zarejestrowano pomyślnie!"));
   }
 
 /*  Container _buildSubmitButton(
       String text, double topMargin, Function() onPressed) {
     return Container(
       margin: EdgeInsets.only(top: topMargin),
-      decoration: new BoxDecoration(
+      decoration:  BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(5.0)),
         boxShadow: <BoxShadow>[
           BoxShadow(
@@ -389,7 +412,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
             blurRadius: 20.0,
           ),
         ],
-        gradient: new LinearGradient(
+        gradient:  LinearGradient(
             colors: [
               Theme.Colors.loginGradientEnd,
               Theme.Colors.loginGradientStart
@@ -421,7 +444,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
   Container _buildSubmitButton(
       String text, double topMargin, Function() onPressed) {
     return Container(
-      decoration: new BoxDecoration(
+      decoration: BoxDecoration(
         boxShadow: <BoxShadow>[
           BoxShadow(
             color: Theme.Colors.loginGradientStart,
@@ -432,7 +455,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
             blurRadius: 20.0,
           ),
         ],
-        gradient: new LinearGradient(
+        gradient: LinearGradient(
             colors: [
               Theme.Colors.loginGradientEnd,
               Theme.Colors.loginGradientStart

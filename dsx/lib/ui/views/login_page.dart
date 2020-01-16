@@ -1,7 +1,7 @@
 import 'dart:io';
 
+import 'package:dsx/models/user.dart';
 import 'package:dsx/style/theme.dart' as Theme;
-import 'package:dsx/users/user.dart';
 import 'package:dsx/utils/bubble_indication_painter.dart';
 import 'package:dsx/utils/jwt_token.dart';
 import 'package:dsx/utils/requests.dart';
@@ -17,19 +17,17 @@ class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
 
   @override
-  _LoginPageState createState() => new _LoginPageState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage>
     with SingleTickerProviderStateMixin {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final FocusNode emailLoginNode = FocusNode();
   final FocusNode passwordLoginNode = FocusNode();
-  final TextEditingController emailLoginController =
-      new TextEditingController();
-  final TextEditingController passwordLoginController =
-      new TextEditingController();
+  final TextEditingController emailLoginController = TextEditingController();
+  final TextEditingController passwordLoginController = TextEditingController();
 
   final FocusNode passwordSignUpNode = FocusNode();
   final FocusNode emailSignUpNode = FocusNode();
@@ -37,18 +35,17 @@ class _LoginPageState extends State<LoginPage>
   final FocusNode lastNameSignUpNode = FocusNode();
   final FocusNode studentHouseSignUpNode = FocusNode();
   final FocusNode indexNumberSignUpNode = FocusNode();
-  final TextEditingController emailSignUpController =
-      new TextEditingController();
+  final TextEditingController emailSignUpController = TextEditingController();
   final TextEditingController firstNameSignUpController =
-      new TextEditingController();
+      TextEditingController();
   final TextEditingController lastNameSignUpController =
-      new TextEditingController();
+      TextEditingController();
   final TextEditingController passwordSignUpController =
-      new TextEditingController();
+      TextEditingController();
   final TextEditingController studentHouseSignUpController =
-      new TextEditingController();
+      TextEditingController();
   final TextEditingController indexNumberSignUpController =
-      new TextEditingController();
+      TextEditingController();
 
   bool _obscureTextLogin = true;
   bool _obscureTextSignUp = true;
@@ -62,7 +59,7 @@ class _LoginPageState extends State<LoginPage>
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: new Scaffold(
+      child: Scaffold(
         key: _scaffoldKey,
         body: NotificationListener<OverscrollIndicatorNotification>(
           onNotification: (overscroll) {
@@ -73,8 +70,8 @@ class _LoginPageState extends State<LoginPage>
             child: Container(
               width: MediaQuery.of(context).size.width,
               height: 870.0,
-              decoration: new BoxDecoration(
-                gradient: new LinearGradient(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
                     colors: [
                       Theme.Colors.loginGradientStart,
                       Theme.Colors.loginGradientEnd
@@ -150,10 +147,10 @@ class _LoginPageState extends State<LoginPage>
   }
 
   void showInSnackBar(String value, Color color) {
-    FocusScope.of(context).requestFocus(new FocusNode());
+    FocusScope.of(context).requestFocus(FocusNode());
     _scaffoldKey.currentState?.removeCurrentSnackBar();
-    _scaffoldKey.currentState.showSnackBar(new SnackBar(
-      content: new Text(
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
+      content: Text(
         value,
         textAlign: TextAlign.center,
         style: TextStyle(
@@ -238,12 +235,14 @@ class _LoginPageState extends State<LoginPage>
                   child: Column(
                     children: <Widget>[
                       _buildTextField(
-                          emailLoginNode,
-                          emailLoginController,
-                          TextInputType.emailAddress,
-                          FontAwesomeIcons.envelope,
-                          "Email",
-                          onSubmitFocusNode: passwordLoginNode),
+                        emailLoginNode,
+                        emailLoginController,
+                        TextInputType.emailAddress,
+                        FontAwesomeIcons.envelope,
+                        "Email",
+                        onSubmitFocusNode: passwordLoginNode,
+                        keyboardType: TextInputType.emailAddress,
+                      ),
                       _buildSeparator(),
                       _buildTextField(
                           passwordLoginNode,
@@ -310,12 +309,14 @@ class _LoginPageState extends State<LoginPage>
                       onSubmitFocusNode: emailSignUpNode),
                   _buildSeparator(),
                   _buildTextField(
-                      emailSignUpNode,
-                      emailSignUpController,
-                      TextInputType.emailAddress,
-                      FontAwesomeIcons.envelope,
-                      "Email",
-                      onSubmitFocusNode: passwordSignUpNode),
+                    emailSignUpNode,
+                    emailSignUpController,
+                    TextInputType.emailAddress,
+                    FontAwesomeIcons.envelope,
+                    "Email",
+                    onSubmitFocusNode: passwordSignUpNode,
+                    keyboardType: TextInputType.emailAddress,
+                  ),
                   _buildSeparator(),
                   _buildTextField(passwordSignUpNode, passwordSignUpController,
                       TextInputType.text, FontAwesomeIcons.lock, "Hasło",
@@ -350,12 +351,16 @@ class _LoginPageState extends State<LoginPage>
   }
 
   _registerUser() async {
-    String firstName = firstNameSignUpController.text;
-    String lastName = lastNameSignUpController.text;
-    String email = emailSignUpController.text;
-    String password = passwordSignUpController.text;
-    int indexNumber = int.parse(indexNumberSignUpController.text);
-    int studentHouseNumber = int.parse(studentHouseSignUpController.text);
+    String firstName = firstNameSignUpController.text.trim();
+    String lastName = lastNameSignUpController.text.trim();
+    String email = emailSignUpController.text.trim();
+    String password = passwordSignUpController.text.trim();
+
+    String indexString = indexNumberSignUpController.text;
+    String studentHouseString = indexNumberSignUpController.text;
+    int indexNumber = indexString != null ? int.parse(indexString) : null;
+    int studentHouseNumber =
+    studentHouseString != null ? int.parse(studentHouseString) : null;
 
     var user = User(
         firstName: firstName,
@@ -379,14 +384,14 @@ class _LoginPageState extends State<LoginPage>
   }
 
   _loginUser() async {
-    String email = emailLoginController.text;
-    String password = passwordLoginController.text;
+    String email = emailLoginController.text.trim();
+    String password = passwordLoginController.text.trim();
     var body = LogInCredentials(email: email, password: password).toJson();
 
     var resourcePath = GlobalConfiguration().getString("logInUrl");
     await Request()
         .postToMobileApiWithoutTokenHeader(
-            resourcePath: resourcePath, body: body)
+        resourcePath: resourcePath, body: body)
         .then((response) => _processLoginResponse(response));
   }
 
@@ -398,7 +403,6 @@ class _LoginPageState extends State<LoginPage>
 
   void _loginSuccessful(token) async {
     JwtTokenUtils().saveToken(token.substring(13, token.length - 2));
-    UserDetails userDetails = await JwtTokenUtils().getUserDetails();
     showInSnackBar("Zalogowano poprawnie", Colors.lime);
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => MainPage()));
@@ -412,7 +416,7 @@ class _LoginPageState extends State<LoginPage>
       String text, double topMargin, Function() onPressed) {
     return Container(
       margin: EdgeInsets.only(top: topMargin),
-      decoration: new BoxDecoration(
+      decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(5.0)),
         boxShadow: <BoxShadow>[
           BoxShadow(
@@ -426,7 +430,7 @@ class _LoginPageState extends State<LoginPage>
             blurRadius: 20.0,
           ),
         ],
-        gradient: new LinearGradient(
+        gradient: LinearGradient(
             colors: [
               Theme.Colors.loginGradientEnd,
               Theme.Colors.loginGradientStart
@@ -457,7 +461,9 @@ class _LoginPageState extends State<LoginPage>
 
   Widget _buildTextField(FocusNode focusNode, TextEditingController controller,
       TextInputType textInputType, IconData iconData, String text,
-      {bool obscureText = false, FocusNode onSubmitFocusNode}) {
+      {bool obscureText = false,
+        FocusNode onSubmitFocusNode,
+        TextInputType keyboardType}) {
     return Container(
       width: 320,
       child: Padding(

@@ -26,9 +26,7 @@ class FirstPage extends StatelessWidget {
               child: Text('Aktualności'),
               onPressed: () {
                 // Pushing a named route
-                Navigator.of(context).pushNamed(
-                  '/news'
-                );
+                Navigator.of(context).pushNamed('/s');
               },
             ),
             RaisedButton(
@@ -79,7 +77,7 @@ class AddPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-   return Scaffold(
+    return Scaffold(
       appBar: AppBar(
         title: Text('Menu'),
       ),
