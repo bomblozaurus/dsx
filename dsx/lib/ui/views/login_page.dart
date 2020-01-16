@@ -1,7 +1,7 @@
 import 'dart:io';
 
+import 'package:dsx/models/user.dart';
 import 'package:dsx/style/theme.dart' as Theme;
-import 'package:dsx/users/user.dart';
 import 'package:dsx/utils/bubble_indication_painter.dart';
 import 'package:dsx/utils/jwt_token.dart';
 import 'package:dsx/utils/requests.dart';
@@ -68,10 +68,7 @@ class _LoginPageState extends State<LoginPage>
           child: SingleChildScrollView(
             physics: _physics,
             child: Container(
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width,
+              width: MediaQuery.of(context).size.width,
               height: 870.0,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -238,12 +235,14 @@ class _LoginPageState extends State<LoginPage>
                   child: Column(
                     children: <Widget>[
                       _buildTextField(
-                          emailLoginNode,
-                          emailLoginController,
-                          TextInputType.emailAddress,
-                          FontAwesomeIcons.envelope,
-                          "Email",
-                          onSubmitFocusNode: passwordLoginNode),
+                        emailLoginNode,
+                        emailLoginController,
+                        TextInputType.emailAddress,
+                        FontAwesomeIcons.envelope,
+                        "Email",
+                        onSubmitFocusNode: passwordLoginNode,
+                        keyboardType: TextInputType.emailAddress,
+                      ),
                       _buildSeparator(),
                       _buildTextField(
                           passwordLoginNode,
@@ -310,12 +309,14 @@ class _LoginPageState extends State<LoginPage>
                       onSubmitFocusNode: emailSignUpNode),
                   _buildSeparator(),
                   _buildTextField(
-                      emailSignUpNode,
-                      emailSignUpController,
-                      TextInputType.emailAddress,
-                      FontAwesomeIcons.envelope,
-                      "Email",
-                      onSubmitFocusNode: passwordSignUpNode),
+                    emailSignUpNode,
+                    emailSignUpController,
+                    TextInputType.emailAddress,
+                    FontAwesomeIcons.envelope,
+                    "Email",
+                    onSubmitFocusNode: passwordSignUpNode,
+                    keyboardType: TextInputType.emailAddress,
+                  ),
                   _buildSeparator(),
                   _buildTextField(passwordSignUpNode, passwordSignUpController,
                       TextInputType.text, FontAwesomeIcons.lock, "Hasło",
@@ -350,12 +351,16 @@ class _LoginPageState extends State<LoginPage>
   }
 
   _registerUser() async {
-    String firstName = firstNameSignUpController.text;
-    String lastName = lastNameSignUpController.text;
-    String email = emailSignUpController.text;
-    String password = passwordSignUpController.text;
-    int indexNumber = int.parse(indexNumberSignUpController.text);
-    int studentHouseNumber = int.parse(studentHouseSignUpController.text);
+    String firstName = firstNameSignUpController.text.trim();
+    String lastName = lastNameSignUpController.text.trim();
+    String email = emailSignUpController.text.trim();
+    String password = passwordSignUpController.text.trim();
+
+    String indexString = indexNumberSignUpController.text;
+    String studentHouseString = indexNumberSignUpController.text;
+    int indexNumber = indexString != null ? int.parse(indexString) : null;
+    int studentHouseNumber =
+    studentHouseString != null ? int.parse(studentHouseString) : null;
 
     var user = User(
         firstName: firstName,
@@ -379,14 +384,14 @@ class _LoginPageState extends State<LoginPage>
   }
 
   _loginUser() async {
-    String email = emailLoginController.text;
-    String password = passwordLoginController.text;
+    String email = emailLoginController.text.trim();
+    String password = passwordLoginController.text.trim();
     var body = LogInCredentials(email: email, password: password).toJson();
 
     var resourcePath = GlobalConfiguration().getString("logInUrl");
     await Request()
         .postToMobileApiWithoutTokenHeader(
-            resourcePath: resourcePath, body: body)
+        resourcePath: resourcePath, body: body)
         .then((response) => _processLoginResponse(response));
   }
 
@@ -456,7 +461,9 @@ class _LoginPageState extends State<LoginPage>
 
   Widget _buildTextField(FocusNode focusNode, TextEditingController controller,
       TextInputType textInputType, IconData iconData, String text,
-      {bool obscureText = false, FocusNode onSubmitFocusNode}) {
+      {bool obscureText = false,
+        FocusNode onSubmitFocusNode,
+        TextInputType keyboardType}) {
     return Container(
       width: 320,
       child: Padding(

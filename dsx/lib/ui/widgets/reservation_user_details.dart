@@ -18,18 +18,6 @@ class ReservationUserDetails extends ReservationDetails {
       );
 
   @override
-  Function onDoubleTap() {
-    // TODO: implement onDoubleTap
-    return null;
-  }
-
-  @override
-  Function onLongPress() {
-    // TODO: implement onLongPress
-    return null;
-  }
-
-  @override
   Widget buildTitle() => Padding(
         padding: const EdgeInsets.only(left: 16.0),
         child: Text(
@@ -40,8 +28,15 @@ class ReservationUserDetails extends ReservationDetails {
       );
 
   @override
-  List<Widget> getDetailsColumnWidgets() {
-    // TODO: implement getDetailsColumnWidgets
-    return null;
-  }
+  List<Widget> getDetailsColumnWidgets() => [
+        buildIconWithDescription(
+            value: reservation.duration.toString(),
+            icon: Icon(Icons.timelapse, color: Colors.white)),
+        buildIconWithDescription(
+            value: "${reservation.price} PLN",
+            icon: Icon(Icons.monetization_on, color: Colors.white)),
+        buildIconWithDescription(
+            value: reservation.numberOfPeople.toString(),
+            icon: Icon(Icons.people, color: Colors.white))
+      ];
 }

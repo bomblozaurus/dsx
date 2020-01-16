@@ -1,18 +1,20 @@
 import 'package:dsx/models/user_details.dart';
 import 'package:dsx/style/theme.dart' as Theme;
+import 'package:dsx/ui/views/browse_ads_page.dart';
 import 'package:dsx/utils/jwt_token.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../utils/navigable.dart';
-import 'events_page.dart';
-import 'rooms_page.dart';
+import 'browse_events_page.dart';
+import 'browse_rooms_page.dart';
 
 class MainPageState extends State<MainPage> {
   int _selectedPage = 0;
   final _pageOptions = [
     BrowseRoomsPage(),
     BrowseEventsPage(),
+    BrowseAdsPage(),
   ];
 
   @override

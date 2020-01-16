@@ -1,11 +1,7 @@
 import 'package:dsx/utils/link.dart';
-import 'package:json_annotation/json_annotation.dart';
 
 import '../utils/fetchable.dart';
 
-part 'event.g.dart';
-
-@JsonSerializable()
 class Event extends Object implements Fetchable {
   final String name;
   final DateTime date;

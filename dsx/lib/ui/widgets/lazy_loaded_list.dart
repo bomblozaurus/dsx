@@ -122,7 +122,7 @@ class _LazyLoadedListState<T> extends State<LazyLoadedList> {
         alignment: Alignment.center,
         child: CircularProgressIndicator(
             valueColor:
-            AlwaysStoppedAnimation(Theme.Colors.logoBackgroundColor),
+                AlwaysStoppedAnimation(Theme.Colors.logoBackgroundColor),
             strokeWidth: 5.0),
       );
     }

@@ -112,14 +112,6 @@ class _BrowseRoomsPageState extends State<BrowseRoomsPage> {
     );
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _scrollController.dispose();
-    _queryStreamController.close();
-    _endOfScrollStreamController.close();
-  }
-
   void _emitEndOfScroll() {
     _endOfScrollStreamController.sink.add(true);
   }

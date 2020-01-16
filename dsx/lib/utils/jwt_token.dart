@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:dsx/models/user_details.dart';
 import 'package:dsx/models/user_roles.dart';
+import 'package:dsx/ui/views/login_page.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class JwtTokenUtils {
@@ -44,6 +46,12 @@ class JwtTokenUtils {
     });
 
     return bodyMap;
+  }
+
+  logout(context) {
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => LoginPage()));
+    _storage.delete(key: _key);
   }
 
   _encodeClaim(String claim) {

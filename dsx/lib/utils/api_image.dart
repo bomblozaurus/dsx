@@ -1,7 +1,12 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:dsx/style/theme.dart' as Theme;
 import 'package:dsx/utils/device_info.dart';
 import 'package:dsx/utils/jwt_token.dart';
+import 'package:dsx/utils/requests.dart' as Request;
 import 'package:flutter/material.dart';
+import 'package:global_configuration/global_configuration.dart';
 
 class ApiImage extends Image {
   static Widget getCircleAvatar({String url, double radius}) {
@@ -39,6 +44,20 @@ class ApiImage extends Image {
         );
       },
     );
+  }
+
+  static Future<int> uploadImage(File file) async {
+    String resourcePath = GlobalConfiguration().getString("uploadImageUrl");
+    int id;
+    await Request.Request()
+        .multiPartPostToMobileApi(resourcePath: resourcePath, file: file)
+        .then((response) {
+      if (response.statusCode == HttpStatus.ok) {
+        var body = json.decode(response.body);
+        id = body['id'] as int;
+      }
+    });
+    return id;
   }
 
   static Future<NetworkImage> _getNetworkImage(String url) async {

@@ -2,9 +2,10 @@ import 'dart:convert';
 
 import 'package:dsx/models/reservation.dart';
 import 'package:dsx/style/theme.dart' as DsxTheme;
+import 'package:dsx/utils/flushbar_utils.dart';
 import 'package:dsx/utils/requests.dart';
+import 'package:dsx/utils/simple_step.dart';
 import 'package:dsx/utils/time.dart';
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:global_configuration/global_configuration.dart';
@@ -102,9 +103,9 @@ class _ReservationFormState extends State<ReservationForm> {
     var body = reservation.toJson();
     Request()
         .postToMobileApi(
-        resourcePath: GlobalConfiguration().getString("reservationsUrl"),
-        body: body,
-        additionalHeaders: null)
+            resourcePath: GlobalConfiguration().getString("reservationsUrl"),
+            body: body,
+            additionalHeaders: null)
         .then((response) {
       if (response.statusCode >= 200 && response.statusCode < 400) {
         _showReservationSuccessful(context);
@@ -339,7 +340,7 @@ class _ReservationFormState extends State<ReservationForm> {
   }
 
   _showReservationSuccessful(context) =>
-      _showFlushbar(
+      FlushbarUtils.showFlushbar(
           context: context,
           title: "Rezerwacja została złożona",
           message: "Oczekuje na zatwierdzenie przez klucznika.",
@@ -347,48 +348,14 @@ class _ReservationFormState extends State<ReservationForm> {
           icon: Icon(Icons.done, color: _lime),
           duration: Duration(seconds: 3));
 
-  void _showFlushbar({BuildContext context,
-    String title,
-    String message,
-    Color color,
-    Icon icon,
-    Duration duration = const Duration(seconds: 5)}) {
-    Flushbar(
-      title: title,
-      message: message,
-      backgroundColor: color,
-      icon: icon,
-      dismissDirection: FlushbarDismissDirection.HORIZONTAL,
-      duration: duration,
-    )
-      ..show(context);
-  }
-
   void _showReservationFailed(BuildContext context) =>
-      _showFlushbar(
+      FlushbarUtils.showFlushbar(
         context: context,
         title: "Rezerwacja nie została złożona",
         message: "Spróbuj wybrać inny termin rezerwacji",
         color: _darkGrey,
         icon: Icon(Icons.close, color: Colors.red),
       );
-}
-
-class SimpleStep {
-  final String title;
-  final Widget content;
-
-  SimpleStep({this.title, this.content});
-
-  static Step toStep(int index, SimpleStep step, int currentStep) {
-    return Step(
-        title: Text(step.title),
-        isActive: index == currentStep,
-        state: currentStep > index
-            ? StepState.complete
-            : currentStep < index ? StepState.indexed : StepState.editing,
-        content: step.content);
-  }
 }
 
 class ReservationRequest {

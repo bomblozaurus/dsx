@@ -31,8 +31,7 @@ class RoomDetails extends ItemDetails<Room> implements Indexable {
       RoomDetails(room: room, horizontal: false, index: index);
 
   @override
-  Widget buildHeader() =>
-      Text(
+  Widget buildHeader() => Text(
         room.name,
         style: Theme.TextStyles.headerTextStyle,
         overflow: TextOverflow.ellipsis,
@@ -58,12 +57,12 @@ class RoomDetails extends ItemDetails<Room> implements Indexable {
   }
 
   @override
-  List<TextWithIcon> getFooterItems() {
-    return List.of([
-      getTextWithIcon("${room.openFrom.toString()}-${room.openTo.toString()} ",
-          Icon(Icons.access_time, color: _determineIfOpen())),
-      getTextWithIcon(room.rentInterval.toString(),
-          Icon(Icons.timelapse, color: _determineDurationColor()))
-    ]);
-  }
+  List<TextWithIcon> getFooterItems() =>
+      List.of([
+        getTextWithIcon(
+            "${room.openFrom.toString()}-${room.openTo.toString()} ",
+            Icon(Icons.access_time, color: _determineIfOpen())),
+        getTextWithIcon(room.rentInterval.toString(),
+            Icon(Icons.timelapse, color: _determineDurationColor()))
+      ]);
 }

@@ -66,16 +66,16 @@ abstract class DetailsPage<I extends Fetchable> extends StatelessWidget
       color: Colors.black,
       child: SafeArea(
           child: Container(
-            decoration: BoxDecoration(
-              gradient: Theme.Colors.primaryGradient,
-            ),
-            constraints: BoxConstraints.expand(),
-            child: Stack(
-              children: <Widget>[
-                getContent(),
-              ],
-            ),
-          )),
+        decoration: BoxDecoration(
+          gradient: Theme.Colors.primaryGradient,
+        ),
+        constraints: BoxConstraints.expand(),
+        child: Stack(
+          children: <Widget>[
+            getContent(),
+          ],
+        ),
+      )),
     );
   }
 }

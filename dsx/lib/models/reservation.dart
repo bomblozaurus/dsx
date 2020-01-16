@@ -34,8 +34,7 @@ class Reservation {
         accepted: json['accepted'] as bool);
   }
 
-  Map<String, dynamic> toJson() =>
-      <String, dynamic>{
+  Map<String, dynamic> toJson() => <String, dynamic>{
         'id': id,
         'roomId': roomId,
         'roomName': roomName,

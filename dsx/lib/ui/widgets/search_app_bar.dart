@@ -1,3 +1,4 @@
+import 'package:dsx/utils/jwt_token.dart';
 import 'package:flutter/material.dart';
 
 import '../../style/theme.dart' as Theme;
@@ -41,23 +42,35 @@ class _SearchAppBarState extends State<SearchAppBar> {
     );
   }
 
-  Container _buildTitle(BuildContext context, Color _detailsColor) {
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.85,
-      height: 40.0,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(
-            Radius.circular(50.0),
+  Widget _buildTitle(BuildContext context, Color _detailsColor) {
+    return Row(
+      children: <Widget>[
+        _buildLogoutIcon(context),
+        SizedBox(
+          width: 8.0,
+        ),
+        Container(
+          width: MediaQuery.of(context).size.width * 0.81,
+          height: 40.0,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(
+                Radius.circular(50.0),
+              ),
+              color: Theme.Colors.loginGradientEnd),
+          child: Row(
+            children: <Widget>[
+              _buildInput(_detailsColor),
+              _buildSearchIcon(_detailsColor),
+            ],
           ),
-          color: Theme.Colors.loginGradientEnd),
-      child: Row(
-        children: <Widget>[
-          _buildInput(_detailsColor),
-          _buildSearchIcon(_detailsColor)
-        ],
-      ),
+        ),
+      ],
     );
   }
+
+  Widget _buildLogoutIcon(context) => InkWell(
+      onTap: () => JwtTokenUtils().logout(context),
+      child: Icon(Icons.exit_to_app));
 
   Padding _buildSearchIcon(Color _detailsColor) {
     return Padding(
@@ -76,26 +89,26 @@ class _SearchAppBarState extends State<SearchAppBar> {
   Flexible _buildInput(Color _detailsColor) {
     return Flexible(
         child: Padding(
-      padding: const EdgeInsets.only(left: 24.0, right: 8.0),
-      child: TextField(
-        textInputAction: TextInputAction.search,
-        onEditingComplete: _search,
-        cursorColor: _detailsColor,
-        controller: _inputController,
-        decoration: InputDecoration(
-          border: InputBorder.none,
-          helperStyle: TextStyle(
-            color: _detailsColor,
-            fontSize: 20.0,
-            fontWeight: FontWeight.w600,
+          padding: const EdgeInsets.only(left: 24.0, right: 8.0),
+          child: TextField(
+            textInputAction: TextInputAction.search,
+            onEditingComplete: _search,
+            cursorColor: _detailsColor,
+            controller: _inputController,
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              helperStyle: TextStyle(
+                color: _detailsColor,
+                fontSize: 20.0,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            style: TextStyle(
+              color: _detailsColor,
+              fontSize: 20.0,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-        ),
-        style: TextStyle(
-          color: _detailsColor,
-          fontSize: 20.0,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-    ));
+        ));
   }
 }

@@ -47,7 +47,7 @@ abstract class ItemDetails<I extends Fetchable> extends StatelessWidget
       return Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment:
-          horizontal ? MainAxisAlignment.start : MainAxisAlignment.center,
+              horizontal ? MainAxisAlignment.start : MainAxisAlignment.center,
           children: <Widget>[
             icon,
             Container(width: 4.0),

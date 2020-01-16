@@ -118,7 +118,8 @@ class _CreateEventPageState extends State<CreateEventPage> {
                                 "Kod pocztowy"),
                             _buildSeparator(),
                             DropdownButton(
-                              hint: Text('Wybierz akademik:'), // Not necessary for Option 1
+                              hint: Text('Wybierz akademik:'),
+                              // Not necessary for Option 1
                               value: _studentHouse,
                               onChanged: (Value) {
                                 setState(() {
@@ -132,36 +133,36 @@ class _CreateEventPageState extends State<CreateEventPage> {
                                 );
                               }).toList(),
                             ),
-                                DropdownButton(
-                                  hint: Text('Wybierz zasięg ogłoszenia'),
-                                  // Not necessary for Option 1
-                                  value: _scopeName,
-                                  onChanged: (Value) {
-                                    setState(() {
-                                      setState(() {
-                                        _scopeName = Value;
-                                      });
-                                      if (Value == 'Wszyscy') {
-                                        setState(() => _scope = "OTHER");
-                                      }
-                                      if (Value == 'Studenci') {
-                                        setState(() => _scope = "STUDENT");
-                                      }
-                                      if (Value == 'Akademik') {
-                                        setState(() => _scope = "DORMITORY");
-                                      }
-                                    });
-                                  },
-                                  items: _scopeList.map((location) {
-                                    return DropdownMenuItem(
-                                      child: Text(location),
-                                      value: location,
-                                    );
-                                  }).toList(),
-                                ),
-                                _buildSubmitButton(
-                                    "DODAJ", 50.0, () => _createEvent())
-                              ])))),
+                            DropdownButton(
+                              hint: Text('Wybierz zasięg ogłoszenia'),
+                              // Not necessary for Option 1
+                              value: _scopeName,
+                              onChanged: (Value) {
+                                setState(() {
+                                  setState(() {
+                                    _scopeName = Value;
+                                  });
+                                  if (Value == 'Wszyscy') {
+                                    setState(() => _scope = "OTHER");
+                                  }
+                                  if (Value == 'Studenci') {
+                                    setState(() => _scope = "STUDENT");
+                                  }
+                                  if (Value == 'Akademik') {
+                                    setState(() => _scope = "DORMITORY");
+                                  }
+                                });
+                              },
+                              items: _scopeList.map((location) {
+                                return DropdownMenuItem(
+                                  child: Text(location),
+                                  value: location,
+                                );
+                              }).toList(),
+                            ),
+                            _buildSubmitButton(
+                                "DODAJ", 50.0, () => _createEvent())
+                          ])))),
         ));
   }
 
@@ -175,7 +176,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
       {bool obscureText = false}) {
     return Padding(
         padding:
-        EdgeInsets.only(top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+            EdgeInsets.only(top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
         child: TextField(
           focusNode: focusNode,
           controller: controller,
@@ -194,7 +195,6 @@ class _CreateEventPageState extends State<CreateEventPage> {
         ));
   }
 
-
   Widget buildTimePicker(BuildContext context) {
     return Container(
       child: Column(
@@ -212,13 +212,18 @@ class _CreateEventPageState extends State<CreateEventPage> {
                   ),
                   showTitleActions: true,
                   minTime: DateTime.now(),
-                  maxTime: DateTime(2030, 12, 31), onConfirm: (date) {
+                  maxTime: DateTime(2030, 12, 31),
+                  onConfirm: (date) {
                     print('potwierdź $date');
                     _date = '${date.year} - ${date.month} - ${date.day}';
-                    setState(() {_year=date.year;
-                    _month=date.month;
-                    _day=date.day;});
-                  }, currentTime: DateTime.now(), locale: LocaleType.en);
+                    setState(() {
+                      _year = date.year;
+                      _month = date.month;
+                      _day = date.day;
+                    });
+                  },
+                  currentTime: DateTime.now(),
+                  locale: LocaleType.en);
             },
             child: Container(
               alignment: Alignment.center,
@@ -272,13 +277,18 @@ class _CreateEventPageState extends State<CreateEventPage> {
                   theme: DatePickerTheme(
                     containerHeight: 210.0,
                   ),
-                  showTitleActions: true, onConfirm: (time) {
+                  showTitleActions: true,
+                  onConfirm: (time) {
                     print('potwierdź $time');
                     _time = '${time.hour} : ${time.minute} : ${time.second}';
-                    setState(() {_hour=time.hour;
-                    _minute = time.minute;
-                    _second = time.second;});
-                  }, currentTime: DateTime.now(), locale: LocaleType.en);
+                    setState(() {
+                      _hour = time.hour;
+                      _minute = time.minute;
+                      _second = time.second;
+                    });
+                  },
+                  currentTime: DateTime.now(),
+                  locale: LocaleType.en);
               setState(() {});
             },
             child: Container(
@@ -353,9 +363,9 @@ class _CreateEventPageState extends State<CreateEventPage> {
 
   _createEvent() async {
     String name = nameEventController.text;
-    String street =streetEventController.text;
+    String street = streetEventController.text;
     int houseNumber = num.tryParse(streetEventController.text);
-    int apartmentNumber = num.tryParse(apartmentNumberEventController.text) ;
+    int apartmentNumber = num.tryParse(apartmentNumberEventController.text);
     String city = cityEventController.text;
     String zip = zipEventController.text;
     String description = descriptionEventController.text;
@@ -370,8 +380,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
         zip: zip,
         description: description,
         scope: _scope,
-        studentHouse: _studentHouse
-    );
+        studentHouse: _studentHouse);
     var data = event.toJson();
 
     print(data);
@@ -380,8 +389,9 @@ class _CreateEventPageState extends State<CreateEventPage> {
         GlobalConfiguration().getString("eventsUrl");
     var headers = Request.jsonHeader;
 
-    await Request().createPost(url, body: data, headers: headers).then(
-            (value) => print("Zarejestrowano pomyślnie!"));
+    await Request()
+        .createPost(url, body: data, headers: headers)
+        .then((value) => print("Zarejestrowano pomyślnie!"));
   }
 
 /*  Container _buildSubmitButton(

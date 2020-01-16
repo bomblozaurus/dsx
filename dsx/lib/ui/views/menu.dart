@@ -136,7 +136,7 @@ class _MenuPageState extends State<MenuPage>
           //shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
           child: Padding(
             padding:
-            const EdgeInsets.symmetric(vertical: 10.0, horizontal: 42.0),
+                const EdgeInsets.symmetric(vertical: 10.0, horizontal: 42.0),
             child: Text(
               text,
               style: TextStyle(
