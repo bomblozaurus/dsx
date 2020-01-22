@@ -335,26 +335,34 @@ class _AdFormState extends State<AdForm> {
       return;
     }
 
-    var ad = AdPOJO(
+    try {
+      var ad = AdPOJO(
         name: _titleController.text.trim(),
         street: _streetController.text.trim(),
-        houseNumber: int.parse(_houseController.text.trim()),
-        apartmentNumber: int.parse(_apartmentController.text.trim()),
-        city: _cityController.text.trim(),
-        zip: _zipController.text.trim(),
-        description: _descriptionController.text.trim(),
+        houseNumber: int.tryParse(_houseController.text.trim()) ?? null,
+        apartmentNumber:
+            int.tryParse(_apartmentController.text?.trim()) ?? null,
+        city: _cityController.text?.trim(),
+        zip: _zipController.text?.trim(),
+        description: _descriptionController.text?.trim(),
         mainImage: _imageId,
         scope: _selectedScope,
-        price: double.parse(_priceController.text.trim()));
+        price: double.tryParse(_priceController.text.trim()) ?? 0.0,
+      );
 
-    Map<String, dynamic> body = ad.toJson();
+      Map<String, dynamic> body = ad.toJson();
 
-    String resourcePath = GlobalConfiguration().getString("adsPostUrl");
-    Request()
-        .postToMobileApi(resourcePath: resourcePath, body: body)
-        .then((response) {
-      if (response.statusCode == HttpStatus.created) {}
-    });
+      String resourcePath = GlobalConfiguration().getString("adsPostUrl");
+      Request()
+          .postToMobileApi(resourcePath: resourcePath, body: body)
+          .then((response) {
+        if (response.statusCode == HttpStatus.created) {
+          _showFlushbarWithSuccessInfo(context);
+        }
+      });
+    } catch (e) {
+      _showFlushbarWithValidationError(context);
+    }
   }
 
   void _showFlushbarWithSubmitError(context) {
@@ -362,13 +370,24 @@ class _AdFormState extends State<AdForm> {
       context: context,
       title: "Niepowodzenie",
       message:
-          "Nie można stworzyć ogłoszenia, ponieważ trwa przesyłanie zdjęcia. Spróbuj ponownie za kilka sekund.",
+      "Nie można stworzyć ogłoszenia, ponieważ trwa przesyłanie zdjęcia. Spróbuj ponownie za kilka sekund.",
       color: _darkGrey,
       icon: Icon(Icons.warning, color: Colors.red),
     );
   }
 
-  Widget _buildButton({Function onPressed, Widget child}) => SizedBox(
+  void _showFlushbarWithSuccessInfo(context) {
+    FlushbarUtils.showFlushbar(
+      context: context,
+      title: "Sukces",
+      message: "Ogłoszenie zostało dodane pomyślnie",
+      color: _darkGrey,
+      icon: Icon(Icons.done, color: _lime),
+    );
+  }
+
+  Widget _buildButton({Function onPressed, Widget child}) =>
+      SizedBox(
         width: 64.0,
         child: OutlineButton(
           shape: RoundedRectangleBorder(
@@ -431,9 +450,9 @@ class _AdFormState extends State<AdForm> {
   Widget _buildNumericInput(
           {String title,
           IconData iconData,
-          TextEditingController controller,
-          FocusNode focusNode,
-          FocusNode onSubmitFocusNode}) =>
+            TextEditingController controller,
+            FocusNode focusNode,
+            FocusNode onSubmitFocusNode}) =>
       _buildInput(
           title: title,
           iconData: iconData,
@@ -441,4 +460,15 @@ class _AdFormState extends State<AdForm> {
           focusNode: focusNode,
           onSubmitFocusNode: onSubmitFocusNode,
           keyboardType: TextInputType.number);
+
+  void _showFlushbarWithValidationError(context) {
+    FlushbarUtils.showFlushbar(
+      context: context,
+      title: "Niepoprawne dane",
+      message:
+      "Sprawdź poprwaność wprowadzonych danych i spróbuj ponownie",
+      color: _darkGrey,
+      icon: Icon(Icons.warning, color: Colors.red),
+    );
+  }
 }

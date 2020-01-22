@@ -22,6 +22,8 @@ class Address {
   Map<String, dynamic> toJson() => _$AddressToJson(this);
 
   String toString() {
-    return '$city, $street $houseNumber/$apartmentNumber';
+    return city.isNotEmpty
+        ? '$city, $street $houseNumber/$apartmentNumber'
+        : "Lokalizacja nieokreślona";
   }
 }

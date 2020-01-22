@@ -49,23 +49,27 @@ class _BrowseAdsPageState extends State<BrowseAdsPage> {
     void _showCreateAdForm() {
       showDialog(
           context: context,
+          barrierDismissible: false,
           child: Theme(
             data: ThemeData(
                 dialogBackgroundColor: DsxTheme.Colors.loginGradientEnd),
-            child: SimpleDialog(
-              children: <Widget>[
-                Center(
-                  child: Text(
-                    "Dodaj ogłoszenie",
-                    style: DsxTheme.TextStyles.headerTextStyle,
+            child: Align(
+              alignment: Alignment.center,
+              child: SimpleDialog(
+                children: <Widget>[
+                  Center(
+                    child: Text(
+                      "Dodaj ogłoszenie",
+                      style: DsxTheme.TextStyles.headerTextStyle,
+                    ),
                   ),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  child: AdForm(userDetails: _userDetails),
-                ),
-              ],
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height * 0.6,
+                    child: AdForm(userDetails: _userDetails),
+                  ),
+                ],
+              ),
             ),
           ));
     }

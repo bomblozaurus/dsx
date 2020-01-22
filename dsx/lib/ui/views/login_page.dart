@@ -357,10 +357,10 @@ class _LoginPageState extends State<LoginPage>
     String password = passwordSignUpController.text.trim();
 
     String indexString = indexNumberSignUpController.text;
-    String studentHouseString = indexNumberSignUpController.text;
-    int indexNumber = indexString != null ? int.parse(indexString) : null;
+    String studentHouseString = studentHouseSignUpController.text;
+    int indexNumber = indexString != "" ? int.parse(indexString) : null;
     int studentHouseNumber =
-    studentHouseString != null ? int.parse(studentHouseString) : null;
+        studentHouseString != "" ? int.parse(studentHouseString) : null;
 
     var user = User(
         firstName: firstName,
@@ -368,7 +368,8 @@ class _LoginPageState extends State<LoginPage>
         email: email,
         password: password,
         indexNumber: indexNumber,
-        studentHouse: studentHouseNumber - 1);
+        studentHouse:
+            studentHouseNumber != null ? studentHouseNumber - 1 : null);
     var data = user.toJson();
     await Request()
         .postToMobileApiWithoutTokenHeader(
@@ -391,7 +392,7 @@ class _LoginPageState extends State<LoginPage>
     var resourcePath = GlobalConfiguration().getString("logInUrl");
     await Request()
         .postToMobileApiWithoutTokenHeader(
-        resourcePath: resourcePath, body: body)
+            resourcePath: resourcePath, body: body)
         .then((response) => _processLoginResponse(response));
   }
 
