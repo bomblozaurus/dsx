@@ -139,7 +139,6 @@ class Request {
   }
 
   _handleUnauthorized() {
-    print("unauthorized");
     RouteGenerator.generateRoute(RouteSettings(name: '/'));
   }
 }

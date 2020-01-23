@@ -8,8 +8,7 @@ import 'package:flutter/material.dart';
 import '../../utils/indexable.dart';
 import '../../utils/requests.dart';
 
-typedef I ItemCreator<T, I extends Indexable>(
-    T item, index, Function updateCallback);
+typedef I ItemCreator<T, I extends Indexable>(T item, index);
 
 class LazyLoadedList<T, I extends Indexable> extends StatefulWidget {
   final int pageSize;
@@ -17,19 +16,20 @@ class LazyLoadedList<T, I extends Indexable> extends StatefulWidget {
   final String resourcePath;
   final Function serializer;
   final Function
-  itemCreator; //FIXME powinien być typ ItemCreator, ale nie da sie przekazac Indexable Function (dynamic, dynamic)
+      itemCreator; //FIXME powinien być typ ItemCreator, ale nie da sie przekazac Indexable Function (dynamic, dynamic)
   final List<String> keyList;
   final Stream queryStream;
   final Stream fetchingStream;
 
-  const LazyLoadedList({@required this.pageSize,
-    @required this.resourcePath,
-    @required this.serializer,
-    @required this.itemCreator,
-    @required this.keyList,
-    this.queryStream,
-    this.fetchingStream,
-    this.noDataMessage});
+  const LazyLoadedList(
+      {@required this.pageSize,
+      @required this.resourcePath,
+      @required this.serializer,
+      @required this.itemCreator,
+      @required this.keyList,
+      this.queryStream,
+      this.fetchingStream,
+      this.noDataMessage});
 
   @override
   _LazyLoadedListState createState() => _LazyLoadedListState<T>();
@@ -67,11 +67,9 @@ class _LazyLoadedListState<T> extends State<LazyLoadedList> {
         controller: _scrollController,
         itemCount: _items.length,
         itemBuilder: (BuildContext context, int index) {
-          return widget.itemCreator(
-              _items.elementAt(index), index);
+          return widget.itemCreator(_items.elementAt(index), index);
         });
   }
-
 
   @override
   void initState() {

@@ -157,33 +157,38 @@ class _LoginPageState extends State<LoginPage>
     );
   }
 
-  void showSuccess({String title, String message, Icon icon}) => showFlushbar(
-      title: title,
-      message: message,
-      icon: icon,
-      color: Theme.Colors.logoBackgroundColor);
+  void showSuccess({String title, String message, IconData iconData}) =>
+      showFlushbar(
+        title: title,
+        message: message,
+        icon: Icon(iconData, color: Theme.Colors.logoBackgroundColor),
+      );
 
-  void showFailed({String title, String message, Icon icon}) => showFlushbar(
-      title: title, message: message, icon: icon, color: Colors.red);
+  void showFailed({String title, String message, IconData iconData}) =>
+      showFlushbar(
+        title: title,
+        message: message,
+        icon: Icon(iconData, color: Colors.red),
+      );
 
-  void showLoginSuccess() => showSuccess(
-      title: "Zalogowano pomyślnie",
-      icon: Icon(Icons.done, color: Colors.white));
+  void showLoginSuccess() =>
+      showSuccess(title: "Zalogowano pomyślnie", iconData: Icons.done);
 
   void showLoginFailed() => showFailed(
       title: "Nie udało się zalogować!",
       message: "Sprawdź poprawność danych i spróbuj ponownie",
-      icon: Icon(Icons.warning, color: Colors.white));
+      iconData: Icons.warning);
 
   void showSignUpSuccess() => showSuccess(
       title: "Zarejestrowano pomyślnie",
       message: "Możesz się teraz zalogować",
-      icon: Icon(Icons.done, color: Colors.white));
+      iconData: Icons.done);
 
-  void showSignUpFailed() => showFailed(
-      title: "Nie udało się zarejestrować!",
-      message: "Sprawdź poprawność danych i spróbuj ponownie",
-      icon: Icon(Icons.warning, color: Colors.white));
+  void showSignUpFailed() =>
+      showFailed(
+          title: "Nie udało się zarejestrować!",
+          message: "Sprawdź poprawność danych i spróbuj ponownie",
+          iconData: Icons.warning);
 
   Widget _buildMenuBar(BuildContext context) {
     return Padding(
@@ -285,13 +290,11 @@ class _LoginPageState extends State<LoginPage>
             child: FlatButton(
                 onPressed: () async {
                   showFailed(
-                      title: "Funkcjonalność nieobsługiwana",
-                      message:
-                      "Wpłać 999'999'999 € na nasze konto, abyśmy rozwinęli apliljację",
-                      icon: Icon(
-                        Icons.monetization_on,
-                        color: Theme.Colors.logoBackgroundColor,
-                      ));
+                    title: "Funkcjonalność nieobsługiwana",
+                    message:
+                    "Wpłać 999'999'999 € na nasze konto, abyśmy rozwinęli aplikację.",
+                    iconData: Icons.monetization_on,
+                  );
                   await JwtTokenUtils()
                       .getToken()
                       .then((value) => print(value));

@@ -82,7 +82,6 @@ class ReservationKeyholderDetails extends ReservationDetails {
   }
 
   void _deleteReservation(BuildContext context) {
-    print("DELETE");
     try {
       String resourcePath = GlobalConfiguration().getString("reservationsUrl");
       Request()
