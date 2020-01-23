@@ -18,7 +18,7 @@ class ReservationUserDetails extends ReservationDetails {
       );
 
   @override
-  Widget buildTitle() => Padding(
+  Widget buildTitle(BuildContext context) => Padding(
         padding: const EdgeInsets.only(left: 16.0),
         child: Text(
           reservation.roomName,
@@ -28,7 +28,8 @@ class ReservationUserDetails extends ReservationDetails {
       );
 
   @override
-  List<Widget> getDetailsColumnWidgets() => [
+  List<Widget> getDetailsColumnWidgets(BuildContext context) =>
+      [
         buildIconWithDescription(
             value: reservation.duration.toString(),
             icon: Icon(Icons.timelapse, color: Colors.white)),

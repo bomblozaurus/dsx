@@ -62,8 +62,9 @@ class _KeyholderPageState extends State<KeyholderPage> {
                 queryStream: _queryStreamController.stream,
                 keyList: ["content"],
                 serializer: Reservation.fromJson,
-                creator: ReservationKeyholderDetails.fromReservation,
+                itemCreator: ReservationKeyholderDetails.fromReservation,
                 pageSize: 10,
+                noDataMessage: "Twój pokój nie został jeszcze zarezerwowany",
                 resourcePath:
                     GlobalConfiguration().getString("keyholderReservationsUrl"),
               ),

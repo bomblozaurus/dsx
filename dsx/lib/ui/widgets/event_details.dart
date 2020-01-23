@@ -41,8 +41,7 @@ class EventDetails extends ItemDetails<Event> implements Indexable {
   }
 
   @override
-  Widget buildDescription() =>
-      Text(
+  Widget buildDescription() => Text(
         event.getAddress(),
       );
 

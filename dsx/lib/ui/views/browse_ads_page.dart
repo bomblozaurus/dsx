@@ -49,23 +49,27 @@ class _BrowseAdsPageState extends State<BrowseAdsPage> {
     void _showCreateAdForm() {
       showDialog(
           context: context,
+          barrierDismissible: false,
           child: Theme(
             data: ThemeData(
                 dialogBackgroundColor: DsxTheme.Colors.loginGradientEnd),
-            child: SimpleDialog(
-              children: <Widget>[
-                Center(
-                  child: Text(
-                    "Dodaj ogłoszenie",
-                    style: DsxTheme.TextStyles.headerTextStyle,
+            child: Align(
+              alignment: Alignment.center,
+              child: SimpleDialog(
+                children: <Widget>[
+                  Center(
+                    child: Text(
+                      "Dodaj ogłoszenie",
+                      style: DsxTheme.TextStyles.headerTextStyle,
+                    ),
                   ),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  child: AdForm(userDetails: _userDetails),
-                ),
-              ],
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height * 0.6,
+                    child: AdForm(userDetails: _userDetails),
+                  ),
+                ],
+              ),
             ),
           ));
     }
@@ -83,16 +87,18 @@ class _BrowseAdsPageState extends State<BrowseAdsPage> {
             ),
             SliverToBoxAdapter(
               child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  child: LazyLoadedList(
-                    fetchingStream: _endOfScrollStreamController.stream,
-                    queryStream: _queryStreamController.stream,
-                    keyList: ['content'],
-                    serializer: Ad.fromJson,
-                    creator: AdDetails.fromAd,
-                    resourcePath: GlobalConfiguration().getString("adsUrl"),
-                    pageSize: 10,
-                  )),
+                width: MediaQuery.of(context).size.width,
+                child: LazyLoadedList(
+                  fetchingStream: _endOfScrollStreamController.stream,
+                  queryStream: _queryStreamController.stream,
+                  keyList: ['content'],
+                  serializer: Ad.fromJson,
+                  itemCreator: AdDetails.fromAd,
+                  resourcePath: GlobalConfiguration().getString("adsUrl"),
+                  pageSize: 10,
+                  noDataMessage: "Brak dostępnych ogłoszeń",
+                ),
+              ),
             ),
           ],
         ),

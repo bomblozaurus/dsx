@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dsx/models/user.dart';
 import 'package:dsx/style/theme.dart' as Theme;
 import 'package:dsx/utils/bubble_indication_painter.dart';
+import 'package:dsx/utils/flushbar_utils.dart';
 import 'package:dsx/utils/jwt_token.dart';
 import 'package:dsx/utils/requests.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:global_configuration/global_configuration.dart';
 
 import '../widgets/logo.dart';
-import 'main_page.dart';
+import 'landing_page.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
@@ -146,22 +147,48 @@ class _LoginPageState extends State<LoginPage>
       });
   }
 
-  void showInSnackBar(String value, Color color) {
-    FocusScope.of(context).requestFocus(FocusNode());
-    _scaffoldKey.currentState?.removeCurrentSnackBar();
-    _scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text(
-        value,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-            color: Colors.white,
-            fontSize: Theme.Fonts.loginFontSize,
-            fontFamily: Theme.Fonts.loginFontSemiBold),
-      ),
-      backgroundColor: color,
-      duration: Duration(seconds: 3),
-    ));
+  void showFlushbar({String title, String message, Icon icon, Color color}) {
+    FlushbarUtils.showFlushbar(
+      context: context,
+      title: title,
+      message: message,
+      icon: icon,
+      color: color,
+    );
   }
+
+  void showSuccess({String title, String message, IconData iconData}) =>
+      showFlushbar(
+        title: title,
+        message: message,
+        icon: Icon(iconData, color: Theme.Colors.logoBackgroundColor),
+      );
+
+  void showFailed({String title, String message, IconData iconData}) =>
+      showFlushbar(
+        title: title,
+        message: message,
+        icon: Icon(iconData, color: Colors.red),
+      );
+
+  void showLoginSuccess() =>
+      showSuccess(title: "Zalogowano pomyślnie", iconData: Icons.done);
+
+  void showLoginFailed() => showFailed(
+      title: "Nie udało się zalogować!",
+      message: "Sprawdź poprawność danych i spróbuj ponownie",
+      iconData: Icons.warning);
+
+  void showSignUpSuccess() => showSuccess(
+      title: "Zarejestrowano pomyślnie",
+      message: "Możesz się teraz zalogować",
+      iconData: Icons.done);
+
+  void showSignUpFailed() =>
+      showFailed(
+          title: "Nie udało się zarejestrować!",
+          message: "Sprawdź poprawność danych i spróbuj ponownie",
+          iconData: Icons.warning);
 
   Widget _buildMenuBar(BuildContext context) {
     return Padding(
@@ -262,7 +289,12 @@ class _LoginPageState extends State<LoginPage>
             padding: EdgeInsets.only(top: 10.0),
             child: FlatButton(
                 onPressed: () async {
-                  showInSnackBar("Funkcjonalność nieobsługiwana", Colors.red);
+                  showFailed(
+                    title: "Funkcjonalność nieobsługiwana",
+                    message:
+                    "Wpłać 999'999'999 € na nasze konto, abyśmy rozwinęli aplikację.",
+                    iconData: Icons.monetization_on,
+                  );
                   await JwtTokenUtils()
                       .getToken()
                       .then((value) => print(value));
@@ -357,10 +389,10 @@ class _LoginPageState extends State<LoginPage>
     String password = passwordSignUpController.text.trim();
 
     String indexString = indexNumberSignUpController.text;
-    String studentHouseString = indexNumberSignUpController.text;
-    int indexNumber = indexString != null ? int.parse(indexString) : null;
+    String studentHouseString = studentHouseSignUpController.text;
+    int indexNumber = indexString != "" ? int.parse(indexString) : null;
     int studentHouseNumber =
-    studentHouseString != null ? int.parse(studentHouseString) : null;
+    studentHouseString != "" ? int.parse(studentHouseString) : null;
 
     var user = User(
         firstName: firstName,
@@ -368,19 +400,24 @@ class _LoginPageState extends State<LoginPage>
         email: email,
         password: password,
         indexNumber: indexNumber,
-        studentHouse: studentHouseNumber - 1);
+        studentHouse:
+        studentHouseNumber != null ? studentHouseNumber - 1 : null);
     var data = user.toJson();
-    await Request()
-        .postToMobileApiWithoutTokenHeader(
-            resourcePath: GlobalConfiguration().getString("signUpUrl"),
-            body: data)
-        .then(_processSignupResponse);
+    try {
+      await Request()
+          .postToMobileApiWithoutTokenHeader(
+          resourcePath: GlobalConfiguration().getString("signUpUrl"),
+          body: data)
+          .then(_processSignupResponse);
+    } catch (e) {
+      FlushbarUtils.showConnectionTimeout(context);
+    }
   }
 
   _processSignupResponse(response) {
     response.statusCode == HttpStatus.created
-        ? showInSnackBar("Zarejestrowano pomyślnie!", Colors.blue)
-        : showInSnackBar("Rejestracja nieudana!", Colors.red);
+        ? showSignUpSuccess()
+        : showSignUpFailed();
   }
 
   _loginUser() async {
@@ -389,10 +426,14 @@ class _LoginPageState extends State<LoginPage>
     var body = LogInCredentials(email: email, password: password).toJson();
 
     var resourcePath = GlobalConfiguration().getString("logInUrl");
-    await Request()
-        .postToMobileApiWithoutTokenHeader(
-        resourcePath: resourcePath, body: body)
-        .then((response) => _processLoginResponse(response));
+    try {
+      await Request()
+          .postToMobileApiWithoutTokenHeader(
+          resourcePath: resourcePath, body: body)
+          .then((response) => _processLoginResponse(response));
+    } catch (e) {
+      FlushbarUtils.showConnectionTimeout(context);
+    }
   }
 
   _processLoginResponse(var response) async {
@@ -403,13 +444,14 @@ class _LoginPageState extends State<LoginPage>
 
   void _loginSuccessful(token) async {
     JwtTokenUtils().saveToken(token.substring(13, token.length - 2));
-    showInSnackBar("Zalogowano poprawnie", Colors.lime);
+    showLoginSuccess();
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => MainPage()));
+        context, MaterialPageRoute(builder: (context) => LandingPage()));
   }
 
   _loginFailed(token) {
-    showInSnackBar("Nie udało się zalogować", Colors.red);
+    print(token);
+    showLoginFailed();
   }
 
   Container _buildSubmitButton(

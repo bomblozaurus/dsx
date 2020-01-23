@@ -14,9 +14,9 @@ abstract class ReservationDetails extends StatelessWidget implements Indexable {
     this.index,
   }) : super(key: key);
 
-  List<Widget> getDetailsColumnWidgets();
+  List<Widget> getDetailsColumnWidgets(BuildContext context);
 
-  Widget buildTitle();
+  Widget buildTitle(BuildContext context);
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +56,7 @@ abstract class ReservationDetails extends StatelessWidget implements Indexable {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            buildTitle(),
+            buildTitle(context),
             _buildBottomRow(),
           ],
         ),
@@ -71,7 +71,7 @@ abstract class ReservationDetails extends StatelessWidget implements Indexable {
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: getDetailsColumnWidgets())),
+                children: getDetailsColumnWidgets(context))),
       );
     }
 

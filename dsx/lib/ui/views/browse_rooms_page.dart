@@ -34,7 +34,7 @@ class _BrowseRoomsPageState extends State<BrowseRoomsPage> {
   StreamController<bool> _endOfScrollStreamController =
       StreamController<bool>();
   ScrollController _scrollController;
-  int tabsCount, initialIndex;
+  int tabsCount;
 
   _search(String query) {
     this._queryStreamController.sink.add(query);
@@ -53,6 +53,14 @@ class _BrowseRoomsPageState extends State<BrowseRoomsPage> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
+    _queryStreamController.close();
+    _endOfScrollStreamController.close();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final UserDetails _userDetails = Provider.of<UserDetails>(context);
     return Stack(
@@ -65,7 +73,7 @@ class _BrowseRoomsPageState extends State<BrowseRoomsPage> {
             children: _getTabViewChildren(context, _userDetails),
           ),
           length: tabsCount,
-          initialIndex: initialIndex,
+          initialIndex: _userDetails?.isKeyholder() ?? false ? 1 : 0,
         ),
       ],
     );
@@ -82,7 +90,6 @@ class _BrowseRoomsPageState extends State<BrowseRoomsPage> {
 
     setState(() {
       tabsCount = children.length;
-      initialIndex = children.length == 3 ? 1 : 0;
     });
 
     return children;
@@ -103,9 +110,10 @@ class _BrowseRoomsPageState extends State<BrowseRoomsPage> {
                 queryStream: _queryStreamController.stream,
                 keyList: ['content'],
                 serializer: Room.fromJson,
-                creator: RoomDetails.fromRoom,
+                itemCreator: RoomDetails.fromRoom,
                 resourcePath: GlobalConfiguration().getString("roomsUrl"),
                 pageSize: 10,
+                noDataMessage: "Brak dostępnych pokoi",
               )),
         ),
       ],

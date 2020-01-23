@@ -8,6 +8,7 @@ import 'package:dsx/utils/simple_step.dart';
 import 'package:dsx/utils/time.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:global_configuration/global_configuration.dart';
 
 import 'date_picker_button.dart';
@@ -23,9 +24,11 @@ class ReservationForm extends StatefulWidget {
 
 class _ReservationFormState extends State<ReservationForm> {
   String _date, _hour, _duration;
-  int _numberOfPeople, _currentStep = 0, _stepsNumber = 0;
+  int _currentStep = 0, _stepsNumber = 0;
   Map<String, List<String>> _availableReservationHours =
       Map<String, List<String>>();
+
+  TextEditingController _numberOfPeopleController;
 
   static const _darkGrey = DsxTheme.Colors.loginGradientEnd;
   static const _lime = DsxTheme.Colors.logoBackgroundColor;
@@ -34,11 +37,13 @@ class _ReservationFormState extends State<ReservationForm> {
   @override
   void initState() {
     super.initState();
+    _numberOfPeopleController = TextEditingController();
   }
 
   @override
   void dispose() {
     super.dispose();
+    _numberOfPeopleController.dispose();
   }
 
   @override
@@ -94,31 +99,40 @@ class _ReservationFormState extends State<ReservationForm> {
           _substringToInt(time, 3, 5));
     }
 
-    var reservation = Reservation(
-        roomId: widget.roomId,
-        dateTime: _stringsToDateTime(_date, _hour),
-        duration: Time.fromDurationString(_duration),
-        numberOfPeople: _numberOfPeople);
-
-    var body = reservation.toJson();
-    Request()
-        .postToMobileApi(
-            resourcePath: GlobalConfiguration().getString("reservationsUrl"),
-            body: body,
-            additionalHeaders: null)
-        .then((response) {
-      if (response.statusCode >= 200 && response.statusCode < 400) {
-        _showReservationSuccessful(context);
-        setState(() {
-          String empty;
-          _date = empty;
-          _numberOfPeople = null;
-          _currentStep = 0;
-        });
-      } else {
-        _showReservationFailed(context);
+    try {
+      int numberOfPeople = int.tryParse(_numberOfPeopleController.text) ?? -1;
+      if (numberOfPeople < 1) {
+        throw Exception("Number of poeple cannot be lower than 1!");
       }
-    });
+
+      var reservation = Reservation(
+          roomId: widget.roomId,
+          dateTime: _stringsToDateTime(_date, _hour),
+          duration: Time.fromDurationString(_duration),
+          numberOfPeople: int.tryParse(_numberOfPeopleController.text));
+
+      var body = reservation.toJson();
+      Request()
+          .postToMobileApi(
+              resourcePath: GlobalConfiguration().getString("reservationsUrl"),
+              body: body,
+              additionalHeaders: null)
+          .then((response) {
+        if (response.statusCode >= 200 && response.statusCode < 400) {
+          _showReservationSuccessful(context);
+          setState(() {
+            String empty;
+            _date = empty;
+            _numberOfPeopleController.text = "1";
+            _currentStep = 0;
+          });
+        } else {
+          _showReservationFailed(context);
+        }
+      });
+    } catch (e) {
+      _showReservationFailed(context);
+    }
   }
 
   void _handleDateChange(String date) async {
@@ -139,16 +153,18 @@ class _ReservationFormState extends State<ReservationForm> {
         additionalHeaders: null)
         .then((response) {
       if (response.statusCode == 200) {
-        Map body = json.decode(response.body);
+        Map body = json.decode(utf8.decode(response.bodyBytes));
+        var hours = body.map((key, value) =>
+            MapEntry(
+                key as String,
+                List<String>.from(value
+                    .map((duration) => Time.fromDuration(duration).toString())
+                    .toList())));
+
         setState(() {
-          _availableReservationHours = body.map((key, value) =>
-              MapEntry(
-                  key as String,
-                  List<String>.from(value
-                      .map(
-                          (duration) =>
-                          Time.fromDuration(duration / 60).toString())
-                      .toList())));
+          _availableReservationHours = hours;
+          _hour = _availableReservationHours?.keys?.first ?? "";
+          _duration = _availableReservationHours[_hour]?.first ?? "";
         });
       }
     });
@@ -236,7 +252,10 @@ class _ReservationFormState extends State<ReservationForm> {
     return Padding(
       padding: const EdgeInsets.all(2.0),
       child: TextField(
-        onChanged: (String value) => _setNumberOfPeople(int.parse(value)),
+        controller: _numberOfPeopleController,
+        inputFormatters: <TextInputFormatter>[
+          WhitelistingTextInputFormatter.digitsOnly
+        ],
         style: _darkStyle,
         decoration: _inputDecoration("Liczba osób", Icons.people),
         keyboardType: TextInputType.number,
@@ -297,12 +316,6 @@ class _ReservationFormState extends State<ReservationForm> {
     });
   }
 
-  _setNumberOfPeople(int number) {
-    setState(() {
-      _numberOfPeople = number;
-    });
-  }
-
   _setDate(String date) {
     setState(() {
       _date = date;
@@ -352,7 +365,7 @@ class _ReservationFormState extends State<ReservationForm> {
       FlushbarUtils.showFlushbar(
         context: context,
         title: "Rezerwacja nie została złożona",
-        message: "Spróbuj wybrać inny termin rezerwacji",
+        message: "Spróbuj wybrać inny termin rezerwacji lub zmień liczbę osób",
         color: _darkGrey,
         icon: Icon(Icons.close, color: Colors.red),
       );

@@ -62,8 +62,9 @@ class _ReservationPageState extends State<ReservationPage> {
                 queryStream: _queryStreamController.stream,
                 keyList: ["content"],
                 serializer: Reservation.fromJson,
-                creator: ReservationUserDetails.fromReservation,
+                itemCreator: ReservationUserDetails.fromReservation,
                 pageSize: 10,
+                noDataMessage: "Nie masz żadnej rezerwacji",
                 resourcePath:
                     GlobalConfiguration().getString("reservationsUrl"),
               ),
