@@ -53,7 +53,7 @@ class ApiImage extends Image {
         .multiPartPostToMobileApi(resourcePath: resourcePath, file: file)
         .then((response) {
       if (response.statusCode == HttpStatus.ok) {
-        var body = json.decode(response.body);
+        var body = json.decode(utf8.decode(response.bodyBytes));
         id = body['id'] as int;
       }
     });

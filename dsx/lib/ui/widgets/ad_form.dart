@@ -49,10 +49,10 @@ class _AdFormState extends State<AdForm> {
   bool _submitBlocked = false;
 
   Map<String, String> _scopes = {
-    "Wszyscy": "OTHER",
+    "Wszyscy": Scope.OTHER.name,
   };
 
-  String _selectedScope = "OTHER";
+  String _selectedScope = Scope.OTHER.name;
 
   @override
   void initState() {
@@ -76,11 +76,11 @@ class _AdFormState extends State<AdForm> {
     _priceNode = FocusNode();
 
     if (widget.userDetails.isStudent()) {
-      _scopes.addAll({"Studenci": Scope.STUDENT.toString()});
+      _scopes.addAll({"Studenci": Scope.STUDENT.name});
     }
 
     if (widget.userDetails.isDormitory()) {
-      _scopes.addAll({"Dom studencki": Scope.DORMITORY.toString()});
+      _scopes.addAll({"Dom studencki": Scope.DORMITORY.name});
     }
   }
 
@@ -347,7 +347,9 @@ class _AdFormState extends State<AdForm> {
         description: _descriptionController.text?.trim(),
         mainImage: _imageId,
         scope: _selectedScope,
-        price: double.tryParse(_priceController.text.trim()) ?? 0.0,
+        price: double.tryParse(
+                _priceController.text.replaceAll(',', '.').trim()) ??
+            0.0,
       );
 
       Map<String, dynamic> body = ad.toJson();

@@ -5,8 +5,8 @@ import 'package:dsx/utils/requests.dart';
 import 'package:flutter/material.dart';
 import 'package:global_configuration/global_configuration.dart';
 
+import 'landing_page.dart';
 import 'login_page.dart';
-import 'main_page.dart';
 
 class WhatFirst extends StatelessWidget {
   @override
@@ -17,7 +17,7 @@ class WhatFirst extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting)
             return _splashScreen();
           if (snapshot.hasData && snapshot.data == HttpStatus.ok) {
-            return MainPage();
+            return LandingPage();
           }
           return LoginPage();
         });

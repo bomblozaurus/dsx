@@ -87,16 +87,18 @@ class _BrowseAdsPageState extends State<BrowseAdsPage> {
             ),
             SliverToBoxAdapter(
               child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  child: LazyLoadedList(
-                    fetchingStream: _endOfScrollStreamController.stream,
-                    queryStream: _queryStreamController.stream,
-                    keyList: ['content'],
-                    serializer: Ad.fromJson,
-                    creator: AdDetails.fromAd,
-                    resourcePath: GlobalConfiguration().getString("adsUrl"),
-                    pageSize: 10,
-                  )),
+                width: MediaQuery.of(context).size.width,
+                child: LazyLoadedList(
+                  fetchingStream: _endOfScrollStreamController.stream,
+                  queryStream: _queryStreamController.stream,
+                  keyList: ['content'],
+                  serializer: Ad.fromJson,
+                  itemCreator: AdDetails.fromAd,
+                  resourcePath: GlobalConfiguration().getString("adsUrl"),
+                  pageSize: 10,
+                  noDataMessage: "Brak dostępnych ogłoszeń",
+                ),
+              ),
             ),
           ],
         ),

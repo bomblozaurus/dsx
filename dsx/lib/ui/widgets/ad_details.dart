@@ -48,10 +48,12 @@ class AdDetails extends ItemDetails<Ad> implements Indexable {
       );
 
   @override
-  List<TextWithIcon> getFooterItems() => List.of([
-        getTextWithIcon(
-            "${ad.price}", Icon(Icons.monetization_on, color: Colors.white))
-      ]);
+  List<TextWithIcon> getFooterItems() => List.of(
+        [
+          getTextWithIcon(
+              "${ad.price}", Icon(Icons.monetization_on, color: Colors.white)),
+        ],
+      );
 
   @override
   Widget buildRoutingWidget(Ad item, CircleAvatar avatar, int index) =>

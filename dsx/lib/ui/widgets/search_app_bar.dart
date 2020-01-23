@@ -14,11 +14,17 @@ class SearchAppBar extends StatefulWidget {
 
 class _SearchAppBarState extends State<SearchAppBar> {
   TextEditingController _inputController;
+  IconData inputIcon = Icons.refresh;
 
   @override
   void initState() {
     super.initState();
-    _inputController = TextEditingController();
+    _inputController = TextEditingController()
+      ..addListener(() {
+        setState(() {
+          inputIcon = Icons.search;
+        });
+      });
   }
 
   @override
@@ -77,38 +83,41 @@ class _SearchAppBarState extends State<SearchAppBar> {
       padding: const EdgeInsets.only(right: 8.0),
       child: InkWell(
         onTap: _search,
-        child: Icon(Icons.search, color: _detailsColor, size: 32.0),
+        child: Icon(inputIcon, color: _detailsColor, size: 32.0),
       ),
     );
   }
 
   _search() {
     widget.search(_inputController.text);
+    setState(() {
+      inputIcon = Icons.refresh;
+    });
   }
 
   Flexible _buildInput(Color _detailsColor) {
     return Flexible(
         child: Padding(
-          padding: const EdgeInsets.only(left: 24.0, right: 8.0),
-          child: TextField(
-            textInputAction: TextInputAction.search,
-            onEditingComplete: _search,
-            cursorColor: _detailsColor,
-            controller: _inputController,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              helperStyle: TextStyle(
-                color: _detailsColor,
-                fontSize: 20.0,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            style: TextStyle(
-              color: _detailsColor,
-              fontSize: 20.0,
-              fontWeight: FontWeight.w600,
-            ),
+      padding: const EdgeInsets.only(left: 24.0, right: 8.0),
+      child: TextField(
+        textInputAction: TextInputAction.search,
+        onEditingComplete: _search,
+        cursorColor: _detailsColor,
+        controller: _inputController,
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          helperStyle: TextStyle(
+            color: _detailsColor,
+            fontSize: 20.0,
+            fontWeight: FontWeight.w600,
           ),
-        ));
+        ),
+        style: TextStyle(
+          color: _detailsColor,
+          fontSize: 20.0,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    ));
   }
 }

@@ -1,5 +1,3 @@
-import 'package:dsx/events/create_event_page2.dart';
-import 'package:dsx/events/show_event_page.dart';
 import 'package:flutter/material.dart';
 
 import '../ui/views/event_details_page.dart';
@@ -22,23 +20,10 @@ class RouteGenerator {
         return MaterialPageRoute(
           builder: (_) => AddPage(),
         );
-      case '/addEvent':
-        return MaterialPageRoute(
-          builder: (_) => CreateEventPage(),
-        );
       case '/events':
         return MaterialPageRoute(
           builder: (_) => ShowScopePage(),
         );
-      case '/scope':
-        if (args is String) {
-          return MaterialPageRoute(
-            builder: (_) => ShowEventsPage(
-              scope: args,
-            ),
-          );
-        }
-        return _errorRoute();
       case '/eventDetails':
         {
           return MaterialPageRoute(

@@ -8,74 +8,70 @@ import 'package:flutter/material.dart';
 import '../../utils/indexable.dart';
 import '../../utils/requests.dart';
 
-typedef I ItemCreator<T, I extends Indexable>(T item, index);
+typedef I ItemCreator<T, I extends Indexable>(
+    T item, index, Function updateCallback);
 
 class LazyLoadedList<T, I extends Indexable> extends StatefulWidget {
   final int pageSize;
+  final String noDataMessage;
   final String resourcePath;
   final Function serializer;
   final Function
-      creator; //FIXME powinien być typ ItemCreator, ale nie da sie przekazac Indexable Function (dynamic, dynamic)
+  itemCreator; //FIXME powinien być typ ItemCreator, ale nie da sie przekazac Indexable Function (dynamic, dynamic)
   final List<String> keyList;
   final Stream queryStream;
   final Stream fetchingStream;
 
-  const LazyLoadedList(
-      {@required this.pageSize,
-      @required this.resourcePath,
-      @required this.serializer,
-      @required this.creator,
-      @required this.keyList,
-      this.queryStream,
-      this.fetchingStream});
+  const LazyLoadedList({@required this.pageSize,
+    @required this.resourcePath,
+    @required this.serializer,
+    @required this.itemCreator,
+    @required this.keyList,
+    this.queryStream,
+    this.fetchingStream,
+    this.noDataMessage});
 
   @override
-  _LazyLoadedListState createState() => _LazyLoadedListState<T>(
-      pageSize: this.pageSize,
-      resourcePath: this.resourcePath,
-      serializer: this.serializer,
-      keyList: this.keyList,
-      itemCreator: this.creator,
-      queryStream: this.queryStream);
+  _LazyLoadedListState createState() => _LazyLoadedListState<T>();
 }
 
 class _LazyLoadedListState<T> extends State<LazyLoadedList> {
   ScrollController _scrollController;
   Set _items = LinkedHashSet<T>();
   bool _isFetching;
-  final Stream queryStream;
   String _query = "";
 
-  final int pageSize;
-  final String resourcePath;
-  final Function serializer;
-  final ItemCreator itemCreator;
-  final List<String> keyList;
-
-  _LazyLoadedListState({
-    @required this.pageSize,
-    @required this.resourcePath,
-    @required this.serializer,
-    @required this.keyList,
-    @required this.itemCreator,
-    this.queryStream,
-  });
+  _LazyLoadedListState();
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        Center(child: _determineIfFetching()),
-        ListView.builder(
-            shrinkWrap: true,
-            controller: _scrollController,
-            itemCount: _items.length,
-            itemBuilder: (BuildContext context, int index) {
-              return this.itemCreator(_items.elementAt(index), index);
-            })
+        Padding(
+          padding: const EdgeInsets.all(32.0),
+          child: Center(child: _determineIfFetching()),
+        ),
+        _buildBody()
       ],
     );
   }
+
+  Widget _buildBody() {
+    return _items.length > 0 ? _buildListView() : _buildEmptyListMessage();
+  }
+
+  Widget _buildListView() {
+    return ListView.builder(
+        physics: const AlwaysScrollableScrollPhysics(),
+        shrinkWrap: true,
+        controller: _scrollController,
+        itemCount: _items.length,
+        itemBuilder: (BuildContext context, int index) {
+          return widget.itemCreator(
+              _items.elementAt(index), index);
+        });
+  }
+
 
   @override
   void initState() {
@@ -83,7 +79,7 @@ class _LazyLoadedListState<T> extends State<LazyLoadedList> {
     _fetchItems();
 
     try {
-      queryStream?.listen((data) {
+      widget.queryStream?.listen((data) {
         setState(() {
           this._query = data;
           this._items.clear();
@@ -112,8 +108,8 @@ class _LazyLoadedListState<T> extends State<LazyLoadedList> {
 
   @override
   void dispose() {
-    _scrollController.dispose();
     super.dispose();
+    _scrollController.dispose();
   }
 
   _determineIfFetching() {
@@ -122,39 +118,58 @@ class _LazyLoadedListState<T> extends State<LazyLoadedList> {
         alignment: Alignment.center,
         child: CircularProgressIndicator(
             valueColor:
-                AlwaysStoppedAnimation(Theme.Colors.logoBackgroundColor),
+            AlwaysStoppedAnimation(Theme.Colors.logoBackgroundColor),
             strokeWidth: 5.0),
       );
     }
   }
 
-  _fetchItems() async {
-    setState(() {
-      this._isFetching = true;
-    });
+  Future<void> _fetchItems() async {
+    if (mounted) {
+      setState(() {
+        this._isFetching = true;
+      });
 
-    int pageNo = (_items.length / this.pageSize).ceil();
-    String pageOfItemsUrl =
-        '$resourcePath?query=$_query&size=$pageSize&page=$pageNo';
+      int pageNo = (_items.length / widget.pageSize).ceil();
+      String pageOfItemsUrl =
+          '${widget.resourcePath}?query=$_query&size=${widget
+          .pageSize}&page=$pageNo';
 
-    List<T> newItems = List();
-    await Request()
-        .getToMobileApi(resourcePath: pageOfItemsUrl)
-        .then((response) {
-      newItems = _getList(json.decode(utf8.decode(response.bodyBytes)))
-          .map((item) => this.serializer(item))
-          .toList();
-    });
+      List<T> newItems = List();
+      await Request()
+          .getToMobileApi(resourcePath: pageOfItemsUrl)
+          .then((response) {
+        newItems = _getList(json.decode(utf8.decode(response.bodyBytes)))
+            .map((item) => widget.serializer(item))
+            .toList();
+      });
 
-    setState(() {
-      this._items.addAll(newItems);
-      this._isFetching = false;
-    });
+      setState(() {
+        this._items.addAll(newItems);
+        this._isFetching = false;
+      });
+    }
   }
 
   List _getList(var body) {
     var toReturn = body;
-    this.keyList.forEach((key) => toReturn = toReturn[key]);
+    widget.keyList.forEach((key) => toReturn = toReturn[key]);
     return toReturn;
+  }
+
+  Widget _buildEmptyListMessage() {
+    return _isFetching
+        ? const SizedBox()
+        : Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 32.0),
+      child: Align(
+        alignment: Alignment.center,
+        child: Text(
+          widget.noDataMessage ?? "",
+          style: Theme.TextStyles.headerTextStyle,
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
   }
 }

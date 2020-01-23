@@ -12,6 +12,7 @@
   "keyholderReservationsUrl": "/reservations/keyholder",
   "freeReservationHoursUrl": "/reservations/freeForRoom",
   "reservationOwnerUrl": "/reservations/owner",
+  "switchReservation": "/reservations/switch",
   "adsPostUrl": "/ads",
   "adsUrl": "/search/ads",
   "uploadImageUrl": "/images/uploadImage"

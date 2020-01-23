@@ -61,7 +61,7 @@ class RoomDetailsPage extends DetailsPage {
     return Container(
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
           child: Text(room.description,
               style: DsxTheme.TextStyles.headerTextStyle),
         ),

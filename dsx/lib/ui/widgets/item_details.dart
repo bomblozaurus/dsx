@@ -132,7 +132,7 @@ abstract class ItemDetails<I extends Fetchable> extends StatelessWidget
     Widget buildItemDescription() {
       return Container(
         margin: EdgeInsets.fromLTRB(
-            horizontal ? 112.0 : 12.0, horizontal ? 12.0 : 112.0, 12.0, 12.0),
+            horizontal ? 112.0 : 8.0, horizontal ? 8.0 : 112.0, 8.0, 8.0),
         constraints: BoxConstraints.expand(),
         child: _buildDescriptionBody(),
       );

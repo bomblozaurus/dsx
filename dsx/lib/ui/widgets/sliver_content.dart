@@ -13,14 +13,13 @@ class SliverContent extends StatefulWidget {
       this.title,
       this.appBarBackground,
       this.appBarHeight,
-      this.sliverBuilders})
+      @required this.sliverBuilders})
       : super(key: key);
 
-  @override
   factory SliverContent.standard(
           {String title,
           Widget appBarBackground,
-          List<Function> sliverBuilders}) =>
+          @required List<Function> sliverBuilders}) =>
       SliverContent(
         title: title,
         appBarBackground: appBarBackground,
