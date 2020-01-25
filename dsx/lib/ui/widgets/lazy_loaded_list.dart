@@ -62,7 +62,6 @@ class _LazyLoadedListState<T> extends State<LazyLoadedList> {
 
   Widget _buildListView() {
     return ListView.builder(
-        physics: const AlwaysScrollableScrollPhysics(),
         shrinkWrap: true,
         controller: _scrollController,
         itemCount: _items.length,
@@ -116,7 +115,7 @@ class _LazyLoadedListState<T> extends State<LazyLoadedList> {
         alignment: Alignment.center,
         child: CircularProgressIndicator(
             valueColor:
-            AlwaysStoppedAnimation(Theme.Colors.logoBackgroundColor),
+                AlwaysStoppedAnimation(Theme.Colors.logoBackgroundColor),
             strokeWidth: 5.0),
       );
     }
@@ -142,10 +141,12 @@ class _LazyLoadedListState<T> extends State<LazyLoadedList> {
             .toList();
       });
 
-      setState(() {
-        this._items.addAll(newItems);
-        this._isFetching = false;
-      });
+      if (mounted) {
+        setState(() {
+          this._items.addAll(newItems);
+          this._isFetching = false;
+        });
+      }
     }
   }
 

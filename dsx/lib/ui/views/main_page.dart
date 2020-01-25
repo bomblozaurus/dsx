@@ -19,7 +19,7 @@ class MainPageState extends State<MainPage> {
     ];
 
     final UserDetails _userDetails = Provider.of<UserDetails>(context);
-    if (_userDetails?.scope != Scope.OTHER) {
+    if (_userDetails?.scope == Scope.DORMITORY) {
       options.insert(0, BrowseRoomsPage());
     }
 
@@ -64,8 +64,7 @@ class MainPageState extends State<MainPage> {
   List<BottomNavigationBarItem> _buildNavigationBarItems() {
     return _getPageOptions(context)
         .map((widget) => widget as Navigable)
-        .map((navigable) =>
-        BottomNavigationBarItem(
+        .map((navigable) => BottomNavigationBarItem(
             icon: Icon(navigable.getIconData()),
             title: Text(navigable.getDescription().toUpperCase())))
         .toList();

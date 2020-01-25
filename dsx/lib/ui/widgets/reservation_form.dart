@@ -139,27 +139,24 @@ class _ReservationFormState extends State<ReservationForm> {
     _setDate(date);
 
     String getDateWithYearFirst(String date) {
-      return '${date.substring(6, 10)}-${date.substring(3, 5)}-${date.substring(
-          0, 2)}';
+      return '${date.substring(6, 10)}-${date.substring(3, 5)}-${date.substring(0, 2)}';
     }
 
     String resourcePath =
-    GlobalConfiguration().getString("freeReservationHoursUrl");
+        GlobalConfiguration().getString("freeReservationHoursUrl");
     await Request()
         .getToMobileApi(
-        resourcePath:
-        "$resourcePath?roomId=${widget.roomId}&date=${getDateWithYearFirst(
-            date)}",
-        additionalHeaders: null)
+            resourcePath:
+                "$resourcePath?roomId=${widget.roomId}&date=${getDateWithYearFirst(date)}",
+            additionalHeaders: null)
         .then((response) {
       if (response.statusCode == 200) {
         Map body = json.decode(utf8.decode(response.bodyBytes));
-        var hours = body.map((key, value) =>
-            MapEntry(
-                key as String,
-                List<String>.from(value
-                    .map((duration) => Time.fromDuration(duration).toString())
-                    .toList())));
+        var hours = body.map((key, value) => MapEntry(
+            key as String,
+            List<String>.from(value
+                .map((duration) => Time.fromDuration(duration).toString())
+                .toList())));
 
         setState(() {
           _availableReservationHours = hours;

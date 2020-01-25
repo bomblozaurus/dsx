@@ -57,8 +57,7 @@ class RoomDetails extends ItemDetails<Room> implements Indexable {
   }
 
   @override
-  List<TextWithIcon> getFooterItems() =>
-      List.of([
+  List<TextWithIcon> getFooterItems() => List.of([
         getTextWithIcon(
             "${room.openFrom.toString()}-${room.openTo.toString()} ",
             Icon(Icons.access_time, color: _determineIfOpen())),

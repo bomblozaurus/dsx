@@ -122,7 +122,8 @@ class Request {
 
   Future<Map> _createHeaders() async {
     return await DeviceInfo().getInfoHeader()
-      ..addAll(await JwtTokenUtils().getTokenHeader())..addAll(jsonHeader);
+      ..addAll(await JwtTokenUtils().getTokenHeader())
+      ..addAll(jsonHeader);
   }
 
   String _getUrl(String resourcePath) {

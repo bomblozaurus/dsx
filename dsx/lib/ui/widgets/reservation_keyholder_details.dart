@@ -71,7 +71,7 @@ class ReservationKeyholderDetails extends ReservationDetails {
     try {
       Request()
           .putToMobileApi(
-          resourcePath: '$resourcePath?reservationId=${reservation.id}')
+              resourcePath: '$resourcePath?reservationId=${reservation.id}')
           .then((response) {
         var jsonBody = json.decode(utf8.decode(response.bodyBytes));
         _showStatusChangedSuccessfully(context, jsonBody);

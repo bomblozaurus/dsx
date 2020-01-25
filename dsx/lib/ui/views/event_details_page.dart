@@ -19,8 +19,7 @@ class EventDetailsPage extends DetailsPage {
           index: index,
         );
 
-  static EventDetailsPage fromRouting(event, avatar, index) =>
-      EventDetailsPage(
+  static EventDetailsPage fromRouting(event, avatar, index) => EventDetailsPage(
         event: event,
         avatar: avatar,
         index: index,
