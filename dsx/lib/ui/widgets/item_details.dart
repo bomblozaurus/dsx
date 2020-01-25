@@ -96,9 +96,9 @@ abstract class ItemDetails<I extends Fetchable> extends StatelessWidget
                 style: Theme.TextStyles.regularTextStyle,
                 child: alignAccordingly(
                     child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: _buildFooterItems(),
-                    )),
+                  mainAxisSize: MainAxisSize.max,
+                  children: _buildFooterItems(),
+                )),
               )),
         ],
       );

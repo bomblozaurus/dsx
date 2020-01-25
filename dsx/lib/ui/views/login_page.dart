@@ -173,9 +173,6 @@ class _LoginPageState extends State<LoginPage>
         icon: Icon(iconData, color: Colors.red),
       );
 
-  void showLoginSuccess() =>
-      showSuccess(title: "Zalogowano pomyślnie", iconData: Icons.done);
-
   void showLoginFailed() => showFailed(
       title: "Nie udało się zalogować!",
       message: "Sprawdź poprawność danych i spróbuj ponownie",
@@ -293,7 +290,7 @@ class _LoginPageState extends State<LoginPage>
                   showFailed(
                     title: "Funkcjonalność nieobsługiwana",
                     message:
-                    "Wpłać 999'999'999 € na nasze konto, abyśmy rozwinęli aplikację.",
+                        "Wpłać 999'999'999 € na nasze konto, abyśmy rozwinęli aplikację.",
                     iconData: Icons.monetization_on,
                   );
                   await JwtTokenUtils()

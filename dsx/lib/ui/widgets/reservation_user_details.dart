@@ -28,8 +28,7 @@ class ReservationUserDetails extends ReservationDetails {
       );
 
   @override
-  List<Widget> getDetailsColumnWidgets(BuildContext context) =>
-      [
+  List<Widget> getDetailsColumnWidgets(BuildContext context) => [
         buildIconWithDescription(
             value: reservation.duration.toString(),
             icon: Icon(Icons.timelapse, color: Colors.white)),

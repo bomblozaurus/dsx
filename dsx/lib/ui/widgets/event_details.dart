@@ -46,8 +46,7 @@ class EventDetails extends ItemDetails<Event> implements Indexable {
       );
 
   @override
-  Widget buildHeader() =>
-      Text(
+  Widget buildHeader() => Text(
         event.name,
         overflow: TextOverflow.ellipsis,
       );
