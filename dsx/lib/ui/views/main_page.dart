@@ -19,7 +19,7 @@ class MainPageState extends State<MainPage> {
     ];
 
     final UserDetails _userDetails = Provider.of<UserDetails>(context);
-    if (_userDetails?.scope != Scope.OTHER) {
+    if (_userDetails?.scope == Scope.DORMITORY) {
       options.insert(0, BrowseRoomsPage());
     }
 

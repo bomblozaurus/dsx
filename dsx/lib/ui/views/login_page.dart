@@ -161,6 +161,7 @@ class _LoginPageState extends State<LoginPage>
       showFlushbar(
         title: title,
         message: message,
+        color: Theme.Colors.loginGradientEnd,
         icon: Icon(iconData, color: Theme.Colors.logoBackgroundColor),
       );
 
@@ -168,6 +169,7 @@ class _LoginPageState extends State<LoginPage>
       showFlushbar(
         title: title,
         message: message,
+        color: Theme.Colors.loginGradientEnd,
         icon: Icon(iconData, color: Colors.red),
       );
 
@@ -184,11 +186,10 @@ class _LoginPageState extends State<LoginPage>
       message: "Możesz się teraz zalogować",
       iconData: Icons.done);
 
-  void showSignUpFailed() =>
-      showFailed(
-          title: "Nie udało się zarejestrować!",
-          message: "Sprawdź poprawność danych i spróbuj ponownie",
-          iconData: Icons.warning);
+  void showSignUpFailed() => showFailed(
+      title: "Nie udało się zarejestrować!",
+      message: "Sprawdź poprawność danych i spróbuj ponownie",
+      iconData: Icons.warning);
 
   Widget _buildMenuBar(BuildContext context) {
     return Padding(
@@ -444,7 +445,6 @@ class _LoginPageState extends State<LoginPage>
 
   void _loginSuccessful(token) async {
     JwtTokenUtils().saveToken(token.substring(13, token.length - 2));
-    showLoginSuccess();
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => LandingPage()));
   }
