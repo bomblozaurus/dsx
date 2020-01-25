@@ -23,6 +23,8 @@ dependencies:
   image_picker: ^0.6.3+1
   pull_to_refresh: ^1.5.8
   photo_view: ^0.9.1
+  cached_network_image: ^2.0.0
+  image_cropper: ^1.2.0
 
 dev_dependencies:
   flutter_test:

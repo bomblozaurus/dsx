@@ -1,5 +1,5 @@
 {
-  "baseUrl": "http://10.5.155.106:8080",
+  "baseUrl": "http://54.166.66.96:8080",
   "logInUrl": "/logIn",
   "signUpUrl": "/signUp",
   "verifyTokenUrl": "/verifyToken",
