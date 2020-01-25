@@ -70,7 +70,7 @@ class _LoginPageState extends State<LoginPage>
             physics: _physics,
             child: Container(
               width: MediaQuery.of(context).size.width,
-              height: 870.0,
+              height: MediaQuery.of(context).size.height,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                     colors: [
