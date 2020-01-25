@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dsx/style/theme.dart' as Theme;
 import 'package:dsx/utils/device_info.dart';
 import 'package:dsx/utils/jwt_token.dart';
@@ -12,7 +13,8 @@ class ApiImage extends Image {
   static Widget getCircleAvatar({String url, double radius}) {
     return FutureBuilder(
       future: _getNetworkImage(url),
-      builder: (BuildContext context, AsyncSnapshot<NetworkImage> snapshot) {
+      builder: (BuildContext context,
+          AsyncSnapshot<CachedNetworkImageProvider> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           return CircleAvatar(
             backgroundImage: snapshot.data,
@@ -60,8 +62,8 @@ class ApiImage extends Image {
     return id;
   }
 
-  static Future<NetworkImage> _getNetworkImage(String url) async {
-    return NetworkImage(
+  static Future<CachedNetworkImageProvider> _getNetworkImage(String url) async {
+    return CachedNetworkImageProvider(
       url,
       headers: await _getHeaders(),
     );

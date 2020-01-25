@@ -10,6 +10,7 @@ import 'package:dsx/utils/requests.dart';
 import 'package:dsx/utils/simple_step.dart';
 import 'package:flutter/material.dart';
 import 'package:global_configuration/global_configuration.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 class AdForm extends StatefulWidget {
@@ -262,18 +263,34 @@ class _AdFormState extends State<AdForm> {
 
   Widget _buildImageInput() {
     Future getImage(ImageSource source) async {
-      ImagePicker.pickImage(source: source).then((image) {
+      ImagePicker.pickImage(source: source, imageQuality: 100)
+          .then((image) async {
+        var cropped = await ImageCropper.cropImage(
+            sourcePath: image.path,
+            compressFormat: ImageCompressFormat.jpg,
+            compressQuality: 50,
+            androidUiSettings: AndroidUiSettings(
+                toolbarTitle: "Edytuj swoje zdjęcie",
+                toolbarColor: _lime,
+                toolbarWidgetColor: Colors.black,
+                statusBarColor: Colors.black,
+                backgroundColor: _darkGrey,
+                cropFrameColor: Colors.white,
+                cropGridColor: Colors.white,
+                initAspectRatio: CropAspectRatioPreset.square));
         setState(() {
           _submitBlocked = true;
-          _image = image;
+          _image = cropped;
         });
 
-        ApiImage.uploadImage(_image).then((id) {
-          setState(() {
-            _imageId = id;
-            _submitBlocked = false;
+        if (_image != null) {
+          ApiImage.uploadImage(_image).then((id) {
+            setState(() {
+              _imageId = id;
+              _submitBlocked = false;
+            });
           });
-        });
+        }
       });
     }
 
@@ -388,8 +405,7 @@ class _AdFormState extends State<AdForm> {
     );
   }
 
-  Widget _buildButton({Function onPressed, Widget child}) =>
-      SizedBox(
+  Widget _buildButton({Function onPressed, Widget child}) => SizedBox(
         width: 64.0,
         child: OutlineButton(
           shape: RoundedRectangleBorder(
@@ -435,12 +451,11 @@ class _AdFormState extends State<AdForm> {
           onSubmitFocusNode: onSubmitFocusNode,
           keyboardType: TextInputType.text);
 
-  Widget _buildDecimalInput(
-          {String title,
-          IconData iconData,
-          TextEditingController controller,
-          FocusNode focusNode,
-          FocusNode onSubmitFocusNode}) =>
+  Widget _buildDecimalInput({String title,
+    IconData iconData,
+    TextEditingController controller,
+    FocusNode focusNode,
+    FocusNode onSubmitFocusNode}) =>
       _buildInput(
           title: title,
           iconData: iconData,

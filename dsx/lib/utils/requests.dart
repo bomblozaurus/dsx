@@ -13,9 +13,14 @@ class Request {
   static const jsonHeader = {"Content-Type": "application/json"};
 
   Future createPost(String url, {Map body, Map headers}) async {
-    var jsonBody = json.encode(body);
+    var json = _getBody(body);
     var response = await http
-        .post(url, headers: headers, body: jsonBody)
+        .post(
+          url,
+          headers: headers,
+          body: json,
+          encoding: Encoding.getByName("utf-8"),
+        )
         .timeout(Duration(seconds: 5));
 
     return response;
@@ -28,9 +33,14 @@ class Request {
   }
 
   Future<Response> createPut(String url, {Map body, Map headers}) async {
-    var jsonBody = json.encode(body);
+    var jsonBody = _getBody(body);
     var response = http
-        .put(url, headers: headers, body: jsonBody)
+        .put(
+      url,
+      headers: headers,
+      body: jsonBody,
+      encoding: Encoding.getByName("utf-8"),
+    )
         .timeout(Duration(seconds: 5));
     return response;
   }
@@ -141,5 +151,9 @@ class Request {
 
   _handleUnauthorized() {
     RouteGenerator.generateRoute(RouteSettings(name: '/'));
+  }
+
+  List<int> _getBody(Map body) {
+    return JsonUtf8Encoder().convert(body);
   }
 }
