@@ -19,7 +19,7 @@ class Address {
 
   static Address fromJson(Map<String, dynamic> json) => _$AddressFromJson(json);
 
-  Map<String, dynamic> toJson() => _$AddressToJson(this);
+  Map<String, dynamic> toJson() =>  _$AddressToJson(this);
 
   String toString() {
     return city.isNotEmpty
