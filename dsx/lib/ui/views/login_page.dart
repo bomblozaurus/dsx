@@ -79,39 +79,35 @@ class _LoginPageState extends State<LoginPage>
                   stops: [0.0, 1.0],
                   tileMode: TileMode.clamp),
             ),
-            child: ListView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    SizedBox(height: 60),
-                    Logo(size: 120.0),
-                    SizedBox(height: 40),
-                    _buildMenuBar(context),
-                    Container(
-                      height: MediaQuery.of(context).size.height - 310.0,
-                      child: PageView(
-                        controller: _pageController,
-                        onPageChanged: (i) {
-                          if (i == 0) {
-                            setState(() {
-                              right = Colors.white;
-                              left = Colors.black;
-                            });
-                          } else if (i == 1) {
-                            setState(() {
-                              right = Colors.black;
-                              left = Colors.white;
-                            });
-                          }
-                        },
-                        children: <Widget>[
-                          _buildLogIn(context),
-                          _buildSignUp(context),
-                        ],
-                      ),
-                    ),
-                  ],
+                SizedBox(height: 60),
+                Logo(size: 120.0),
+                SizedBox(height: 40),
+                _buildMenuBar(context),
+                Container(
+                  height: MediaQuery.of(context).size.height - 310.0,
+                  child: PageView(
+                    controller: _pageController,
+                    onPageChanged: (i) {
+                      if (i == 0) {
+                        setState(() {
+                          right = Colors.white;
+                          left = Colors.black;
+                        });
+                      } else if (i == 1) {
+                        setState(() {
+                          right = Colors.black;
+                          left = Colors.white;
+                        });
+                      }
+                    },
+                    children: <Widget>[
+                      _buildLogIn(context),
+                      _buildSignUp(context),
+                    ],
+                  ),
                 ),
               ],
             ),
