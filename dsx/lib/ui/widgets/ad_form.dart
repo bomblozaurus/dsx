@@ -376,6 +376,7 @@ class _AdFormState extends State<AdForm> {
           .postToMobileApi(resourcePath: resourcePath, body: body)
           .then((response) {
         if (response.statusCode == HttpStatus.created) {
+          Navigator.of(context).pop();
           _showFlushbarWithSuccessInfo(context);
         }
       });
@@ -451,11 +452,12 @@ class _AdFormState extends State<AdForm> {
           onSubmitFocusNode: onSubmitFocusNode,
           keyboardType: TextInputType.text);
 
-  Widget _buildDecimalInput({String title,
-    IconData iconData,
-    TextEditingController controller,
-    FocusNode focusNode,
-    FocusNode onSubmitFocusNode}) =>
+  Widget _buildDecimalInput(
+          {String title,
+          IconData iconData,
+          TextEditingController controller,
+          FocusNode focusNode,
+          FocusNode onSubmitFocusNode}) =>
       _buildInput(
           title: title,
           iconData: iconData,
@@ -464,11 +466,12 @@ class _AdFormState extends State<AdForm> {
           onSubmitFocusNode: onSubmitFocusNode,
           keyboardType: TextInputType.numberWithOptions(decimal: true));
 
-  Widget _buildNumericInput({String title,
-    IconData iconData,
-    TextEditingController controller,
-    FocusNode focusNode,
-    FocusNode onSubmitFocusNode}) =>
+  Widget _buildNumericInput(
+          {String title,
+          IconData iconData,
+          TextEditingController controller,
+          FocusNode focusNode,
+          FocusNode onSubmitFocusNode}) =>
       _buildInput(
           title: title,
           iconData: iconData,

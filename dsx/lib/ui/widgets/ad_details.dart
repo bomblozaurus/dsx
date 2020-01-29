@@ -32,11 +32,7 @@ class AdDetails extends ItemDetails<Ad> implements Indexable {
       );
 
   @override
-  Widget buildHeader() => Text(
-        ad.name,
-        style: Theme.TextStyles.headerTextStyle,
-        overflow: TextOverflow.ellipsis,
-      );
+  Widget buildHeader() => getHeader(ad.name);
 
   @override
   Widget buildDescription() => SizedBox(

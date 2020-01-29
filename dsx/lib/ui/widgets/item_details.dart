@@ -2,6 +2,7 @@ import 'package:dsx/utils/api_image.dart';
 import 'package:dsx/utils/indexable.dart';
 import 'package:dsx/utils/text_with_icon.dart';
 import 'package:flutter/material.dart';
+import 'package:marquee/marquee.dart';
 
 import '../../style/theme.dart' as Theme;
 import '../../utils/fetchable.dart';
@@ -31,6 +32,31 @@ abstract class ItemDetails<I extends Fetchable> extends StatelessWidget
   Widget buildDescription();
 
   Widget buildRoutingWidget(I item, CircleAvatar avatar, int index);
+
+  Widget getHeader(String text) {
+    if (horizontal) {
+      return text.length > 20 ? _getMarquee(text) : _getHeaderText(text);
+    } else {
+      return text.length > 22 ? _getMarquee(text) : _getHeaderText(text);
+    }
+  }
+
+  Widget _getMarquee(String text) => Container(
+        width: 350.0,
+        height: 24.0,
+        child: Marquee(
+          text: text,
+          style: Theme.TextStyles.headerTextStyle,
+          scrollAxis: Axis.horizontal,
+          blankSpace: 20.0,
+          velocity: 100.0,
+        ),
+      );
+
+  Widget _getHeaderText(String text) => Text(
+        text,
+        style: Theme.TextStyles.headerTextStyle,
+      );
 
   getTextWithIcon(String text, Icon icon) =>
       TextWithIcon(text: text, icon: icon);

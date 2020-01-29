@@ -52,7 +52,6 @@ class _LoginPageState extends State<LoginPage>
   bool _obscureTextSignUp = true;
 
   PageController _pageController;
-  ScrollPhysics _physics;
 
   Color left = Colors.black;
   Color right = Colors.white;
@@ -66,53 +65,55 @@ class _LoginPageState extends State<LoginPage>
           onNotification: (overscroll) {
             overscroll.disallowGlow();
           },
-          child: SingleChildScrollView(
-            physics: _physics,
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    colors: [
-                      Theme.Colors.loginGradientStart,
-                      Theme.Colors.loginGradientEnd
-                    ],
-                    begin: const FractionalOffset(0.0, 0.0),
-                    end: const FractionalOffset(1.0, 1.0),
-                    stops: [0.0, 1.0],
-                    tileMode: TileMode.clamp),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Padding(padding: const EdgeInsets.only(top: 60.0)),
-                  Logo(size: 120.0),
-                  Padding(padding: const EdgeInsets.only(top: 40.0)),
-                  _buildMenuBar(context),
-                  Flexible(
-                    child: PageView(
-                      controller: _pageController,
-                      onPageChanged: (i) {
-                        if (i == 0) {
-                          setState(() {
-                            right = Colors.white;
-                            left = Colors.black;
-                          });
-                        } else if (i == 1) {
-                          setState(() {
-                            right = Colors.black;
-                            left = Colors.white;
-                          });
-                        }
-                      },
-                      children: <Widget>[
-                        _buildLogIn(context),
-                        _buildSignUp(context),
-                      ],
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  colors: [
+                    Theme.Colors.loginGradientStart,
+                    Theme.Colors.loginGradientEnd
+                  ],
+                  begin: const FractionalOffset(0.0, 0.0),
+                  end: const FractionalOffset(1.0, 1.0),
+                  stops: [0.0, 1.0],
+                  tileMode: TileMode.clamp),
+            ),
+            child: ListView(
+              children: <Widget>[
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    SizedBox(height: 60),
+                    Logo(size: 120.0),
+                    SizedBox(height: 40),
+                    _buildMenuBar(context),
+                    Container(
+                      height: MediaQuery.of(context).size.height - 310.0,
+                      child: PageView(
+                        controller: _pageController,
+                        onPageChanged: (i) {
+                          if (i == 0) {
+                            setState(() {
+                              right = Colors.white;
+                              left = Colors.black;
+                            });
+                          } else if (i == 1) {
+                            setState(() {
+                              right = Colors.black;
+                              left = Colors.white;
+                            });
+                          }
+                        },
+                        children: <Widget>[
+                          _buildLogIn(context),
+                          _buildSignUp(context),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),
@@ -138,13 +139,7 @@ class _LoginPageState extends State<LoginPage>
       DeviceOrientation.portraitDown,
     ]);
 
-    _physics = AlwaysScrollableScrollPhysics();
-    _pageController = PageController()
-      ..addListener(() {
-        _physics = (_pageController.page == 0.0)
-            ? NeverScrollableScrollPhysics()
-            : AlwaysScrollableScrollPhysics();
-      });
+    _pageController = PageController();
   }
 
   void showFlushbar({String title, String message, Icon icon, Color color}) {
@@ -240,8 +235,81 @@ class _LoginPageState extends State<LoginPage>
   }
 
   Widget _buildLogIn(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(top: 23.0),
+    return SingleChildScrollView(
+      child: Container(
+        padding: EdgeInsets.only(top: 23.0),
+        child: Column(
+          children: <Widget>[
+            Stack(
+              alignment: Alignment.topCenter,
+              overflow: Overflow.visible,
+              children: <Widget>[
+                Card(
+                  elevation: 2.0,
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Container(
+                    width: 300.0,
+                    height: 190.0,
+                    child: Column(
+                      children: <Widget>[
+                        _buildTextField(
+                          emailLoginNode,
+                          emailLoginController,
+                          TextInputType.emailAddress,
+                          FontAwesomeIcons.envelope,
+                          "Email",
+                          onSubmitFocusNode: passwordLoginNode,
+                          keyboardType: TextInputType.emailAddress,
+                        ),
+                        _buildSeparator(),
+                        _buildTextField(
+                            passwordLoginNode,
+                            passwordLoginController,
+                            TextInputType.text,
+                            FontAwesomeIcons.lock,
+                            "Hasło",
+                            obscureText: _obscureTextLogin),
+                      ],
+                    ),
+                  ),
+                ),
+                _buildSubmitButton("ZALOGUJ", 170.0, () => _loginUser()),
+              ],
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 10.0),
+              child: FlatButton(
+                  onPressed: () async {
+                    showFailed(
+                      title: "Funkcjonalność nieobsługiwana",
+                      message:
+                      "Wpłać 999'999'999 € na nasze konto, abyśmy rozwinęli aplikację.",
+                      iconData: Icons.monetization_on,
+                    );
+                    await JwtTokenUtils()
+                        .getToken()
+                        .then((value) => print(value));
+                  },
+                  child: Text(
+                    "Zapomniałeś hasła?",
+                    style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        color: Colors.white,
+                        fontSize: Theme.Fonts.loginFontSize,
+                        fontFamily: Theme.Fonts.loginFontMedium),
+                  )),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSignUp(BuildContext context) {
+    return SingleChildScrollView(
       child: Column(
         children: <Widget>[
           Stack(
@@ -254,129 +322,63 @@ class _LoginPageState extends State<LoginPage>
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 ),
-                child: Container(
-                  width: 300.0,
-                  height: 190.0,
-                  child: Column(
-                    children: <Widget>[
-                      _buildTextField(
-                        emailLoginNode,
-                        emailLoginController,
-                        TextInputType.emailAddress,
-                        FontAwesomeIcons.envelope,
-                        "Email",
-                        onSubmitFocusNode: passwordLoginNode,
-                        keyboardType: TextInputType.emailAddress,
-                      ),
-                      _buildSeparator(),
-                      _buildTextField(
-                          passwordLoginNode,
-                          passwordLoginController,
-                          TextInputType.text,
-                          FontAwesomeIcons.lock,
-                          "Hasło",
-                          obscureText: _obscureTextLogin),
-                    ],
-                  ),
+                child: Column(
+                  children: <Widget>[
+                    _buildTextField(
+                        firstNameSignUpNode,
+                        firstNameSignUpController,
+                        TextInputType.text,
+                        FontAwesomeIcons.user,
+                        "Imię",
+                        onSubmitFocusNode: lastNameSignUpNode),
+                    _buildSeparator(),
+                    _buildTextField(
+                        lastNameSignUpNode, lastNameSignUpController,
+                        TextInputType.text, FontAwesomeIcons.user, "Nazwisko",
+                        onSubmitFocusNode: emailSignUpNode),
+                    _buildSeparator(),
+                    _buildTextField(
+                      emailSignUpNode,
+                      emailSignUpController,
+                      TextInputType.emailAddress,
+                      FontAwesomeIcons.envelope,
+                      "Email",
+                      onSubmitFocusNode: passwordSignUpNode,
+                      keyboardType: TextInputType.emailAddress,
+                    ),
+                    _buildSeparator(),
+                    _buildTextField(
+                        passwordSignUpNode, passwordSignUpController,
+                        TextInputType.text, FontAwesomeIcons.lock, "Hasło",
+                        obscureText: _obscureTextSignUp,
+                        onSubmitFocusNode: indexNumberSignUpNode),
+                    _buildSeparator(),
+                    _buildTextField(
+                        indexNumberSignUpNode,
+                        indexNumberSignUpController,
+                        TextInputType.number,
+                        FontAwesomeIcons.graduationCap,
+                        "Numer indeksu",
+                        onSubmitFocusNode: studentHouseSignUpNode),
+                    _buildSeparator(),
+                    _buildTextField(
+                        studentHouseSignUpNode,
+                        studentHouseSignUpController,
+                        TextInputType.number,
+                        FontAwesomeIcons.home,
+                        "Numer DS")
+                  ],
                 ),
               ),
-              _buildSubmitButton("ZALOGUJ", 170.0, () => _loginUser()),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: _buildSubmitButton(
+                    "DOŁĄCZ", 520.0, () => _registerUser()),
+              )
             ],
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 10.0),
-            child: FlatButton(
-                onPressed: () async {
-                  showFailed(
-                    title: "Funkcjonalność nieobsługiwana",
-                    message:
-                        "Wpłać 999'999'999 € na nasze konto, abyśmy rozwinęli aplikację.",
-                    iconData: Icons.monetization_on,
-                  );
-                  await JwtTokenUtils()
-                      .getToken()
-                      .then((value) => print(value));
-                },
-                child: Text(
-                  "Zapomniałeś hasła?",
-                  style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      color: Colors.white,
-                      fontSize: Theme.Fonts.loginFontSize,
-                      fontFamily: Theme.Fonts.loginFontMedium),
-                )),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildSignUp(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Stack(
-          alignment: Alignment.topCenter,
-          overflow: Overflow.visible,
-          children: <Widget>[
-            Card(
-              elevation: 2.0,
-              color: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Column(
-                children: <Widget>[
-                  _buildTextField(
-                      firstNameSignUpNode,
-                      firstNameSignUpController,
-                      TextInputType.text,
-                      FontAwesomeIcons.user,
-                      "Imię",
-                      onSubmitFocusNode: lastNameSignUpNode),
-                  _buildSeparator(),
-                  _buildTextField(lastNameSignUpNode, lastNameSignUpController,
-                      TextInputType.text, FontAwesomeIcons.user, "Nazwisko",
-                      onSubmitFocusNode: emailSignUpNode),
-                  _buildSeparator(),
-                  _buildTextField(
-                    emailSignUpNode,
-                    emailSignUpController,
-                    TextInputType.emailAddress,
-                    FontAwesomeIcons.envelope,
-                    "Email",
-                    onSubmitFocusNode: passwordSignUpNode,
-                    keyboardType: TextInputType.emailAddress,
-                  ),
-                  _buildSeparator(),
-                  _buildTextField(passwordSignUpNode, passwordSignUpController,
-                      TextInputType.text, FontAwesomeIcons.lock, "Hasło",
-                      obscureText: _obscureTextSignUp,
-                      onSubmitFocusNode: indexNumberSignUpNode),
-                  _buildSeparator(),
-                  _buildTextField(
-                      indexNumberSignUpNode,
-                      indexNumberSignUpController,
-                      TextInputType.number,
-                      FontAwesomeIcons.graduationCap,
-                      "Numer indeksu",
-                      onSubmitFocusNode: studentHouseSignUpNode),
-                  _buildSeparator(),
-                  _buildTextField(
-                      studentHouseSignUpNode,
-                      studentHouseSignUpController,
-                      TextInputType.number,
-                      FontAwesomeIcons.home,
-                      "Numer DS")
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10.0),
-              child: _buildSubmitButton("DOŁĄCZ", 520.0, () => _registerUser()),
-            )
-          ],
-        ),
-      ],
     );
   }
 

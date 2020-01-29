@@ -31,11 +31,7 @@ class RoomDetails extends ItemDetails<Room> implements Indexable {
       RoomDetails(room: room, horizontal: false, index: index);
 
   @override
-  Widget buildHeader() => Text(
-        room.name,
-        style: Theme.TextStyles.headerTextStyle,
-        overflow: TextOverflow.ellipsis,
-      );
+  Widget buildHeader() => getHeader(room.name);
 
   @override
   Widget buildDescription() =>

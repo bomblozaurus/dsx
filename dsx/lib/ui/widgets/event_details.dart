@@ -46,18 +46,14 @@ class EventDetails extends ItemDetails<Event> implements Indexable {
       );
 
   @override
-  Widget buildHeader() => Text(
-        event.name,
-        overflow: TextOverflow.ellipsis,
-      );
+  Widget buildHeader() => getHeader(event.name);
 
   @override
   Widget buildRoutingWidget(Fetchable item, CircleAvatar avatar, int index) =>
       EventDetailsPage.fromRouting(item, avatar, index);
 
   @override
-  List<TextWithIcon> getFooterItems() =>
-      List.of([
+  List<TextWithIcon> getFooterItems() => List.of([
         getTextWithIcon(event.getDate(),
             Icon(Icons.calendar_today, color: _determineDateTimeColor())),
         getTextWithIcon(event.getTime(),
