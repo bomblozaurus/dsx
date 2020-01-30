@@ -79,35 +79,39 @@ class _LoginPageState extends State<LoginPage>
                   stops: [0.0, 1.0],
                   tileMode: TileMode.clamp),
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
+            child: ListView(
               children: <Widget>[
-                SizedBox(height: 60),
-                Logo(size: 120.0),
-                SizedBox(height: 40),
-                _buildMenuBar(context),
-                Container(
-                  height: MediaQuery.of(context).size.height - 310.0,
-                  child: PageView(
-                    controller: _pageController,
-                    onPageChanged: (i) {
-                      if (i == 0) {
-                        setState(() {
-                          right = Colors.white;
-                          left = Colors.black;
-                        });
-                      } else if (i == 1) {
-                        setState(() {
-                          right = Colors.black;
-                          left = Colors.white;
-                        });
-                      }
-                    },
-                    children: <Widget>[
-                      _buildLogIn(context),
-                      _buildSignUp(context),
-                    ],
-                  ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    SizedBox(height: 60),
+                    Logo(size: 120.0),
+                    SizedBox(height: 40),
+                    _buildMenuBar(context),
+                    Container(
+                      height: MediaQuery.of(context).size.height - 310.0,
+                      child: PageView(
+                        controller: _pageController,
+                        onPageChanged: (i) {
+                          if (i == 0) {
+                            setState(() {
+                              right = Colors.white;
+                              left = Colors.black;
+                            });
+                          } else if (i == 1) {
+                            setState(() {
+                              right = Colors.black;
+                              left = Colors.white;
+                            });
+                          }
+                        },
+                        children: <Widget>[
+                          _buildLogIn(context),
+                          _buildSignUp(context),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -282,7 +286,7 @@ class _LoginPageState extends State<LoginPage>
                     showFailed(
                       title: "Funkcjonalność nieobsługiwana",
                       message:
-                      "Wpłać 999'999'999 € na nasze konto, abyśmy rozwinęli aplikację.",
+                          "Wpłać 999'999'999 € na nasze konto, abyśmy rozwinęli aplikację.",
                       iconData: Icons.monetization_on,
                     );
                     await JwtTokenUtils()
@@ -329,8 +333,11 @@ class _LoginPageState extends State<LoginPage>
                         onSubmitFocusNode: lastNameSignUpNode),
                     _buildSeparator(),
                     _buildTextField(
-                        lastNameSignUpNode, lastNameSignUpController,
-                        TextInputType.text, FontAwesomeIcons.user, "Nazwisko",
+                        lastNameSignUpNode,
+                        lastNameSignUpController,
+                        TextInputType.text,
+                        FontAwesomeIcons.user,
+                        "Nazwisko",
                         onSubmitFocusNode: emailSignUpNode),
                     _buildSeparator(),
                     _buildTextField(
@@ -344,8 +351,11 @@ class _LoginPageState extends State<LoginPage>
                     ),
                     _buildSeparator(),
                     _buildTextField(
-                        passwordSignUpNode, passwordSignUpController,
-                        TextInputType.text, FontAwesomeIcons.lock, "Hasło",
+                        passwordSignUpNode,
+                        passwordSignUpController,
+                        TextInputType.text,
+                        FontAwesomeIcons.lock,
+                        "Hasło",
                         obscureText: _obscureTextSignUp,
                         onSubmitFocusNode: indexNumberSignUpNode),
                     _buildSeparator(),
@@ -368,8 +378,8 @@ class _LoginPageState extends State<LoginPage>
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
-                child: _buildSubmitButton(
-                    "DOŁĄCZ", 520.0, () => _registerUser()),
+                child:
+                    _buildSubmitButton("DOŁĄCZ", 520.0, () => _registerUser()),
               )
             ],
           ),
@@ -388,7 +398,7 @@ class _LoginPageState extends State<LoginPage>
     String studentHouseString = studentHouseSignUpController.text;
     int indexNumber = indexString != "" ? int.parse(indexString) : null;
     int studentHouseNumber =
-    studentHouseString != "" ? int.parse(studentHouseString) : null;
+        studentHouseString != "" ? int.parse(studentHouseString) : null;
 
     var user = User(
         firstName: firstName,
@@ -397,13 +407,13 @@ class _LoginPageState extends State<LoginPage>
         password: password,
         indexNumber: indexNumber,
         studentHouse:
-        studentHouseNumber != null ? studentHouseNumber - 1 : null);
+            studentHouseNumber != null ? studentHouseNumber - 1 : null);
     var data = user.toJson();
     try {
       await Request()
           .postToMobileApiWithoutTokenHeader(
-          resourcePath: GlobalConfiguration().getString("signUpUrl"),
-          body: data)
+              resourcePath: GlobalConfiguration().getString("signUpUrl"),
+              body: data)
           .then(_processSignupResponse);
     } catch (e) {
       FlushbarUtils.showConnectionTimeout(context);
@@ -425,7 +435,7 @@ class _LoginPageState extends State<LoginPage>
     try {
       await Request()
           .postToMobileApiWithoutTokenHeader(
-          resourcePath: resourcePath, body: body)
+              resourcePath: resourcePath, body: body)
           .then((response) => _processLoginResponse(response));
     } catch (e) {
       FlushbarUtils.showConnectionTimeout(context);
@@ -499,13 +509,13 @@ class _LoginPageState extends State<LoginPage>
   Widget _buildTextField(FocusNode focusNode, TextEditingController controller,
       TextInputType textInputType, IconData iconData, String text,
       {bool obscureText = false,
-        FocusNode onSubmitFocusNode,
-        TextInputType keyboardType}) {
+      FocusNode onSubmitFocusNode,
+      TextInputType keyboardType}) {
     return Container(
       width: 320,
       child: Padding(
           padding:
-          EdgeInsets.only(top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+              EdgeInsets.only(top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
           child: TextField(
             focusNode: focusNode,
             controller: controller,

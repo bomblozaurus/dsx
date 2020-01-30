@@ -35,9 +35,9 @@ abstract class ItemDetails<I extends Fetchable> extends StatelessWidget
 
   Widget getHeader(String text) {
     if (horizontal) {
-      return text.length > 20 ? _getMarquee(text) : _getHeaderText(text);
+      return text.length > 18 ? _getMarquee(text) : _getHeaderText(text);
     } else {
-      return text.length > 22 ? _getMarquee(text) : _getHeaderText(text);
+      return text.length > 27 ? _getMarquee(text) : _getHeaderText(text);
     }
   }
 
